@@ -1,319 +1,473 @@
-<!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/kalender-kegiatan.blade.php -->
+<!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/kalender-kegiatan/index.blade.php -->
 <div>
     <!-- Header -->
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Kalender Kegiatan</h1>
-        <p class="text-sm text-gray-600 mt-1">Jadwal kegiatan dan agenda dari seluruh PAC</p>
+        <p class="text-sm text-gray-600 mt-1">Kelola dan lihat jadwal kegiatan</p>
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow p-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Kegiatan</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">64</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Total Kegiatan</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->totalKegiatan }}</h3>
                 </div>
-                <div class="bg-blue-100 text-blue-600 p-3 rounded-full">
-                    <i class="fas fa-calendar-alt text-2xl"></i>
+                <div class="bg-blue-100 text-blue-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-calendar-alt text-xl sm:text-2xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Bulan Ini</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">12</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Bulan Ini</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->kegiatanBulanIni }}</h3>
                 </div>
-                <div class="bg-green-100 text-green-600 p-3 rounded-full">
-                    <i class="fas fa-calendar-check text-2xl"></i>
+                <div class="bg-green-100 text-green-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-calendar-check text-xl sm:text-2xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Minggu Ini</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">3</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Mendatang</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->kegiatanMendatang }}</h3>
                 </div>
-                <div class="bg-yellow-100 text-yellow-600 p-3 rounded-full">
-                    <i class="fas fa-clock text-2xl"></i>
+                <div class="bg-yellow-100 text-yellow-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-clock text-xl sm:text-2xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Hari Ini</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">1</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Selesai</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->kegiatanSelesai }}</h3>
                 </div>
-                <div class="bg-red-100 text-red-600 p-3 rounded-full">
-                    <i class="fas fa-bell text-2xl"></i>
+                <div class="bg-gray-100 text-gray-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-check-circle text-xl sm:text-2xl"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
         <!-- Calendar -->
-        <div class="lg:col-span-2 bg-white rounded-lg shadow p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-800">Januari 2025</h3>
+        <div class="lg:col-span-2 bg-white rounded-lg shadow p-4 sm:p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-800">
+                    {{ \Carbon\Carbon::createFromDate($currentYear, $currentMonth)->format('F Y') }}
+                </h3>
                 <div class="flex gap-2">
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
+                    <button wire:click="previousMonth" class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 transition text-sm">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
+                    <button wire:click="$set('currentMonth', {{ now()->month }}); $set('currentYear', {{ now()->year }})"
+                        class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 transition text-sm">
                         Hari Ini
                     </button>
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
+                    <button wire:click="nextMonth" class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 transition text-sm">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Calendar Grid -->
-            <div class="grid grid-cols-7 gap-2">
+            @php
+                $firstDayOfMonth = \Carbon\Carbon::createFromDate($currentYear, $currentMonth, 1);
+                $daysInMonth = $firstDayOfMonth->daysInMonth;
+                $startDay = $firstDayOfMonth->dayOfWeek;
+                $today = now();
+
+                // Prepare calendar data structure
+                $calendarGrid = [];
+                $currentWeek = 0;
+
+                // Fill empty days before month starts
+                for($i = 0; $i < $startDay; $i++) {
+                    $calendarGrid[$currentWeek][] = null;
+                }
+
+                // Fill month days
+                for($day = 1; $day <= $daysInMonth; $day++) {
+                    $currentDate = \Carbon\Carbon::createFromDate($currentYear, $currentMonth, $day);
+                    $calendarGrid[$currentWeek][] = $currentDate;
+
+                    if(count($calendarGrid[$currentWeek]) == 7) {
+                        $currentWeek++;
+                    }
+                }
+
+                // Fill remaining days
+                while(count($calendarGrid[$currentWeek] ?? []) < 7) {
+                    $calendarGrid[$currentWeek][] = null;
+                }
+            @endphp
+
+            <div class="space-y-1">
                 <!-- Header Days -->
-                <div class="text-center text-sm font-semibold text-gray-700 py-2">Min</div>
-                <div class="text-center text-sm font-semibold text-gray-700 py-2">Sen</div>
-                <div class="text-center text-sm font-semibold text-gray-700 py-2">Sel</div>
-                <div class="text-center text-sm font-semibold text-gray-700 py-2">Rab</div>
-                <div class="text-center text-sm font-semibold text-gray-700 py-2">Kam</div>
-                <div class="text-center text-sm font-semibold text-gray-700 py-2">Jum</div>
-                <div class="text-center text-sm font-semibold text-gray-700 py-2">Sab</div>
-
-                <!-- Calendar Days -->
-                <!-- Empty days from previous month -->
-                <div class="text-center py-3 text-gray-400 text-sm">29</div>
-                <div class="text-center py-3 text-gray-400 text-sm">30</div>
-                <div class="text-center py-3 text-gray-400 text-sm">31</div>
-
-                <!-- Current month days -->
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">1</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">2</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">3</div>
-                <div class="text-center py-3 bg-blue-600 text-white text-sm rounded font-semibold cursor-pointer">4</div>
-
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">5</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">6</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer relative">
-                    7
-                    <span class="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-green-500 rounded-full"></span>
+                <div class="grid grid-cols-7 gap-1">
+                    @foreach(['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'] as $day)
+                        <div class="text-center text-xs sm:text-sm font-semibold text-gray-700 py-2 bg-gray-50 rounded">
+                            {{ $day }}
+                        </div>
+                    @endforeach
                 </div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">8</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">9</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">10</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">11</div>
 
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">12</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">13</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">14</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer relative">
-                    15
-                    <span class="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-yellow-500 rounded-full"></span>
-                </div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">16</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">17</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">18</div>
+                <!-- Calendar Body -->
+                @foreach($calendarGrid as $weekIndex => $week)
+                    <div class="grid grid-cols-7 gap-1 relative" style="min-height: 90px;">
+                        @foreach($week as $dayIndex => $date)
+                            <div class="relative border border-gray-100 rounded p-1 min-h-[80px] {{ $date ? 'bg-white' : 'bg-gray-50' }}">
+                                @if($date)
+                                    <!-- Date Number -->
+                                    <div class="text-xs sm:text-sm font-medium
+                                        {{ $date->isToday() ? 'bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center mx-auto' : 'text-gray-700' }}">
+                                        {{ $date->day }}
+                                    </div>
 
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">19</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer relative">
-                    20
-                    <span class="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-500 rounded-full"></span>
-                </div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">21</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">22</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">23</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">24</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">25</div>
+                                    <!-- Single Day Events -->
+                                    @php
+                                        $dayEvents = $calendarEvents->filter(function($event) use ($date) {
+                                            $start = $event->tanggal_mulai->startOfDay();
+                                            $end = $event->tanggal_selesai ? $event->tanggal_selesai->startOfDay() : $start;
 
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">26</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">27</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">28</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">29</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">30</div>
-                <div class="text-center py-3 text-gray-700 text-sm hover:bg-gray-100 rounded cursor-pointer">31</div>
+                                            // Only show if event starts on this day or is single-day
+                                            return $start->isSameDay($date) && $start->isSameDay($end);
+                                        });
+                                    @endphp
+
+                                    @foreach($dayEvents->take(2) as $event)
+                                        <div wire:click="detail('{{ $event->id }}')"
+                                            class="mt-1 px-1 py-0.5 rounded text-xs cursor-pointer hover:opacity-80 transition truncate"
+                                            style="background-color: {{ $event->warna }}; color: white;"
+                                            title="{{ $event->judul }} - {{ $event->tanggal_mulai->format('H:i') }}">
+                                            <i class="fas fa-circle text-[6px] mr-1"></i>
+                                            <span class="font-medium">{{ Str::limit($event->judul, 15) }}</span>
+                                        </div>
+                                    @endforeach
+
+                                    @if($dayEvents->count() > 2)
+                                        <div class="mt-1 px-1 text-xs text-gray-500">
+                                            +{{ $dayEvents->count() - 2 }} lagi
+                                        </div>
+                                    @endif
+                                @endif
+                            </div>
+                        @endforeach
+
+                        <!-- Multi-day Events (Spanning Blocks) -->
+                        @php
+                            $multiDayEvents = $calendarEvents->filter(function($event) use ($week) {
+                                if(!$event->tanggal_selesai) return false;
+
+                                $start = $event->tanggal_mulai->startOfDay();
+                                $end = $event->tanggal_selesai->startOfDay();
+
+                                // Check if event spans multiple days and intersects this week
+                                return !$start->isSameDay($end) && collect($week)->filter()->some(function($date) use ($start, $end) {
+                                    return $date && $date->between($start, $end);
+                                });
+                            });
+                        @endphp
+
+                        @foreach($multiDayEvents as $eventIndex => $event)
+                            @php
+                                $start = $event->tanggal_mulai->startOfDay();
+                                $end = $event->tanggal_selesai->startOfDay();
+
+                                // Find start and end position in this week
+                                $startCol = null;
+                                $endCol = null;
+                                $isFirstWeek = false;
+                                $isLastWeek = false;
+
+                                foreach($week as $colIndex => $date) {
+                                    if($date) {
+                                        if($date->isSameDay($start)) {
+                                            $startCol = $colIndex;
+                                            $isFirstWeek = true;
+                                        }
+                                        if($date->isSameDay($end)) {
+                                            $endCol = $colIndex;
+                                            $isLastWeek = true;
+                                        }
+                                        if($date->between($start, $end)) {
+                                            if($startCol === null) $startCol = $colIndex;
+                                            $endCol = $colIndex;
+                                        }
+                                    }
+                                }
+
+                                if($startCol === null || $endCol === null) continue;
+
+                                $spanCols = $endCol - $startCol + 1;
+                                $topOffset = 35 + ($eventIndex * 22);
+                            @endphp
+
+                            <div wire:click="detail('{{ $event->id }}')"
+                                class="absolute px-2 py-1 rounded cursor-pointer hover:shadow-lg transition-all z-10 group"
+                                style="
+                                    left: calc((100% / 7) * {{ $startCol }} + 2px);
+                                    width: calc((100% / 7) * {{ $spanCols }} - 4px);
+                                    top: {{ $topOffset }}px;
+                                    background-color: {{ $event->warna }};
+                                    color: white;
+                                ">
+                                <div class="flex items-center justify-between text-xs font-medium">
+                                    <div class="truncate flex items-center gap-1">
+                                        @if($isFirstWeek)
+                                            <i class="fas fa-play text-[8px]"></i>
+                                        @endif
+                                        <span>{{ Str::limit($event->judul, 25) }}</span>
+                                        @if($isLastWeek)
+                                            <i class="fas fa-stop text-[8px]"></i>
+                                        @endif
+                                    </div>
+                                    @if($isFirstWeek)
+                                        <span class="text-[10px] opacity-90">
+                                            {{ $event->tanggal_mulai->format('H:i') }}
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <!-- Tooltip on Hover -->
+                                <div class="hidden group-hover:block absolute left-0 top-full mt-1 bg-gray-900 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg z-20">
+                                    <div class="font-semibold">{{ $event->judul }}</div>
+                                    <div class="opacity-90">{{ $event->tanggal_mulai->format('d M') }} - {{ $event->tanggal_selesai->format('d M Y') }}</div>
+                                    @if($event->lokasi)
+                                        <div class="opacity-75"><i class="fas fa-map-marker-alt mr-1"></i>{{ $event->lokasi }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
             </div>
 
-            <div class="mt-6 flex items-center justify-center gap-4 text-sm">
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 bg-green-500 rounded-full"></span>
-                    <span class="text-gray-600">Rapat</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
-                    <span class="text-gray-600">Kegiatan</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
-                    <span class="text-gray-600">Pelatihan</span>
+            <!-- Legend -->
+            <div class="mt-6 pt-4 border-t border-gray-100">
+                <div class="flex flex-wrap items-center gap-4 text-xs">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium">{{ now()->day }}</div>
+                        <span class="text-gray-600">Hari Ini</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-12 h-4 bg-blue-500 rounded"></div>
+                        <span class="text-gray-600">Event 1 Hari</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-16 h-4 bg-green-500 rounded"></div>
+                        <span class="text-gray-600">Event Multi-hari</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Upcoming Events -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-800">Kegiatan Mendatang</h3>
-                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                    Lihat Semua
-                </button>
+                <h3 class="text-base sm:text-lg font-semibold text-gray-800">Kegiatan Mendatang</h3>
             </div>
 
-            <div class="space-y-4">
-                <!-- Event 1 - Today -->
-                <div class="border-l-4 border-red-500 bg-red-50 p-4 rounded-r">
-                    <div class="flex items-start justify-between mb-2">
-                        <span class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-medium">Hari Ini</span>
-                        <span class="text-xs text-gray-500">09:00 WIB</span>
-                    </div>
-                    <h4 class="font-semibold text-gray-800 mb-1">Rapat Koordinasi</h4>
-                    <p class="text-sm text-gray-600 mb-2">PAC Sukajaya</p>
-                    <div class="flex items-center text-xs text-gray-500">
-                        <i class="fas fa-map-marker-alt mr-1"></i>
-                        Gedung IPNU Kota
-                    </div>
-                </div>
+            <div class="space-y-3 sm:space-y-4 max-h-[600px] overflow-y-auto">
+                @forelse($this->upcomingEvents as $event)
+                    <div class="border-l-4 p-3 sm:p-4 rounded-r cursor-pointer hover:shadow-md transition"
+                        style="border-color: {{ $event->warna }}; background-color: {{ $event->warna }}20;"
+                        wire:click="detail('{{ $event->id }}')">
+                        <div class="flex items-start justify-between mb-2">
+                            @if($event->tanggal_mulai->isToday())
+                                <span class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-medium">Hari Ini</span>
+                            @else
+                                <span class="px-2 py-1 rounded text-xs font-medium" style="background-color: {{ $event->warna }}40; color: {{ $event->warna }};">
+                                    {{ $event->tanggal_mulai->format('d M') }}
+                                </span>
+                            @endif
+                            <span class="text-xs text-gray-500">{{ $event->tanggal_mulai->format('H:i') }}</span>
+                        </div>
+                        <h4 class="font-semibold text-gray-800 mb-1 text-sm">{{ $event->judul }}</h4>
 
-                <!-- Event 2 -->
-                <div class="border-l-4 border-green-500 bg-green-50 p-4 rounded-r">
-                    <div class="flex items-start justify-between mb-2">
-                        <span class="px-2 py-1 bg-green-100 text-green-600 rounded text-xs font-medium">7 Jan</span>
-                        <span class="text-xs text-gray-500">14:00 WIB</span>
-                    </div>
-                    <h4 class="font-semibold text-gray-800 mb-1">Kajian Rutin</h4>
-                    <p class="text-sm text-gray-600 mb-2">PAC Mekarjaya</p>
-                    <div class="flex items-center text-xs text-gray-500">
-                        <i class="fas fa-map-marker-alt mr-1"></i>
-                        Masjid Al-Ikhlas
-                    </div>
-                </div>
+                        @if($event->tanggal_selesai && !$event->tanggal_mulai->isSameDay($event->tanggal_selesai))
+                            <div class="flex items-center text-xs text-gray-600 mb-1">
+                                <i class="fas fa-calendar-alt mr-1"></i>
+                                {{ $event->tanggal_mulai->format('d M') }} - {{ $event->tanggal_selesai->format('d M Y') }}
+                            </div>
+                        @endif
 
-                <!-- Event 3 -->
-                <div class="border-l-4 border-yellow-500 bg-yellow-50 p-4 rounded-r">
-                    <div class="flex items-start justify-between mb-2">
-                        <span class="px-2 py-1 bg-yellow-100 text-yellow-600 rounded text-xs font-medium">15 Jan</span>
-                        <span class="text-xs text-gray-500">08:00 WIB</span>
+                        @if($event->lokasi)
+                            <div class="flex items-center text-xs text-gray-600">
+                                <i class="fas fa-map-marker-alt mr-1"></i>
+                                {{ Str::limit($event->lokasi, 25) }}
+                            </div>
+                        @endif
                     </div>
-                    <h4 class="font-semibold text-gray-800 mb-1">Pelatihan Kader</h4>
-                    <p class="text-sm text-gray-600 mb-2">Seluruh PAC</p>
-                    <div class="flex items-center text-xs text-gray-500">
-                        <i class="fas fa-map-marker-alt mr-1"></i>
-                        Aula Cabang
+                @empty
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-calendar-times text-3xl mb-2 block"></i>
+                        <p class="text-sm">Tidak ada kegiatan mendatang</p>
                     </div>
-                </div>
-
-                <!-- Event 4 -->
-                <div class="border-l-4 border-blue-500 bg-blue-50 p-4 rounded-r">
-                    <div class="flex items-start justify-between mb-2">
-                        <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded text-xs font-medium">20 Jan</span>
-                        <span class="text-xs text-gray-500">13:00 WIB</span>
-                    </div>
-                    <h4 class="font-semibold text-gray-800 mb-1">Bakti Sosial</h4>
-                    <p class="text-sm text-gray-600 mb-2">PAC Sentosa</p>
-                    <div class="flex items-center text-xs text-gray-500">
-                        <i class="fas fa-map-marker-alt mr-1"></i>
-                        Desa Sentosa
-                    </div>
-                </div>
+                @endforelse
             </div>
 
-            <button class="w-full mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            <button wire:click="create" class="w-full mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm sm:text-base">
                 <i class="fas fa-plus mr-2"></i>Tambah Kegiatan
             </button>
         </div>
     </div>
 
-    <!-- List View -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="p-4 border-b border-gray-200 flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-800">Semua Kegiatan</h3>
-            <div class="flex gap-2">
-                <select class="px-3 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500">
-                    <option>Semua PAC</option>
-                    <option>PAC Sukajaya</option>
-                    <option>PAC Mekarjaya</option>
-                    <option>PAC Sentosa</option>
-                </select>
-                <select class="px-3 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500">
-                    <option>Semua Kategori</option>
-                    <option>Rapat</option>
-                    <option>Kegiatan</option>
-                    <option>Pelatihan</option>
+    <!-- Filter & Search -->
+    <div class="bg-white rounded-lg shadow p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Kegiatan</label>
+                <input type="text" wire:model.live="search" placeholder="Judul, lokasi, deskripsi..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <select wire:model.live="filterStatus"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                    <option value="">Semua Status</option>
+                    <option value="upcoming">Mendatang</option>
+                    <option value="past">Selesai</option>
                 </select>
             </div>
+            <div class="flex items-end">
+                <button wire:click="create"
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+                    <i class="fas fa-plus mr-2"></i>Tambah Kegiatan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- List View (Same as before) -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="p-4 border-b border-gray-100">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-800">Semua Kegiatan</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full">
-                <thead class="bg-gray-50">
+                <thead class="bg-gray-50 border-b border-gray-100">
                     <tr>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Tanggal</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Nama Kegiatan</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">PAC</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Kategori</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-16">No</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Judul Kegiatan</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Tanggal & Waktu</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Lokasi</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Status</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="py-3 px-4 text-sm text-gray-700">04 Jan 2025, 09:00</td>
-                        <td class="py-3 px-4 text-sm font-medium text-gray-800">Rapat Koordinasi</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">PAC Sukajaya</td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">Rapat</span>
-                        </td>
-                        <td class="py-3 px-4 text-sm text-gray-700">Gedung IPNU</td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium">Hari Ini</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-blue-600 hover:text-blue-800 mr-2" title="Lihat Detail">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="text-green-600 hover:text-green-800" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="py-3 px-4 text-sm text-gray-700">07 Jan 2025, 14:00</td>
-                        <td class="py-3 px-4 text-sm font-medium text-gray-800">Kajian Rutin</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">PAC Mekarjaya</td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">Kegiatan</span>
-                        </td>
-                        <td class="py-3 px-4 text-sm text-gray-700">Masjid Al-Ikhlas</td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs font-medium">Mendatang</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-blue-600 hover:text-blue-800 mr-2" title="Lihat Detail">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="text-green-600 hover:text-green-800" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </td>
-                    </tr>
+                <tbody class="divide-y divide-gray-100">
+                    @forelse($kegiatans as $index => $kegiatan)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ $kegiatans->firstItem() + $index }}</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: {{ $kegiatan->warna }};"></div>
+                                    <span class="text-sm font-medium text-gray-800">{{ $kegiatan->judul }}</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700">
+                                {{ $kegiatan->tanggal_mulai->format('d M Y, H:i') }}
+                                @if($kegiatan->tanggal_selesai)
+                                    <br><span class="text-xs text-gray-500">s/d {{ $kegiatan->tanggal_selesai->format('d M Y, H:i') }}</span>
+                                @endif
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ $kegiatan->lokasi ?? '-' }}</td>
+                            <td class="py-3 px-4">
+                                @if($kegiatan->isOngoing())
+                                    <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">Berlangsung</span>
+                                @elseif($kegiatan->isPast())
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-medium">Selesai</span>
+                                @else
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs font-medium">Mendatang</span>
+                                @endif
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-2">
+                                    <button wire:click="detail('{{ $kegiatan->id }}')"
+                                        class="text-blue-600 hover:text-blue-800 transition" title="Detail">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button wire:click="edit('{{ $kegiatan->id }}')"
+                                        class="text-yellow-600 hover:text-yellow-800 transition" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button wire:click="delete('{{ $kegiatan->id }}')"
+                                        wire:confirm="Apakah Anda yakin ingin menghapus kegiatan ini?"
+                                        class="text-red-600 hover:text-red-800 transition" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="py-8 px-4 text-center text-gray-500">
+                                <i class="fas fa-calendar-times text-4xl mb-2 block"></i>
+                                <p>Belum ada kegiatan</p>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
-        <div class="p-4 border-t border-gray-200">
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-600">Menampilkan 1-10 dari 64 kegiatan</p>
-                <div class="flex space-x-2">
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">Prev</button>
-                    <button class="px-3 py-1 bg-blue-600 text-white rounded">1</button>
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">2</button>
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">Next</button>
+
+        <!-- Pagination (Same as before) -->
+        @if($kegiatans->hasPages())
+            <div class="px-4 py-3 border-t border-gray-100">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="text-sm text-gray-700">
+                        Menampilkan <span class="font-medium">{{ $kegiatans->firstItem() }}</span>
+                        sampai <span class="font-medium">{{ $kegiatans->lastItem() }}</span>
+                        dari <span class="font-medium">{{ $kegiatans->total() }}</span> hasil
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        @if ($kegiatans->onFirstPage())
+                            <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                                <i class="fas fa-chevron-left"></i>
+                            </span>
+                        @else
+                            <button wire:click="previousPage" wire:loading.attr="disabled"
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        @endif
+
+                        @foreach ($kegiatans->getUrlRange(1, $kegiatans->lastPage()) as $page => $url)
+                            @if ($page == $kegiatans->currentPage())
+                                <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium shadow-sm">
+                                    {{ $page }}
+                                </span>
+                            @else
+                                <button wire:click="gotoPage({{ $page }})" wire:loading.attr="disabled"
+                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                    {{ $page }}
+                                </button>
+                            @endif
+                        @endforeach
+
+                        @if ($kegiatans->hasMorePages())
+                            <button wire:click="nextPage" wire:loading.attr="disabled"
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        @else
+                            <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                                <i class="fas fa-chevron-right"></i>
+                            </span>
+                        @endif
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 </div>
