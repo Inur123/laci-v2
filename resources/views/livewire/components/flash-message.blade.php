@@ -2,8 +2,17 @@
 <div>
     @if($show)
         <div
-            wire:key="flash-{{ now()->timestamp }}"
-            class="fixed top-4 right-4 z-50 max-w-sm animate-slide-in"
+            wire:key="{{ $flashId }}"
+            class="fixed top-4 right-4 z-50 max-w-sm"
+            x-data="{ show: true }"
+            x-init="setTimeout(() => { show = false; setTimeout(() => $wire.call('close'), 300); }, 2000)"
+            x-show="show"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform translate-x-full"
+            x-transition:enter-end="opacity-100 transform translate-x-0"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 transform translate-x-0"
+            x-transition:leave-end="opacity-0 transform translate-x-full"
         >
             @if($type === 'success')
                 <div class="bg-green-50 border-l-4 border-green-500 rounded-lg shadow-lg p-4">
@@ -17,7 +26,7 @@
                             </p>
                         </div>
                         <button
-                            wire:click="close"
+                            @click="show = false; setTimeout(() => $wire.call('close'), 300)"
                             type="button"
                             class="ml-3 flex-shrink-0 text-green-500 hover:text-green-700 focus:outline-none transition cursor-pointer"
                         >
@@ -37,7 +46,7 @@
                             </p>
                         </div>
                         <button
-                            wire:click="close"
+                            @click="show = false; setTimeout(() => $wire.call('close'), 300)"
                             type="button"
                             class="ml-3 flex-shrink-0 text-red-500 hover:text-red-700 focus:outline-none transition cursor-pointer"
                         >
@@ -57,7 +66,7 @@
                             </p>
                         </div>
                         <button
-                            wire:click="close"
+                            @click="show = false; setTimeout(() => $wire.call('close'), 300)"
                             type="button"
                             class="ml-3 flex-shrink-0 text-yellow-500 hover:text-yellow-700 focus:outline-none transition cursor-pointer"
                         >
@@ -77,7 +86,7 @@
                             </p>
                         </div>
                         <button
-                            wire:click="close"
+                            @click="show = false; setTimeout(() => $wire.call('close'), 300)"
                             type="button"
                             class="ml-3 flex-shrink-0 text-blue-500 hover:text-blue-700 focus:outline-none transition cursor-pointer"
                         >
@@ -87,12 +96,5 @@
                 </div>
             @endif
         </div>
-
-        <script>
-            // Auto hide after 5 seconds
-            setTimeout(() => {
-                @this.call('close');
-            }, 2000);
-        </script>
     @endif
 </div>

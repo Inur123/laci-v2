@@ -8,8 +8,8 @@ class FlashMessage extends Component
 {
     public $show = false;
     public $message = '';
-    public $type = 'success'; // success, error, warning, info
-    public $flashId; // Unique ID untuk setiap flash
+    public $type = 'success';
+    public $flashId;
 
     protected $listeners = ['flash' => 'showFlash'];
 
@@ -38,11 +38,14 @@ class FlashMessage extends Component
 
     public function showFlash($data)
     {
-        // Generate unique ID setiap kali flash baru
-        $this->flashId = uniqid('flash-');
+        // PENTING: Generate unique ID BARU setiap kali
+        $this->flashId = uniqid('flash-' . time() . '-');
         $this->message = $data['message'];
         $this->type = $data['type'] ?? 'success';
         $this->show = true;
+
+        // Force re-render dengan dispatch ke browser
+        $this->dispatch('flash-updated');
     }
 
     public function close()

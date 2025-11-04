@@ -41,4 +41,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'is_active' => 'boolean',
     ];
+
+     public function surats()
+    {
+        return $this->hasMany(Surat::class);
+    }
 }
