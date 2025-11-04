@@ -347,7 +347,7 @@
         </div>
     </div>
 
-    <!-- List View (Same as before) -->
+    <!-- List View -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="p-4 border-b border-gray-100">
             <h3 class="text-base sm:text-lg font-semibold text-gray-800">Semua Kegiatan</h3>
@@ -400,8 +400,7 @@
                                         class="text-yellow-600 hover:text-yellow-800 transition" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button wire:click="delete('{{ $kegiatan->id }}')"
-                                        wire:confirm="Apakah Anda yakin ingin menghapus kegiatan ini?"
+                                    <button onclick="confirmDeleteKegiatan('{{ $kegiatan->id }}', '{{ $kegiatan->judul }}')"
                                         class="text-red-600 hover:text-red-800 transition" title="Hapus">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -420,7 +419,7 @@
             </table>
         </div>
 
-        <!-- Pagination (Same as before) -->
+        <!-- Pagination -->
         @if($kegiatans->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -471,3 +470,27 @@
         @endif
     </div>
 </div>
+
+<script>
+function confirmDeleteKegiatan(id, judul) {
+    Swal.fire({
+        title: 'Hapus Kegiatan?',
+        html: `Kegiatan <strong>${judul}</strong> akan dihapus secara permanen!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
+        cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'px-4 py-2 rounded-lg',
+            cancelButton: 'px-4 py-2 rounded-lg'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            @this.call('delete', id);
+        }
+    });
+}
+</script>

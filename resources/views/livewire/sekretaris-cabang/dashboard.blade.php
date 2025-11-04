@@ -1,40 +1,56 @@
 <!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/dashboard.blade.php -->
 <div class="space-y-6">
     <!-- Welcome Section -->
-    <div class="bg-gradient-to-r from-green-600 to-green-700 rounded-xl shadow-lg p-8 text-white">
-        <div class="flex items-center justify-between">
+    <div class="bg-gradient-to-r from-green-600 via-green-700 to-emerald-800 rounded-2xl shadow-xl p-6 md:p-8 text-white relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute transform rotate-45 -right-10 -top-10 w-40 h-40 bg-white rounded-full"></div>
+            <div class="absolute transform -rotate-45 -left-10 -bottom-10 w-60 h-60 bg-white rounded-full"></div>
+        </div>
+
+        <div class="relative flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-bold mb-2">Selamat Datang, {{ auth()->user()->name }}! 👋</h1>
-                <p class="text-green-100 text-lg">Dashboard Sekretaris Cabang IPNU</p>
-                <p class="text-green-200 text-sm mt-2">{{ now()->isoFormat('dddd, D MMMM Y') }}</p>
+                <h1 class="text-2xl md:text-4xl font-bold mb-2">
+                    Selamat Datang, {{ auth()->user()->name }}! 👋
+                </h1>
+                <p class="text-green-100 text-base md:text-lg mb-1">Dashboard Sekretaris Cabang IPNU</p>
+                <p class="text-green-200 text-sm">
+                    <i class="fas fa-calendar-day mr-2"></i>
+                    {{ now()->isoFormat('dddd, D MMMM Y') }}
+                </p>
             </div>
-            <div class="hidden md:block">
-                <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4">
-                    <i class="fas fa-building text-6xl text-white/80"></i>
+            <div class="hidden lg:block">
+                <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-6 transform hover:scale-105 transition-transform duration-300">
+                    <i class="fas fa-building text-7xl text-white/90"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Main Statistics Cards - Auto refresh every 30s -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6" wire:poll.30s>
         <!-- Total PAC -->
-        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="bg-blue-100 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-map-marked-alt text-2xl text-blue-600"></i>
+        <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+            <div class="p-6 relative">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-building text-3xl text-white"></i>
+                        </div>
+                        @if($this->pacBulanIni > 0)
+                            <span class="text-xs font-bold text-blue-100 bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                                <i class="fas fa-arrow-up"></i> +{{ $this->pacBulanIni }}
+                            </span>
+                        @endif
                     </div>
-                    <span class="text-xs font-semibold text-green-600 bg-green-100 px-3 py-1 rounded-full">
-                        <i class="fas fa-arrow-up"></i> +2
-                    </span>
+                    <h3 class="text-white/80 text-sm font-medium mb-1">Total PAC Aktif</h3>
+                    <p class="text-4xl font-bold text-white mb-2">{{ $this->totalPac }}</p>
+                    <p class="text-xs text-blue-100">PAC terverifikasi & aktif</p>
                 </div>
-                <h3 class="text-gray-500 text-sm font-medium mb-1">Total PAC</h3>
-                <p class="text-3xl font-bold text-gray-800">25</p>
-                <p class="text-xs text-gray-500 mt-2">PAC terdaftar aktif</p>
             </div>
-            <div class="bg-blue-50 px-6 py-3">
-                <a href="{{ route('cabang.data-user-pac') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center justify-between group">
+            <div class="bg-blue-900/30 px-6 py-3 backdrop-blur-sm">
+                <a href="{{ route('cabang.data-user-pac') }}" class="text-sm text-white hover:text-blue-100 font-medium flex items-center justify-between group">
                     <span>Lihat Detail</span>
                     <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                 </a>
@@ -42,22 +58,30 @@
         </div>
 
         <!-- Total Anggota -->
-        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="bg-green-100 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-users text-2xl text-green-600"></i>
+        <div class="bg-gradient-to-br from-green-500 to-green-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+            <div class="p-6 relative">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-users text-3xl text-white"></i>
+                        </div>
+                        @if($this->anggotaBulanIni > 0)
+                            <span class="text-xs font-bold text-green-100 bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                                <i class="fas fa-arrow-up"></i> +{{ $this->anggotaBulanIni }}
+                            </span>
+                        @endif
                     </div>
-                    <span class="text-xs font-semibold text-green-600 bg-green-100 px-3 py-1 rounded-full">
-                        <i class="fas fa-arrow-up"></i> +45
-                    </span>
+                    <h3 class="text-white/80 text-sm font-medium mb-1">Total Anggota</h3>
+                    <p class="text-4xl font-bold text-white mb-2">{{ number_format($this->totalAnggota) }}</p>
+                    <div class="flex items-center gap-3 text-xs text-green-100">
+                        <span><i class="fas fa-male mr-1"></i>{{ $this->anggotaLakiLaki }}</span>
+                        <span><i class="fas fa-female mr-1"></i>{{ $this->anggotaPerempuan }}</span>
+                    </div>
                 </div>
-                <h3 class="text-gray-500 text-sm font-medium mb-1">Total Anggota</h3>
-                <p class="text-3xl font-bold text-gray-800">3,500</p>
-                <p class="text-xs text-gray-500 mt-2">Anggota dari semua PAC</p>
             </div>
-            <div class="bg-green-50 px-6 py-3">
-                <a href="{{ route('cabang.data-anggota') }}" class="text-sm text-green-600 hover:text-green-700 font-medium flex items-center justify-between group">
+            <div class="bg-green-900/30 px-6 py-3 backdrop-blur-sm">
+                <a href="{{ route('cabang.data-anggota') }}" class="text-sm text-white hover:text-green-100 font-medium flex items-center justify-between group">
                     <span>Lihat Detail</span>
                     <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                 </a>
@@ -65,22 +89,27 @@
         </div>
 
         <!-- Pengajuan PAC -->
-        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="bg-yellow-100 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-file-import text-2xl text-yellow-600"></i>
+        <div class="bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+            <div class="p-6 relative">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-hourglass-half text-3xl text-white"></i>
+                        </div>
+                        @if($this->pengajuanPac > 0)
+                            <span class="text-xs font-bold text-yellow-100 bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm animate-pulse">
+                                <i class="fas fa-exclamation-circle"></i> {{ $this->pengajuanPac }}
+                            </span>
+                        @endif
                     </div>
-                    <span class="text-xs font-semibold text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full">
-                        <i class="fas fa-clock"></i> 3 Baru
-                    </span>
+                    <h3 class="text-white/80 text-sm font-medium mb-1">Pengajuan PAC</h3>
+                    <p class="text-4xl font-bold text-white mb-2">{{ $this->pengajuanPac }}</p>
+                    <p class="text-xs text-yellow-100">Menunggu persetujuan</p>
                 </div>
-                <h3 class="text-gray-500 text-sm font-medium mb-1">Pengajuan PAC</h3>
-                <p class="text-3xl font-bold text-gray-800">12</p>
-                <p class="text-xs text-gray-500 mt-2">Menunggu persetujuan</p>
             </div>
-            <div class="bg-yellow-50 px-6 py-3">
-                <a href="{{ route('cabang.pengajuan-pac') }}" class="text-sm text-yellow-600 hover:text-yellow-700 font-medium flex items-center justify-between group">
+            <div class="bg-yellow-900/30 px-6 py-3 backdrop-blur-sm">
+                <a href="{{ route('cabang.pengajuan-pac') }}" class="text-sm text-white hover:text-yellow-100 font-medium flex items-center justify-between group">
                     <span>Lihat Detail</span>
                     <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                 </a>
@@ -88,22 +117,30 @@
         </div>
 
         <!-- Arsip Surat -->
-        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="bg-purple-100 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-folder text-2xl text-purple-600"></i>
+        <div class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+            <div class="p-6 relative">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-folder text-3xl text-white"></i>
+                        </div>
+                        @if($this->suratBulanIni > 0)
+                            <span class="text-xs font-bold text-purple-100 bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                                <i class="fas fa-plus"></i> +{{ $this->suratBulanIni }}
+                            </span>
+                        @endif
                     </div>
-                    <span class="text-xs font-semibold text-purple-600 bg-purple-100 px-3 py-1 rounded-full">
-                        <i class="fas fa-plus"></i> 5 Baru
-                    </span>
+                    <h3 class="text-white/80 text-sm font-medium mb-1">Arsip Surat</h3>
+                    <p class="text-4xl font-bold text-white mb-2">{{ number_format($this->totalSurat) }}</p>
+                    <div class="flex items-center gap-3 text-xs text-purple-100">
+                        <span><i class="fas fa-inbox mr-1"></i>{{ $this->suratMasuk }}</span>
+                        <span><i class="fas fa-paper-plane mr-1"></i>{{ $this->suratKeluar }}</span>
+                    </div>
                 </div>
-                <h3 class="text-gray-500 text-sm font-medium mb-1">Arsip Surat</h3>
-                <p class="text-3xl font-bold text-gray-800">148</p>
-                <p class="text-xs text-gray-500 mt-2">Total surat terarsip</p>
             </div>
-            <div class="bg-purple-50 px-6 py-3">
-                <a href="{{ route('cabang.arsip-surat') }}" class="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center justify-between group">
+            <div class="bg-purple-900/30 px-6 py-3 backdrop-blur-sm">
+                <a href="{{ route('cabang.arsip-surat') }}" class="text-sm text-white hover:text-purple-100 font-medium flex items-center justify-between group">
                     <span>Lihat Detail</span>
                     <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                 </a>
@@ -113,171 +150,260 @@
 
     <!-- Charts & Activity Section -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Recent Activity -->
-        <div class="lg:col-span-2 bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="border-b border-gray-200 p-6">
+        <!-- Recent Activity - ✅ FULLKAN dengan scroll + load more -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden" wire:poll.10s>
+            <div class="border-b border-gray-200 p-6 bg-gradient-to-r from-gray-50 to-white">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-clock text-green-600 mr-3"></i>
+                        <div class="bg-green-100 p-2 rounded-lg mr-3">
+                            <i class="fas fa-history text-green-600"></i>
+                        </div>
                         Aktivitas Terbaru
                     </h3>
-                    <button class="text-sm text-green-600 hover:text-green-700 font-medium">
-                        Lihat Semua <i class="fas fa-arrow-right ml-1"></i>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs px-3 py-1.5 bg-green-100 text-green-700 rounded-full font-medium animate-pulse">
+                            <i class="fas fa-circle text-xs mr-1"></i>Live
+                        </span>
+                        <span class="text-xs px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full font-medium">
+                            {{ $this->aktivitasTerbaru->count() }} aktivitas
+                        </span>
+                        <div wire:loading wire:target="$refresh,loadMoreActivities" class="text-xs">
+                            <i class="fas fa-sync fa-spin text-green-600"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="p-6">
-                <div class="space-y-4">
-                    <!-- Activity Item -->
-                    <div class="flex items-start space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
-                        <div class="flex-shrink-0">
-                            <div class="bg-green-100 p-2 rounded-lg">
-                                <i class="fas fa-file-alt text-green-600"></i>
-                            </div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900">Surat Edaran Baru</p>
-                            <p class="text-sm text-gray-500">PAC Sukodono mengirim surat edaran kegiatan</p>
-                            <p class="text-xs text-gray-400 mt-1">2 jam yang lalu</p>
-                        </div>
-                    </div>
 
-                    <div class="flex items-start space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
-                        <div class="flex-shrink-0">
-                            <div class="bg-blue-100 p-2 rounded-lg">
-                                <i class="fas fa-user-plus text-blue-600"></i>
+            <!-- ✅ Area scrollable dengan tinggi maksimal -->
+            <div class="p-6 max-h-[700px] overflow-y-auto custom-scrollbar" id="activity-container">
+                <div class="space-y-3">
+                    @forelse($this->aktivitasTerbaru as $activity)
+                        <div class="flex items-start space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-gray-100 animate-fade-in">
+                            <div class="flex-shrink-0">
+                                <div class="bg-{{ $activity['color'] }}-100 p-3 rounded-xl">
+                                    <i class="fas {{ $activity['icon'] }} text-{{ $activity['color'] }}-600"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <p class="text-sm font-semibold text-gray-900">{{ $activity['title'] }}</p>
+                                        <p class="text-sm text-gray-600 mt-0.5">{{ $activity['description'] }}</p>
+                                        <div class="flex items-center gap-3 mt-2">
+                                            <span class="text-xs text-gray-500">
+                                                <i class="fas fa-user mr-1"></i>{{ $activity['user'] }}
+                                            </span>
+                                            <span class="text-xs text-gray-400">
+                                                <i class="fas fa-clock mr-1"></i>{{ $activity['time']->diffForHumans() }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900">Anggota Baru</p>
-                            <p class="text-sm text-gray-500">15 anggota baru terdaftar dari PAC Sidoarjo</p>
-                            <p class="text-xs text-gray-400 mt-1">5 jam yang lalu</p>
+                    @empty
+                        <div class="text-center py-12">
+                            <i class="fas fa-inbox text-5xl text-gray-300 mb-3"></i>
+                            <p class="text-gray-500">Belum ada aktivitas</p>
                         </div>
-                    </div>
-
-                    <div class="flex items-start space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
-                        <div class="flex-shrink-0">
-                            <div class="bg-yellow-100 p-2 rounded-lg">
-                                <i class="fas fa-exclamation-triangle text-yellow-600"></i>
-                            </div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900">Pengajuan PAC Baru</p>
-                            <p class="text-sm text-gray-500">PAC Waru mengajukan pendirian baru</p>
-                            <p class="text-xs text-gray-400 mt-1">1 hari yang lalu</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
-                        <div class="flex-shrink-0">
-                            <div class="bg-purple-100 p-2 rounded-lg">
-                                <i class="fas fa-calendar-check text-purple-600"></i>
-                            </div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900">Kegiatan Selesai</p>
-                            <p class="text-sm text-gray-500">Pelatihan kader PAC Gedangan telah selesai</p>
-                            <p class="text-xs text-gray-400 mt-1">2 hari yang lalu</p>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
+
+                <!-- ✅ Load More Button -->
+                @if($this->aktivitasTerbaru->count() >= $activityLimit)
+                    <div class="mt-6 text-center">
+                        <button wire:click="loadMoreActivities"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium">
+                            <i class="fas fa-chevron-down"></i>
+                            <span>Muat Lebih Banyak</span>
+                            <div wire:loading wire:target="loadMoreActivities">
+                                <i class="fas fa-spinner fa-spin ml-2"></i>
+                            </div>
+                        </button>
+                    </div>
+                @endif
             </div>
         </div>
 
-        <!-- Quick Actions & Calendar -->
+        <!-- Right Sidebar -->
         <div class="space-y-6">
+            <!-- Kegiatan Mendatang - Auto refresh every 30s -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden" wire:poll.30s>
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold flex items-center">
+                                <i class="fas fa-calendar-alt mr-2"></i>
+                                Kegiatan Mendatang
+                            </h3>
+                            <p class="text-xs text-blue-100 mt-1">{{ $this->kegiatanBerlangsung }} kegiatan berlangsung</p>
+                        </div>
+                        <div wire:loading wire:target="$refresh">
+                            <i class="fas fa-sync fa-spin text-white"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-3">
+                        @forelse($this->kegiatanMendatang as $kegiatan)
+                            <div class="p-4 border-l-4 rounded-r-xl hover:shadow-md transition-all duration-200 animate-fade-in"
+                                 style="border-color: {{ $kegiatan->warna }}; background-color: {{ $kegiatan->warna }}15;">
+                                <div class="flex items-start justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-900 text-sm">{{ $kegiatan->judul }}</h4>
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-2"
+                                          style="background-color: {{ $kegiatan->warna }}30; color: {{ $kegiatan->warna }};">
+                                        @if($kegiatan->tanggal_mulai->isToday())
+                                            Hari Ini
+                                        @elseif($kegiatan->tanggal_mulai->isTomorrow())
+                                            Besok
+                                        @else
+                                            {{ $kegiatan->tanggal_mulai->diffForHumans() }}
+                                        @endif
+                                    </span>
+                                </div>
+                                <div class="space-y-1.5 text-xs text-gray-600">
+                                    <p>
+                                        <i class="fas fa-calendar mr-2 text-gray-400"></i>
+                                        {{ $kegiatan->tanggal_mulai->format('d M Y, H:i') }}
+                                    </p>
+                                    @if($kegiatan->lokasi)
+                                        <p>
+                                            <i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>
+                                            {{ Str::limit($kegiatan->lokasi, 30) }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-8">
+                                <i class="fas fa-calendar-times text-4xl text-gray-300 mb-2"></i>
+                                <p class="text-sm text-gray-500">Tidak ada kegiatan mendatang</p>
+                            </div>
+                        @endforelse
+                    </div>
+
+                    @if($this->kegiatanMendatang->count() > 0)
+                        <a href="{{ route('cabang.kalender-kegiatan') }}"
+                           class="block mt-4 text-center text-sm text-blue-600 hover:text-blue-700 font-medium py-2 px-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                            Lihat Semua Kegiatan <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    @endif
+                </div>
+            </div>
+
             <!-- Quick Actions -->
-            <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="bg-white rounded-2xl shadow-lg p-6">
                 <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-bolt text-yellow-500 mr-2"></i>
+                    <div class="bg-yellow-100 p-2 rounded-lg mr-2">
+                        <i class="fas fa-bolt text-yellow-600"></i>
+                    </div>
                     Quick Actions
                 </h3>
-                <div class="space-y-3">
-                    <button class="w-full flex items-center space-x-3 p-3 rounded-lg bg-green-50 hover:bg-green-100 transition-colors text-left group">
+                <div class="space-y-2">
+                    <a href="{{ route('cabang.data-anggota') }}"
+                       class="w-full flex items-center space-x-3 p-3 rounded-xl bg-green-50 hover:bg-green-100 transition-all duration-200 text-left group">
                         <div class="bg-green-600 p-2 rounded-lg group-hover:scale-110 transition-transform">
-                            <i class="fas fa-plus text-white text-sm"></i>
+                            <i class="fas fa-user-plus text-white text-sm"></i>
                         </div>
                         <span class="text-sm font-medium text-gray-700">Tambah Anggota</span>
-                    </button>
-                    <button class="w-full flex items-center space-x-3 p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors text-left group">
+                    </a>
+                    <a href="{{ route('cabang.arsip-surat') }}"
+                       class="w-full flex items-center space-x-3 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition-all duration-200 text-left group">
                         <div class="bg-blue-600 p-2 rounded-lg group-hover:scale-110 transition-transform">
                             <i class="fas fa-file-upload text-white text-sm"></i>
                         </div>
                         <span class="text-sm font-medium text-gray-700">Upload Surat</span>
-                    </button>
-                    <button class="w-full flex items-center space-x-3 p-3 rounded-lg bg-purple-50 hover:bg-purple-100 transition-colors text-left group">
+                    </a>
+                    <a href="{{ route('cabang.kalender-kegiatan') }}"
+                       class="w-full flex items-center space-x-3 p-3 rounded-xl bg-purple-50 hover:bg-purple-100 transition-all duration-200 text-left group">
                         <div class="bg-purple-600 p-2 rounded-lg group-hover:scale-110 transition-transform">
                             <i class="fas fa-calendar-plus text-white text-sm"></i>
                         </div>
                         <span class="text-sm font-medium text-gray-700">Buat Kegiatan</span>
-                    </button>
+                    </a>
+                    <a href="{{ route('cabang.data-user-pac') }}"
+                       class="w-full flex items-center space-x-3 p-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition-all duration-200 text-left group">
+                        <div class="bg-indigo-600 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                            <i class="fas fa-building text-white text-sm"></i>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700">Kelola PAC</span>
+                    </a>
                 </div>
             </div>
 
-            <!-- Upcoming Events -->
-            <div class="bg-white rounded-xl shadow-md p-6">
+            <!-- Distribusi Anggota per Periode -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
                 <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-calendar-alt text-blue-500 mr-2"></i>
-                    Kegiatan Mendatang
+                    <div class="bg-purple-100 p-2 rounded-lg mr-2">
+                        <i class="fas fa-chart-pie text-purple-600"></i>
+                    </div>
+                    Top Periode
                 </h3>
                 <div class="space-y-3">
-                    <div class="p-3 border-l-4 border-green-500 bg-green-50 rounded">
-                        <p class="text-sm font-medium text-gray-900">Rapat Koordinasi</p>
-                        <p class="text-xs text-gray-600 mt-1">
-                            <i class="fas fa-clock mr-1"></i>
-                            Besok, 14:00 WIB
-                        </p>
-                    </div>
-                    <div class="p-3 border-l-4 border-blue-500 bg-blue-50 rounded">
-                        <p class="text-sm font-medium text-gray-900">Pelatihan Kader</p>
-                        <p class="text-xs text-gray-600 mt-1">
-                            <i class="fas fa-clock mr-1"></i>
-                            5 Nov, 09:00 WIB
-                        </p>
-                    </div>
-                    <div class="p-3 border-l-4 border-yellow-500 bg-yellow-50 rounded">
-                        <p class="text-sm font-medium text-gray-900">Musyawarah Cabang</p>
-                        <p class="text-xs text-gray-600 mt-1">
-                            <i class="fas fa-clock mr-1"></i>
-                            10 Nov, 08:00 WIB
-                        </p>
-                    </div>
+                    @forelse($this->distribusiPeriode as $index => $periode)
+                        @php
+                            $colors = ['blue', 'green', 'yellow', 'purple', 'pink'];
+                            $color = $colors[$index % 5];
+                        @endphp
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-{{ $color }}-50 hover:bg-{{ $color }}-100 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-{{ $color }}-600 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm">
+                                    {{ $index + 1 }}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">{{ $periode->nama }}</p>
+                                    <p class="text-xs text-gray-500">{{ $periode->anggotas_count }} anggota</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-{{ $color }}-600">
+                                    {{ number_format(($periode->anggotas_count / max($this->totalAnggota, 1)) * 100, 1) }}%
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-center text-gray-500 text-sm py-4">Belum ada data periode</p>
+                    @endforelse
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- PAC Statistics -->
-    <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <div class="border-b border-gray-200 p-6">
+    <!-- Bottom Stats -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="border-b border-gray-200 p-6 bg-gradient-to-r from-gray-50 to-white">
             <h3 class="text-xl font-bold text-gray-800 flex items-center">
-                <i class="fas fa-chart-bar text-green-600 mr-3"></i>
-                Statistik PAC
+                <div class="bg-indigo-100 p-2 rounded-lg mr-3">
+                    <i class="fas fa-chart-line text-indigo-600"></i>
+                </div>
+                Ringkasan Statistik
             </h3>
         </div>
         <div class="p-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg">
-                    <i class="fas fa-check-circle text-3xl text-green-600 mb-2"></i>
-                    <p class="text-2xl font-bold text-gray-800">20</p>
-                    <p class="text-sm text-gray-600 mt-1">PAC Aktif</p>
+                <div class="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl hover:shadow-lg transition-shadow">
+                    <i class="fas fa-check-circle text-4xl text-green-600 mb-3"></i>
+                    <p class="text-3xl font-bold text-gray-800">{{ $this->totalPac }}</p>
+                    <p class="text-sm text-gray-600 mt-2 font-medium">PAC Aktif</p>
                 </div>
-                <div class="text-center p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg">
-                    <i class="fas fa-hourglass-half text-3xl text-yellow-600 mb-2"></i>
-                    <p class="text-2xl font-bold text-gray-800">3</p>
-                    <p class="text-sm text-gray-600 mt-1">Dalam Proses</p>
+                <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl hover:shadow-lg transition-shadow">
+                    <i class="fas fa-users text-4xl text-blue-600 mb-3"></i>
+                    <p class="text-3xl font-bold text-gray-800">{{ number_format($this->totalAnggota) }}</p>
+                    <p class="text-sm text-gray-600 mt-2 font-medium">Total Anggota</p>
                 </div>
-                <div class="text-center p-4 bg-gradient-to-br from-red-50 to-red-100 rounded-lg">
-                    <i class="fas fa-pause-circle text-3xl text-red-600 mb-2"></i>
-                    <p class="text-2xl font-bold text-gray-800">2</p>
-                    <p class="text-sm text-gray-600 mt-1">Non-Aktif</p>
+                <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl hover:shadow-lg transition-shadow">
+                    <i class="fas fa-envelope text-4xl text-purple-600 mb-3"></i>
+                    <p class="text-3xl font-bold text-gray-800">{{ number_format($this->totalSurat) }}</p>
+                    <p class="text-sm text-gray-600 mt-2 font-medium">Arsip Surat</p>
                 </div>
-                <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
-                    <i class="fas fa-star text-3xl text-blue-600 mb-2"></i>
-                    <p class="text-2xl font-bold text-gray-800">5</p>
-                    <p class="text-sm text-gray-600 mt-1">PAC Berprestasi</p>
+                <div class="text-center p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl hover:shadow-lg transition-shadow">
+                    <i class="fas fa-calendar-alt text-4xl text-yellow-600 mb-3"></i>
+                    <p class="text-3xl font-bold text-gray-800">{{ $this->totalKegiatan }}</p>
+                    <p class="text-sm text-gray-600 mt-2 font-medium">Total Kegiatan</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+

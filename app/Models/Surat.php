@@ -1,24 +1,23 @@
 <?php
 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class Surat extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $table = 'surat';
     protected $keyType = 'string';
     public $incrementing = false;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'user_id',
         'no_surat',
@@ -29,30 +28,83 @@ class Surat extends Model
         'file',
     ];
 
+    protected $casts = [
+        'no_surat' => 'encrypted',
+        'jenis_surat' => 'encrypted',
+        'pengirim_penerima' => 'encrypted',
+        'deskripsi' => 'encrypted',
+        // ❌ HAPUS 'tanggal' => 'date' karena kita enkripsi manual
+    ];
+
     /**
-     * Get the attributes that should be cast.
-     *
-     * @var array<string, string>
+     * ✅ Accessor untuk tanggal (auto decrypt)
      */
-    protected function casts(): array
+    public function getTanggalAttribute($value)
     {
-        return [
-            'tanggal' => 'date',
-        ];
+        try {
+            $decrypted = Crypt::decryptString($value);
+            return Carbon::parse($decrypted);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
-     * Boot function untuk generate UUID otomatis.
+     * ✅ Mutator untuk tanggal (auto encrypt)
      */
-    protected static function boot()
+    public function setTanggalAttribute($value)
     {
-        parent::boot();
+        if ($value) {
+            $date = $value instanceof Carbon ? $value->format('Y-m-d') : $value;
+            $this->attributes['tanggal'] = Crypt::encryptString($date);
+        }
+    }
 
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = (string) Str::uuid();
-            }
-        });
+    /**
+     * Enkripsi file PDF dan simpan (static method)
+     */
+    public static function encryptAndStoreFile($file)
+    {
+        try {
+            $content = file_get_contents($file->getRealPath());
+            $encrypted = Crypt::encryptString($content);
+            $filename = uniqid() . '_' . time() . '.enc';
+            Storage::disk('local')->put('surat/' . $filename, $encrypted);
+            return 'surat/' . $filename;
+        } catch (\Exception $e) {
+            throw new \Exception('Gagal mengenkripsi file: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Dekripsi file untuk download
+     */
+    public function getDecryptedFileAttribute()
+    {
+        if (!$this->file) {
+            return null;
+        }
+
+        try {
+            $encryptedContent = Storage::disk('local')->get($this->file);
+            $decrypted = Crypt::decryptString($encryptedContent);
+            return $decrypted;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get original filename (untuk display)
+     */
+    public function getOriginalFilenameAttribute()
+    {
+        if (!$this->file) {
+            return null;
+        }
+
+        $filename = basename($this->file, '.enc');
+        return 'Surat_' . $this->no_surat . '.pdf';
     }
 
     /**
@@ -68,19 +120,15 @@ class Surat extends Model
      */
     public function scopeMasuk($query)
     {
-        return $query->where('jenis_surat', 'masuk');
+        return $query->get()->filter(function($surat) {
+            return $surat->jenis_surat === 'masuk';
+        });
     }
 
     public function scopeKeluar($query)
     {
-        return $query->where('jenis_surat', 'keluar');
-    }
-
-    /**
-     * Accessor untuk nama file
-     */
-    public function getFileUrlAttribute()
-    {
-        return $this->file ? asset('storage/' . $this->file) : null;
+        return $query->get()->filter(function($surat) {
+            return $surat->jenis_surat === 'keluar';
+        });
     }
 }

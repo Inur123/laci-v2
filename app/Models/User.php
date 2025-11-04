@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasUuids;
 
     protected $keyType = 'string';
     public $incrementing = false;
@@ -22,16 +22,6 @@ class User extends Authenticatable
         'is_active',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = Str::uuid()->toString();
-            }
-        });
-    }
-
     protected $hidden = [
         'password',
         'remember_token',
@@ -42,8 +32,20 @@ class User extends Authenticatable
         'is_active' => 'boolean',
     ];
 
-     public function surats()
+    // Relationships
+    public function surats()
     {
         return $this->hasMany(Surat::class);
     }
+
+    public function periodes()
+{
+    return $this->hasMany(Periode::class);
+}
+ public function anggotas()
+    {
+        return $this->hasMany(Anggota::class);
+    }
+
+
 }

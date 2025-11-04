@@ -34,11 +34,18 @@
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        @php
+            $allSurats = \App\Models\Surat::all();
+            $totalSurat = $allSurats->count();
+            $suratMasuk = $allSurats->filter(fn($s) => $s->jenis_surat === 'masuk')->count();
+            $suratKeluar = $allSurats->filter(fn($s) => $s->jenis_surat === 'keluar')->count();
+        @endphp
+
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Total Surat</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">{{ \App\Models\Surat::count() }}</h3>
+                    <h3 class="text-2xl font-bold mt-1 text-gray-800">{{ $totalSurat }}</h3>
                 </div>
                 <div class="bg-blue-100 text-blue-600 p-3 rounded-full">
                     <i class="fas fa-envelope text-2xl"></i>
@@ -50,7 +57,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Surat Masuk</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">{{ \App\Models\Surat::masuk()->count() }}</h3>
+                    <h3 class="text-2xl font-bold mt-1 text-gray-800">{{ $suratMasuk }}</h3>
                 </div>
                 <div class="bg-green-100 text-green-600 p-3 rounded-full">
                     <i class="fas fa-inbox text-2xl"></i>
@@ -62,7 +69,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Surat Keluar</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">{{ \App\Models\Surat::keluar()->count() }}</h3>
+                    <h3 class="text-2xl font-bold mt-1 text-gray-800">{{ $suratKeluar }}</h3>
                 </div>
                 <div class="bg-yellow-100 text-yellow-600 p-3 rounded-full">
                     <i class="fas fa-paper-plane text-2xl"></i>
@@ -73,8 +80,11 @@
 
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="p-4 border-b border-gray-100">
+        <div class="p-4 border-b border-gray-100 flex items-center justify-between">
             <h3 class="text-lg font-semibold text-gray-800">Daftar Arsip Surat</h3>
+            <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
+                <i class="fas fa-lock mr-1"></i>Data Terenkripsi
+            </span>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full">
@@ -115,13 +125,12 @@
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     @if($surat->file)
-                                        <a href="{{ asset('storage/' . $surat->file) }}" target="_blank"
+                                        <button wire:click="download('{{ $surat->id }}')"
                                             class="text-green-600 hover:text-green-800 transition" title="Download">
                                             <i class="fas fa-download"></i>
-                                        </a>
+                                        </button>
                                     @endif
-                                    <button wire:click="delete('{{ $surat->id }}')"
-                                        wire:confirm="Apakah Anda yakin ingin menghapus surat ini?"
+                                    <button onclick="confirmDelete('{{ $surat->id }}', '{{ $surat->no_surat }}')"
                                         class="text-red-600 hover:text-red-800 transition" title="Hapus">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -196,3 +205,27 @@
         @endif
     </div>
 </div>
+
+<script>
+function confirmDelete(id, noSurat) {
+    Swal.fire({
+        title: 'Hapus Surat?',
+        html: `Surat <strong>${noSurat}</strong> akan dihapus secara permanen!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
+        cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'px-4 py-2 rounded-lg',
+            cancelButton: 'px-4 py-2 rounded-lg'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            @this.call('delete', id);
+        }
+    });
+}
+</script>

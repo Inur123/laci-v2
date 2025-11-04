@@ -11,17 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('surat', function (Blueprint $table) {
+        Schema::create('periodes', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
-            $table->text('no_surat');
-            $table->text('jenis_surat');
-            $table->text('tanggal');
-            $table->text('pengirim_penerima');
-            $table->text('deskripsi')->nullable();
-            $table->string('file')->nullable();
+            $table->string('nama');
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
@@ -31,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('surat');
+        Schema::dropIfExists('periodes');
     }
 };

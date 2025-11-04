@@ -78,17 +78,18 @@
 
                     <div class="border border-gray-200 rounded-lg p-3 sm:p-4 text-center">
                         <i class="fas fa-file-pdf text-red-500 text-3xl sm:text-4xl mb-2 sm:mb-3"></i>
-                        <p class="text-xs sm:text-sm text-gray-700 mb-2 sm:mb-3 break-all px-2">{{ basename($surat->file) }}</p>
+                        <p class="text-xs sm:text-sm text-gray-700 mb-2 sm:mb-3 break-all px-2">
+                            {{ $surat->original_filename }}
+                        </p>
+                        <p class="text-xs text-gray-500 mb-3">
+                            <i class="fas fa-lock mr-1"></i>File Terenkripsi
+                        </p>
 
-                        <div class="flex flex-col sm:flex-row gap-2">
-                            <a href="{{ asset('storage/' . $surat->file) }}" target="_blank"
-                                class="flex-1 bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-blue-700 transition text-xs sm:text-sm">
-                                <i class="fas fa-eye mr-1"></i>Lihat
-                            </a>
-                            <a href="{{ asset('storage/' . $surat->file) }}" download
-                                class="flex-1 bg-green-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-green-700 transition text-xs sm:text-sm">
-                                <i class="fas fa-download mr-1"></i>Download
-                            </a>
+                        <div class="flex flex-col gap-2">
+                            <button wire:click="download('{{ $surat->id }}')"
+                                class="w-full bg-green-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-green-700 transition text-xs sm:text-sm">
+                                <i class="fas fa-download mr-1"></i>Download PDF
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -1,107 +1,103 @@
-<!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/data-anggota.blade.php -->
+<!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/data-anggota/index.blade.php -->
 <div>
     <!-- Header -->
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Data Anggota</h1>
-        <p class="text-sm text-gray-600 mt-1">Rekapitulasi data anggota dari seluruh PAC</p>
+        <p class="text-sm text-gray-600 mt-1">Kelola data anggota organisasi</p>
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow p-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Anggota</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">1,245</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Total Anggota</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->totalAnggota }}</h3>
                 </div>
-                <div class="bg-blue-100 text-blue-600 p-3 rounded-full">
-                    <i class="fas fa-users text-2xl"></i>
+                <div class="bg-blue-100 text-blue-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-users text-xl sm:text-2xl"></i>
                 </div>
             </div>
-            <p class="text-green-600 text-sm mt-4">
-                <i class="fas fa-arrow-up"></i> 5% dari bulan lalu
-            </p>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Anggota Aktif</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">1,102</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Laki-laki</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->anggotaLakiLaki }}</h3>
                 </div>
-                <div class="bg-green-100 text-green-600 p-3 rounded-full">
-                    <i class="fas fa-user-check text-2xl"></i>
+                <div class="bg-blue-100 text-blue-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-male text-xl sm:text-2xl"></i>
                 </div>
             </div>
-            <p class="text-gray-600 text-sm mt-4">88.5% dari total</p>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Laki-laki</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">745</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Perempuan</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->anggotaPerempuan }}</h3>
                 </div>
-                <div class="bg-purple-100 text-purple-600 p-3 rounded-full">
-                    <i class="fas fa-male text-2xl"></i>
+                <div class="bg-pink-100 text-pink-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-female text-xl sm:text-2xl"></i>
                 </div>
             </div>
-            <p class="text-gray-600 text-sm mt-4">59.8% dari total</p>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Perempuan</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">500</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">By Role</p>
+                    <div class="flex gap-2 mt-1">
+                        <span class="text-sm font-bold text-blue-600">PAC: {{ $this->anggotaBySekretarisPac }}</span>
+                        <span class="text-sm font-bold text-green-600">Cab: {{ $this->anggotaBySekretarisCabang }}</span>
+                    </div>
                 </div>
-                <div class="bg-pink-100 text-pink-600 p-3 rounded-full">
-                    <i class="fas fa-female text-2xl"></i>
+                <div class="bg-purple-100 text-purple-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-user-shield text-xl sm:text-2xl"></i>
                 </div>
             </div>
-            <p class="text-gray-600 text-sm mt-4">40.2% dari total</p>
         </div>
     </div>
 
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari Anggota</label>
-                <input type="text" placeholder="Nama, NIK, NPNU..."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <input type="text" wire:model.live.debounce.500ms="search" placeholder="Nama lengkap..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">PAC</label>
-                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option>Semua PAC</option>
-                    <option>PAC Sukajaya</option>
-                    <option>PAC Mekarjaya</option>
-                    <option>PAC Sentosa</option>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Periode</label>
+                <select wire:model.live="filterPeriode"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                    <option value="">Semua Periode</option>
+                    @foreach($this->periodeList as $periode)
+                        <option value="{{ $periode->id }}">{{ $periode->nama }}</option>
+                    @endforeach
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Kelamin</label>
-                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option>Semua</option>
-                    <option>Laki-laki</option>
-                    <option>Perempuan</option>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Dibuat Oleh
+                    <span class="text-xs text-gray-500">(Aktif & Verified)</span>
+                </label>
+                <select wire:model.live="filterUser"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                    <option value="">Semua User</option>
+                    @foreach($this->userList as $user)
+                        <option value="{{ $user->id }}">
+                            {{ $user->name }}
+                            <span class="text-xs">({{ $user->role === 'sekretaris_cabang' ? 'Cabang' : 'PAC' }})</span>
+                        </option>
+                    @endforeach
                 </select>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option>Semua</option>
-                    <option>Aktif</option>
-                    <option>Nonaktif</option>
-                </select>
-            </div>
-            <div class="flex items-end gap-2">
-                <button class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                    <i class="fas fa-search mr-2"></i>Cari
-                </button>
-                <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition" title="Export Excel">
-                    <i class="fas fa-file-excel"></i>
+            <div class="flex items-end">
+                <button wire:click="create"
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+                    <i class="fas fa-plus mr-2"></i>Tambah Anggota
                 </button>
             </div>
         </div>
@@ -109,102 +105,178 @@
 
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-800">Daftar Anggota</h3>
-            <div class="flex gap-2">
-                <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
-                    <i class="fas fa-file-excel mr-2"></i>Export
-                </button>
-                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                    <i class="fas fa-print mr-2"></i>Cetak
-                </button>
-            </div>
+        <div class="p-4 border-b border-gray-100">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-800">Daftar Anggota</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full">
-                <thead class="bg-gray-50">
+                <thead class="bg-gray-50 border-b border-gray-100">
                     <tr>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">NPNU</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-16">No</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Nama Lengkap</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">PAC</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">NIK/NIA</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Periode</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">JK</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Tanggal Lahir</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">No. HP</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Status</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Dibuat Oleh</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="py-3 px-4 text-sm font-medium text-blue-600">12345678</td>
-                        <td class="py-3 px-4">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://ui-avatars.com/api/?name=Ahmad+Rizki&background=3b82f6&color=fff"
-                                     class="w-10 h-10 rounded-full" alt="Avatar">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-800">Ahmad Rizki</p>
-                                    <p class="text-xs text-gray-500">ahmadrizki@example.com</p>
+                <tbody class="divide-y divide-gray-100">
+                    @forelse($anggotas as $index => $anggota)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ $anggotas->firstItem() + $index }}</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-3">
+                                    <img src="{{ $anggota->avatar_url }}"
+                                         class="w-10 h-10 rounded-full object-cover"
+                                         alt="{{ $anggota->nama_lengkap }}">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-800">{{ $anggota->nama_lengkap }}</p>
+                                        @if($anggota->email)
+                                            <p class="text-xs text-gray-500">{{ $anggota->email }}</p>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td class="py-3 px-4 text-sm text-gray-700">PAC Sukajaya</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">L</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">15 Mei 2005</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">0812-3456-7890</td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">Aktif</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-blue-600 hover:text-blue-800 mr-2" title="Lihat Detail">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="text-green-600 hover:text-green-800" title="Download Kartu">
-                                <i class="fas fa-id-card"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="py-3 px-4 text-sm font-medium text-blue-600">12345679</td>
-                        <td class="py-3 px-4">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://ui-avatars.com/api/?name=Siti+Nurhaliza&background=ec4899&color=fff"
-                                     class="w-10 h-10 rounded-full" alt="Avatar">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-800">Siti Nurhaliza</p>
-                                    <p class="text-xs text-gray-500">siti.nur@example.com</p>
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700">
+                                @if($anggota->nik)
+                                    <span class="text-xs">NIK: {{ $anggota->nik }}</span><br>
+                                @endif
+                                @if($anggota->nia)
+                                    <span class="text-xs text-blue-600">NIA: {{ $anggota->nia }}</span>
+                                @endif
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ $anggota->periode->nama }}</td>
+                            <td class="py-3 px-4 text-sm text-gray-700">
+                                @if($anggota->jenis_kelamin === 'Laki-laki')
+                                    <span class="text-blue-600"><i class="fas fa-male"></i></span>
+                                @elseif($anggota->jenis_kelamin === 'Perempuan')
+                                    <span class="text-pink-600"><i class="fas fa-female"></i></span>
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ $anggota->no_hp ?? '-' }}</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col gap-1">
+                                    <span class="px-2 py-1 text-xs rounded-full {{ $anggota->user->role === 'sekretaris_cabang' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700' }} inline-flex items-center gap-1">
+                                        <i class="fas fa-user-shield"></i>
+                                        {{ $anggota->user->role === 'sekretaris_cabang' ? 'Cabang' : 'PAC' }}
+                                    </span>
+                                    @if($anggota->user->is_active && $anggota->user->email_verified_at)
+                                        <div class="flex gap-1">
+                                            <span class="px-2 py-0.5 bg-green-50 text-green-600 rounded text-[10px]" title="Akun Aktif">
+                                                <i class="fas fa-check-circle"></i>
+                                            </span>
+                                            <span class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-[10px]" title="Email Verified">
+                                                <i class="fas fa-envelope-circle-check"></i>
+                                            </span>
+                                        </div>
+                                    @endif
                                 </div>
-                            </div>
-                        </td>
-                        <td class="py-3 px-4 text-sm text-gray-700">PAC Mekarjaya</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">P</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">20 Mar 2006</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">0813-4567-8901</td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">Aktif</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-blue-600 hover:text-blue-800 mr-2" title="Lihat Detail">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="text-green-600 hover:text-green-800" title="Download Kartu">
-                                <i class="fas fa-id-card"></i>
-                            </button>
-                        </td>
-                    </tr>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-2">
+                                    <button wire:click="detail('{{ $anggota->id }}')"
+                                        class="text-blue-600 hover:text-blue-800 transition" title="Detail">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button wire:click="edit('{{ $anggota->id }}')"
+                                        class="text-yellow-600 hover:text-yellow-800 transition" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="confirmDeleteAnggota('{{ $anggota->id }}', '{{ $anggota->nama_lengkap }}')"
+                                        class="text-red-600 hover:text-red-800 transition" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="py-8 px-4 text-center text-gray-500">
+                                <i class="fas fa-users-slash text-4xl mb-2 block"></i>
+                                <p>Belum ada data anggota</p>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
-        <div class="p-4 border-t border-gray-200">
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-600">Menampilkan 1-10 dari 1,245 anggota</p>
-                <div class="flex space-x-2">
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">Prev</button>
-                    <button class="px-3 py-1 bg-blue-600 text-white rounded">1</button>
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">2</button>
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">3</button>
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">Next</button>
+
+        <!-- Pagination -->
+        @if($anggotas->hasPages())
+            <div class="px-4 py-3 border-t border-gray-100">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="text-sm text-gray-700">
+                        Menampilkan <span class="font-medium">{{ $anggotas->firstItem() }}</span>
+                        sampai <span class="font-medium">{{ $anggotas->lastItem() }}</span>
+                        dari <span class="font-medium">{{ $anggotas->total() }}</span> hasil
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        @if ($anggotas->onFirstPage())
+                            <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                                <i class="fas fa-chevron-left"></i>
+                            </span>
+                        @else
+                            <button wire:click="previousPage" wire:loading.attr="disabled"
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        @endif
+
+                        @foreach ($anggotas->getUrlRange(1, $anggotas->lastPage()) as $page => $url)
+                            @if ($page == $anggotas->currentPage())
+                                <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">
+                                    {{ $page }}
+                                </span>
+                            @else
+                                <button wire:click="gotoPage({{ $page }})" wire:loading.attr="disabled"
+                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                    {{ $page }}
+                                </button>
+                            @endif
+                        @endforeach
+
+                        @if ($anggotas->hasMorePages())
+                            <button wire:click="nextPage" wire:loading.attr="disabled"
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        @else
+                            <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                                <i class="fas fa-chevron-right"></i>
+                            </span>
+                        @endif
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 </div>
+
+<script>
+function confirmDeleteAnggota(id, namaLengkap) {
+    Swal.fire({
+        title: 'Hapus Anggota?',
+        html: `Anggota <strong>${namaLengkap}</strong> akan dihapus secara permanen!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
+        cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'px-4 py-2 rounded-lg',
+            cancelButton: 'px-4 py-2 rounded-lg'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            @this.call('delete', id);
+        }
+    });
+}
+</script>

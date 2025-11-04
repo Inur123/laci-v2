@@ -1,223 +1,191 @@
-<!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/periode.blade.php -->
+<!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/data-anggota/periode/index.blade.php -->
 <div>
     <!-- Header -->
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Periode Kepengurusan</h1>
-        <p class="text-sm text-gray-600 mt-1">Kelola periode kepengurusan PAC Cabang</p>
+        <p class="text-sm text-gray-600 mt-1">Kelola periode kepengurusan organisasi</p>
     </div>
 
-    <!-- Current Period Card -->
-    <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg p-6 mb-6 text-white">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-blue-100 text-sm mb-2">Periode Aktif Saat Ini</p>
-                <h2 class="text-3xl font-bold mb-2">2023 - 2025</h2>
-                <p class="text-blue-100">Masa Bakti: 2 Tahun</p>
-            </div>
-            <div class="text-right">
-                <div class="bg-white/20 rounded-lg p-4 backdrop-blur-sm">
-                    <p class="text-sm mb-1">Sisa Waktu</p>
-                    <p class="text-2xl font-bold">8 Bulan</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow p-6">
+    <!-- Stats Card -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Periode</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">5</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Total Periode</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->totalPeriode }}</h3>
                 </div>
-                <div class="bg-blue-100 text-blue-600 p-3 rounded-full">
-                    <i class="fas fa-history text-2xl"></i>
+                <div class="bg-blue-100 text-blue-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-calendar-alt text-xl sm:text-2xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Periode Aktif</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">1</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Dibuat Bulan Ini</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->periodeBulanIni }}</h3>
                 </div>
-                <div class="bg-green-100 text-green-600 p-3 rounded-full">
-                    <i class="fas fa-check-circle text-2xl"></i>
+                <div class="bg-green-100 text-green-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-plus-circle text-xl sm:text-2xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total PAC</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">18</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Update Terakhir</p>
+                    <h3 class="text-sm sm:text-base font-bold mt-1 text-gray-800">{{ $this->updateTerakhir }}</h3>
                 </div>
-                <div class="bg-purple-100 text-purple-600 p-3 rounded-full">
-                    <i class="fas fa-building text-2xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-500 text-sm">Total Pengurus</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">156</h3>
-                </div>
-                <div class="bg-yellow-100 text-yellow-600 p-3 rounded-full">
-                    <i class="fas fa-users text-2xl"></i>
+                <div class="bg-yellow-100 text-yellow-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-clock text-xl sm:text-2xl"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Filter -->
+    <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Status Periode</label>
-                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option>Semua</option>
-                    <option>Aktif</option>
-                    <option>Selesai</option>
-                </select>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari Periode</label>
-                <input type="text" placeholder="Cari tahun..."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <input type="text" wire:model.live="search" placeholder="Nama periode..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
             </div>
-            <div class="flex items-end gap-2">
-                <button class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                    <i class="fas fa-search mr-2"></i>Cari
-                </button>
-                <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
-                    <i class="fas fa-plus"></i>
+            <div class="flex items-end">
+                <button wire:click="create"
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+                    <i class="fas fa-plus mr-2"></i>Tambah Periode
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Timeline -->
+    <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-800">Riwayat Periode Kepengurusan</h3>
-            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                <i class="fas fa-plus mr-2"></i>Tambah Periode
-            </button>
+        <div class="p-4 border-b border-gray-100">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-800">Daftar Periode</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-16">No</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Nama Periode</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Dibuat Oleh</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Tanggal Dibuat</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @forelse($periodes as $index => $periode)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ $periodes->firstItem() + $index }}</td>
+                            <td class="py-3 px-4">
+                                <span class="text-sm font-medium text-gray-800">{{ $periode->nama }}</span>
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ $periode->user->name }}</td>
+                            <td class="py-3 px-4 text-sm text-gray-700">
+                                {{ $periode->created_at->format('d M Y, H:i') }}
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-2">
+                                    <button wire:click="edit('{{ $periode->id }}')"
+                                        class="text-yellow-600 hover:text-yellow-800 transition" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="confirmDeletePeriode('{{ $periode->id }}', '{{ $periode->nama }}')"
+                                        class="text-red-600 hover:text-red-800 transition" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-8 px-4 text-center text-gray-500">
+                                <i class="fas fa-inbox text-4xl mb-2 block"></i>
+                                <p>Belum ada data periode</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
-        <div class="p-6">
-            <!-- Active Period -->
-            <div class="relative border-l-4 border-green-500 pl-8 pb-8">
-                <div class="absolute w-6 h-6 bg-green-500 rounded-full -left-3.5 top-0"></div>
-                <div class="bg-green-50 border border-green-200 rounded-lg p-6">
-                    <div class="flex items-start justify-between mb-4">
-                        <div>
-                            <span class="px-3 py-1 bg-green-500 text-white rounded-full text-xs font-medium">Aktif</span>
-                            <h4 class="text-xl font-bold text-gray-800 mt-2">Periode 2023 - 2025</h4>
-                            <p class="text-sm text-gray-600 mt-1">Mulai: 1 Januari 2023 • Berakhir: 31 Desember 2025</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button class="text-blue-600 hover:text-blue-800" title="Lihat Detail">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="text-green-600 hover:text-green-800" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </div>
+        <!-- Pagination -->
+        @if($periodes->hasPages())
+            <div class="px-4 py-3 border-t border-gray-100">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="text-sm text-gray-700">
+                        Menampilkan <span class="font-medium">{{ $periodes->firstItem() }}</span>
+                        sampai <span class="font-medium">{{ $periodes->lastItem() }}</span>
+                        dari <span class="font-medium">{{ $periodes->total() }}</span> hasil
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                        <div class="bg-white rounded-lg p-4 border border-green-200">
-                            <p class="text-sm text-gray-600">Total PAC</p>
-                            <p class="text-2xl font-bold text-gray-800">18</p>
-                        </div>
-                        <div class="bg-white rounded-lg p-4 border border-green-200">
-                            <p class="text-sm text-gray-600">Total Pengurus</p>
-                            <p class="text-2xl font-bold text-gray-800">156</p>
-                        </div>
-                        <div class="bg-white rounded-lg p-4 border border-green-200">
-                            <p class="text-sm text-gray-600">Total Anggota</p>
-                            <p class="text-2xl font-bold text-gray-800">1,245</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Past Period 1 -->
-            <div class="relative border-l-4 border-gray-300 pl-8 pb-8">
-                <div class="absolute w-6 h-6 bg-gray-300 rounded-full -left-3.5 top-0"></div>
-                <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                    <div class="flex items-start justify-between mb-4">
-                        <div>
-                            <span class="px-3 py-1 bg-gray-500 text-white rounded-full text-xs font-medium">Selesai</span>
-                            <h4 class="text-xl font-bold text-gray-800 mt-2">Periode 2021 - 2023</h4>
-                            <p class="text-sm text-gray-600 mt-1">Mulai: 1 Januari 2021 • Berakhir: 31 Desember 2023</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button class="text-blue-600 hover:text-blue-800" title="Lihat Detail">
-                                <i class="fas fa-eye"></i>
+                    <div class="flex items-center gap-2">
+                        @if ($periodes->onFirstPage())
+                            <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                                <i class="fas fa-chevron-left"></i>
+                            </span>
+                        @else
+                            <button wire:click="previousPage" wire:loading.attr="disabled"
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <i class="fas fa-chevron-left"></i>
                             </button>
-                            <button class="text-green-600 hover:text-green-800" title="Download Laporan">
-                                <i class="fas fa-download"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                        <div class="bg-white rounded-lg p-4 border border-gray-200">
-                            <p class="text-sm text-gray-600">Total PAC</p>
-                            <p class="text-2xl font-bold text-gray-800">15</p>
-                        </div>
-                        <div class="bg-white rounded-lg p-4 border border-gray-200">
-                            <p class="text-sm text-gray-600">Total Pengurus</p>
-                            <p class="text-2xl font-bold text-gray-800">142</p>
-                        </div>
-                        <div class="bg-white rounded-lg p-4 border border-gray-200">
-                            <p class="text-sm text-gray-600">Total Anggota</p>
-                            <p class="text-2xl font-bold text-gray-800">1,089</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        @endif
 
-            <!-- Past Period 2 -->
-            <div class="relative border-l-4 border-gray-300 pl-8 pb-8">
-                <div class="absolute w-6 h-6 bg-gray-300 rounded-full -left-3.5 top-0"></div>
-                <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                    <div class="flex items-start justify-between mb-4">
-                        <div>
-                            <span class="px-3 py-1 bg-gray-500 text-white rounded-full text-xs font-medium">Selesai</span>
-                            <h4 class="text-xl font-bold text-gray-800 mt-2">Periode 2019 - 2021</h4>
-                            <p class="text-sm text-gray-600 mt-1">Mulai: 1 Januari 2019 • Berakhir: 31 Desember 2021</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button class="text-blue-600 hover:text-blue-800" title="Lihat Detail">
-                                <i class="fas fa-eye"></i>
+                        @foreach ($periodes->getUrlRange(1, $periodes->lastPage()) as $page => $url)
+                            @if ($page == $periodes->currentPage())
+                                <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">
+                                    {{ $page }}
+                                </span>
+                            @else
+                                <button wire:click="gotoPage({{ $page }})" wire:loading.attr="disabled"
+                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                    {{ $page }}
+                                </button>
+                            @endif
+                        @endforeach
+
+                        @if ($periodes->hasMorePages())
+                            <button wire:click="nextPage" wire:loading.attr="disabled"
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <i class="fas fa-chevron-right"></i>
                             </button>
-                            <button class="text-green-600 hover:text-green-800" title="Download Laporan">
-                                <i class="fas fa-download"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                        <div class="bg-white rounded-lg p-4 border border-gray-200">
-                            <p class="text-sm text-gray-600">Total PAC</p>
-                            <p class="text-2xl font-bold text-gray-800">12</p>
-                        </div>
-                        <div class="bg-white rounded-lg p-4 border border-gray-200">
-                            <p class="text-sm text-gray-600">Total Pengurus</p>
-                            <p class="text-2xl font-bold text-gray-800">128</p>
-                        </div>
-                        <div class="bg-white rounded-lg p-4 border border-gray-200">
-                            <p class="text-sm text-gray-600">Total Anggota</p>
-                            <p class="text-2xl font-bold text-gray-800">956</p>
-                        </div>
+                        @else
+                            <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                                <i class="fas fa-chevron-right"></i>
+                            </span>
+                        @endif
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 </div>
+
+<script>
+function confirmDeletePeriode(id, namaPeriode) {
+    Swal.fire({
+        title: 'Hapus Periode?',
+        html: `Periode <strong>${namaPeriode}</strong> akan dihapus secara permanen!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
+        cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'px-4 py-2 rounded-lg',
+            cancelButton: 'px-4 py-2 rounded-lg'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            @this.call('delete', id);
+        }
+    });
+}
+</script>

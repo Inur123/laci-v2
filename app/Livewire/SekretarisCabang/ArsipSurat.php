@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Livewire\SekretarisCabang;
 
 use App\Models\Surat;
@@ -32,17 +33,16 @@ class ArsipSurat extends Component
     public $oldFile;
 
     protected $rules = [
-        'no_surat' => 'required|string|max:255|unique:surat,no_surat',
+        'no_surat' => 'required|string|max:255',  // ✅ Tidak ada unique
         'jenis_surat' => 'required|in:masuk,keluar',
         'tanggal' => 'required|date',
         'pengirim_penerima' => 'required|string|max:255',
         'deskripsi' => 'nullable|string',
-        'file' => 'nullable|file|mimes:pdf|max:5120', // Hanya PDF, max 5MB
+        'file' => 'nullable|file|mimes:pdf|max:5120',
     ];
 
     protected $messages = [
         'no_surat.required' => 'Nomor surat harus diisi',
-        'no_surat.unique' => 'Nomor surat sudah digunakan',
         'jenis_surat.required' => 'Jenis surat harus dipilih',
         'jenis_surat.in' => 'Jenis surat tidak valid',
         'tanggal.required' => 'Tanggal harus diisi',
@@ -69,6 +69,9 @@ class ArsipSurat extends Component
     {
         $this->validate();
 
+        // ❌ HAPUS validasi duplikat nomor surat
+        // Karena Anda ingin boleh duplikat
+
         $data = [
             'user_id' => Auth::id(),
             'no_surat' => $this->no_surat,
@@ -78,9 +81,9 @@ class ArsipSurat extends Component
             'deskripsi' => $this->deskripsi,
         ];
 
-        // Upload file jika ada
+        // Enkripsi file jika ada
         if ($this->file) {
-            $data['file'] = $this->file->store('surat', 'public');
+            $data['file'] = Surat::encryptAndStoreFile($this->file);
         }
 
         Surat::create($data);
@@ -112,13 +115,16 @@ class ArsipSurat extends Component
     public function update()
     {
         $this->validate([
-            'no_surat' => 'required|string|max:255|unique:surat,no_surat,' . $this->arsipId,
+            'no_surat' => 'required|string|max:255',  // ✅ Tidak ada unique
             'jenis_surat' => 'required|in:masuk,keluar',
             'tanggal' => 'required|date',
             'pengirim_penerima' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
-            'file' => 'nullable|file|mimes:pdf|max:5120', // Hanya PDF, max 5MB
+            'file' => 'nullable|file|mimes:pdf|max:5120',
         ]);
+
+        // ❌ HAPUS validasi duplikat nomor surat
+        // Karena Anda ingin boleh duplikat
 
         $surat = Surat::findOrFail($this->arsipId);
 
@@ -130,14 +136,14 @@ class ArsipSurat extends Component
             'deskripsi' => $this->deskripsi,
         ];
 
-        // Upload file baru jika ada
+        // Enkripsi file baru jika ada
         if ($this->file) {
             // Hapus file lama
-            if ($surat->file && Storage::disk('public')->exists($surat->file)) {
-                Storage::disk('public')->delete($surat->file);
+            if ($this->oldFile && Storage::disk('local')->exists($this->oldFile)) {
+                Storage::disk('local')->delete($this->oldFile);
             }
 
-            $data['file'] = $this->file->store('surat', 'public');
+            $data['file'] = Surat::encryptAndStoreFile($this->file);
         }
 
         $surat->update($data);
@@ -168,16 +174,46 @@ class ArsipSurat extends Component
         $surat = Surat::find($id);
 
         if ($surat) {
-            // Hapus file jika ada
-            if ($surat->file && Storage::disk('public')->exists($surat->file)) {
-                Storage::disk('public')->delete($surat->file);
+            // Hapus file terenkripsi
+            if ($surat->file && Storage::disk('local')->exists($surat->file)) {
+                Storage::disk('local')->delete($surat->file);
             }
 
+            $noSurat = $surat->no_surat;
             $surat->delete();
 
             $this->dispatch('flash', [
                 'type' => 'success',
-                'message' => 'Surat berhasil dihapus!'
+                'message' => "Surat {$noSurat} berhasil dihapus!"
+            ]);
+        }
+    }
+
+    public function download($id)
+    {
+        $surat = Surat::findOrFail($id);
+
+        if (!$surat->file) {
+            $this->dispatch('flash', [
+                'type' => 'error',
+                'message' => 'File tidak tersedia!'
+            ]);
+            return;
+        }
+
+        try {
+            $decrypted = $surat->decrypted_file;
+            $filename = $surat->original_filename;
+
+            return response()->streamDownload(function() use ($decrypted) {
+                echo $decrypted;
+            }, $filename, [
+                'Content-Type' => 'application/pdf',
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('flash', [
+                'type' => 'error',
+                'message' => 'Gagal mengunduh file: ' . $e->getMessage()
             ]);
         }
     }
@@ -203,18 +239,45 @@ class ArsipSurat extends Component
                 'surat' => Surat::findOrFail($this->arsipId)
             ]),
             default => view('livewire.sekretaris-cabang.arsip-surat.index', [
-                'surats' => Surat::query()
-                    ->when($this->search, function($query) {
-                        $query->where('no_surat', 'like', '%' . $this->search . '%')
-                              ->orWhere('pengirim_penerima', 'like', '%' . $this->search . '%')
-                              ->orWhere('deskripsi', 'like', '%' . $this->search . '%');
-                    })
-                    ->when($this->filterJenis, function($query) {
-                        $query->where('jenis_surat', $this->filterJenis);
-                    })
-                    ->latest()
-                    ->paginate(10)
+                'surats' => $this->getFilteredSurats()
             ]),
         };
+    }
+
+    private function getFilteredSurats()
+    {
+        $query = Surat::with('user')->latest();
+        $allSurats = $query->get();
+
+        $filtered = $allSurats->filter(function($surat) {
+            $matchSearch = true;
+            $matchJenis = true;
+
+            if ($this->search) {
+                $searchLower = strtolower($this->search);
+                $matchSearch = str_contains(strtolower($surat->no_surat), $searchLower) ||
+                              str_contains(strtolower($surat->pengirim_penerima ?? ''), $searchLower) ||
+                              str_contains(strtolower($surat->deskripsi ?? ''), $searchLower);
+            }
+
+            if ($this->filterJenis) {
+                $matchJenis = $surat->jenis_surat === $this->filterJenis;
+            }
+
+            return $matchSearch && $matchJenis;
+        });
+
+        $perPage = 10;
+        $currentPage = $this->getPage();
+        $total = $filtered->count();
+        $items = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        return new \Illuminate\Pagination\LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $currentPage,
+            ['path' => request()->url()]
+        );
     }
 }
