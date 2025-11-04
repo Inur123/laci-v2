@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Livewire\SekretarisCabang;
 
 use Livewire\Component;
@@ -20,7 +21,9 @@ class PengajuanPac extends Component
 
     public function render()
     {
-        // path view diarahkan ke folder index
-        return view('livewire.sekretaris-cabang.pengajuan-pac.index');
+        // ✅ Kosongkan data - untuk kedepannya akan berisi pengajuan surat dari PAC
+        return view('livewire.sekretaris-cabang.pengajuan-pac.index', [
+            'pengajuans' => collect([]), // Empty collection
+        ]);
     }
 }

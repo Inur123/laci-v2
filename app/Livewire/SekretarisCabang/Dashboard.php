@@ -12,14 +12,12 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 #[Layout('components.layouts.sekretaris-cabang')]
 #[Title('Dashboard Cabang')]
 class Dashboard extends Component
 {
-    public $activityLimit = 20; // ✅ Default 20 aktivitas
+    public $activityLimit = 30;
 
     public function mount()
     {
@@ -28,10 +26,9 @@ class Dashboard extends Component
         }
     }
 
-    // ✅ Method untuk load more activities
     public function loadMoreActivities()
     {
-        $this->activityLimit += 10;
+        $this->activityLimit += 15;
     }
 
     // Statistik PAC
@@ -51,15 +48,7 @@ class Dashboard extends Component
             ->count();
     }
 
-    public function getPengajuanPacProperty()
-    {
-        return User::where('role', 'sekretaris_pac')
-            ->where(function($q) {
-                $q->where('is_active', false)
-                  ->orWhereNull('email_verified_at');
-            })
-            ->count();
-    }
+    // ✅ HAPUS getPengajuanPacProperty() - Karena bukan untuk user registration
 
     // Statistik Anggota
     public function getTotalAnggotaProperty()
@@ -139,93 +128,193 @@ class Dashboard extends Component
             ->count();
     }
 
-    // ✅ Aktivitas Terbaru - Lebih banyak data dengan limit dinamis
+    // Aktivitas Terbaru
     public function getAktivitasTerbaruProperty()
     {
         $activities = collect();
+        $limitPerCategory = ceil($this->activityLimit / 5); // ✅ Dibagi 5 (bukan 6)
 
-        // Ambil lebih banyak dari setiap kategori
-        $limitPerCategory = ceil($this->activityLimit / 4);
-
-        // Surat terbaru
-        $surats = Surat::with('user')
-            ->latest()
+        // 1. USER PAC - Toggle & Reset Password
+        $userPacs = User::where('role', 'sekretaris_pac')
+            ->latest('updated_at')
             ->limit($limitPerCategory)
             ->get()
-            ->map(function($surat) {
+            ->map(function($user) {
+                $isNew = $user->created_at->diffInMinutes($user->updated_at) < 1;
+
+                if ($isNew) {
+                    if ($user->is_active && $user->email_verified_at) {
+                        $title = '✅ User PAC Baru Aktif';
+                        $color = 'green';
+                        $icon = 'fa-user-shield';
+                    } elseif (!$user->email_verified_at) {
+                        $title = '⏳ User PAC Menunggu Verifikasi';
+                        $color = 'yellow';
+                        $icon = 'fa-user-clock';
+                    } else {
+                        $title = '🔒 User PAC Baru (Nonaktif)';
+                        $color = 'red';
+                        $icon = 'fa-user-slash';
+                    }
+                    $description = $user->name . ' - ' . $user->email;
+                } else {
+                    if ($user->is_active) {
+                        $title = '✅ User PAC Diaktifkan';
+                        $color = 'green';
+                        $icon = 'fa-toggle-on';
+                    } else {
+                        $title = '🔒 User PAC Dinonaktifkan';
+                        $color = 'red';
+                        $icon = 'fa-toggle-off';
+                    }
+                    $description = $user->name . ' - Status diubah';
+                }
+
                 return [
-                    'type' => 'surat',
-                    'icon' => 'fa-envelope',
-                    'color' => $surat->jenis_surat === 'masuk' ? 'green' : 'blue',
-                    'title' => 'Surat ' . ucfirst($surat->jenis_surat),
-                    'description' => 'No: ' . $surat->no_surat . ' dari ' . $surat->pengirim_penerima,
-                    'time' => $surat->created_at,
-                    'user' => $surat->user->name,
+                    'type' => 'user_pac',
+                    'icon' => $icon,
+                    'color' => $color,
+                    'title' => $title,
+                    'description' => $description,
+                    'time' => $user->updated_at,
+                    'user' => 'Admin Cabang',
                 ];
             });
 
-        // Anggota terbaru
+        // 2. ANGGOTA - CREATE & UPDATE
         $anggotas = Anggota::with('user', 'periode')
-            ->latest()
-            ->limit($limitPerCategory)
+            ->latest('updated_at')
+            ->limit($limitPerCategory * 2)
             ->get()
             ->map(function($anggota) {
-                return [
-                    'type' => 'anggota',
-                    'icon' => 'fa-user-plus',
-                    'color' => 'purple',
-                    'title' => 'Anggota Baru Terdaftar',
-                    'description' => $anggota->nama_lengkap . ' - ' . $anggota->periode->nama,
-                    'time' => $anggota->created_at,
-                    'user' => $anggota->user->name,
-                ];
+                $isNew = $anggota->created_at->diffInMinutes($anggota->updated_at) < 1;
+
+                if ($isNew) {
+                    return [
+                        'type' => 'anggota',
+                        'icon' => 'fa-user-plus',
+                        'color' => 'purple',
+                        'title' => '👤 Anggota Baru Ditambahkan',
+                        'description' => $anggota->nama_lengkap . ' - ' . $anggota->periode->nama,
+                        'time' => $anggota->created_at,
+                        'user' => $anggota->user->name,
+                    ];
+                } else {
+                    return [
+                        'type' => 'anggota',
+                        'icon' => 'fa-user-edit',
+                        'color' => 'blue',
+                        'title' => '✏️ Anggota Diupdate',
+                        'description' => $anggota->nama_lengkap . ' - Data diperbarui',
+                        'time' => $anggota->updated_at,
+                        'user' => $anggota->user->name,
+                    ];
+                }
             });
 
-        // Kegiatan terbaru
+        // 3. SURAT - CREATE & UPDATE
+        $surats = Surat::with('user')
+            ->latest('updated_at')
+            ->limit($limitPerCategory * 2)
+            ->get()
+            ->map(function($surat) {
+                $isNew = $surat->created_at->diffInMinutes($surat->updated_at) < 1;
+
+                if ($isNew) {
+                    return [
+                        'type' => 'surat',
+                        'icon' => 'fa-envelope',
+                        'color' => $surat->jenis_surat === 'masuk' ? 'green' : 'blue',
+                        'title' => '📧 Surat ' . ucfirst($surat->jenis_surat) . ' Baru',
+                        'description' => 'No: ' . $surat->no_surat . ' dari ' . $surat->pengirim_penerima,
+                        'time' => $surat->created_at,
+                        'user' => $surat->user->name,
+                    ];
+                } else {
+                    return [
+                        'type' => 'surat',
+                        'icon' => 'fa-envelope-open-text',
+                        'color' => 'orange',
+                        'title' => '✏️ Surat Diupdate',
+                        'description' => 'No: ' . $surat->no_surat . ' - Data diperbarui',
+                        'time' => $surat->updated_at,
+                        'user' => $surat->user->name,
+                    ];
+                }
+            });
+
+        // 4. KEGIATAN - CREATE & UPDATE
         $kegiatans = Kegiatan::with('user')
-            ->latest()
-            ->limit($limitPerCategory)
+            ->latest('updated_at')
+            ->limit($limitPerCategory * 2)
             ->get()
             ->map(function($kegiatan) {
-                return [
-                    'type' => 'kegiatan',
-                    'icon' => 'fa-calendar-alt',
-                    'color' => 'yellow',
-                    'title' => 'Kegiatan Dibuat',
-                    'description' => $kegiatan->judul . ' - ' . $kegiatan->tanggal_mulai->format('d M Y'),
-                    'time' => $kegiatan->created_at,
-                    'user' => $kegiatan->user->name,
-                ];
+                $isNew = $kegiatan->created_at->diffInMinutes($kegiatan->updated_at) < 1;
+
+                if ($isNew) {
+                    return [
+                        'type' => 'kegiatan',
+                        'icon' => 'fa-calendar-plus',
+                        'color' => 'yellow',
+                        'title' => '📅 Kegiatan Baru',
+                        'description' => $kegiatan->judul . ' - ' . $kegiatan->tanggal_mulai->format('d M Y'),
+                        'time' => $kegiatan->created_at,
+                        'user' => $kegiatan->user->name,
+                    ];
+                } else {
+                    return [
+                        'type' => 'kegiatan',
+                        'icon' => 'fa-calendar-edit',
+                        'color' => 'orange',
+                        'title' => '✏️ Kegiatan Diupdate',
+                        'description' => $kegiatan->judul . ' - Data diperbarui',
+                        'time' => $kegiatan->updated_at,
+                        'user' => $kegiatan->user->name,
+                    ];
+                }
             });
 
-        // PAC baru
-        $pacs = User::where('role', 'sekretaris_pac')
-            ->latest()
-            ->limit($limitPerCategory)
+        // 5. PERIODE - CREATE & UPDATE
+        $periodes = Periode::with('user')
+            ->latest('updated_at')
+            ->limit($limitPerCategory * 2)
             ->get()
-            ->map(function($pac) {
-                return [
-                    'type' => 'pac',
-                    'icon' => 'fa-building',
-                    'color' => 'indigo',
-                    'title' => $pac->is_active && $pac->email_verified_at ? 'PAC Aktif' : 'PAC Menunggu Aktivasi',
-                    'description' => $pac->name . ($pac->pac ? ' - ' . $pac->pac->nama : ''),
-                    'time' => $pac->created_at,
-                    'user' => 'System',
-                ];
+            ->map(function($periode) {
+                $isNew = $periode->created_at->diffInMinutes($periode->updated_at) < 1;
+
+                if ($isNew) {
+                    return [
+                        'type' => 'periode',
+                        'icon' => 'fa-clock',
+                        'color' => 'pink',
+                        'title' => '🕐 Periode Baru',
+                        'description' => $periode->nama,
+                        'time' => $periode->created_at,
+                        'user' => $periode->user->name,
+                    ];
+                } else {
+                    return [
+                        'type' => 'periode',
+                        'icon' => 'fa-history',
+                        'color' => 'orange',
+                        'title' => '✏️ Periode Diupdate',
+                        'description' => $periode->nama . ' - Data diperbarui',
+                        'time' => $periode->updated_at,
+                        'user' => $periode->user->name,
+                    ];
+                }
             });
 
-        // Gabungkan dan sort by time
         return $activities
-            ->concat($surats)
+            ->concat($userPacs)
             ->concat($anggotas)
+            ->concat($surats)
             ->concat($kegiatans)
-            ->concat($pacs)
+            ->concat($periodes)
             ->sortByDesc('time')
-            ->take($this->activityLimit); // ✅ Batasi sesuai limit
+            ->take($this->activityLimit);
     }
 
-    // Distribusi Anggota per Periode
     public function getDistribusiPeriodeProperty()
     {
         return Periode::withCount('anggotas')
