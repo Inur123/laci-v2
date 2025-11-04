@@ -2,6 +2,7 @@
 // filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/routes/web.php
 
 use App\Livewire\Auth\Login;
+use App\Livewire\Auth\Logout;
 use App\Livewire\Auth\Register;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -19,14 +20,6 @@ Route::middleware('guest')->group(function () {
     Route::get('/', Login::class)->name('login');
     Route::get('/register', Register::class)->name('register');
 });
-
-// Logout route
-Route::get('/logout', function () {
-    Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect()->route('login');
-})->name('logout')->middleware('auth');
 
 // Authenticated routes
 // Sekretaris Cabang Routes

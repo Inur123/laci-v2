@@ -21,7 +21,8 @@
 
             <!-- Profile -->
             <div x-data="{ profileOpen: false }" class="relative">
-                <button @click="profileOpen = !profileOpen" class="flex items-center space-x-1 md:space-x-2 p-1 cursor-pointer">
+                <button @click="profileOpen = !profileOpen"
+                    class="flex items-center space-x-1 md:space-x-2 p-1 cursor-pointer">
                     <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=16a34a&color=fff"
                         alt="Profile" class="w-8 h-8 md:w-9 md:h-9 rounded-full" />
                     <span class="hidden md:block text-sm font-medium text-gray-700">{{ Auth::user()->name }}</span>
@@ -37,9 +38,9 @@
                         <i class="fas fa-cog text-xs mr-2"></i>Pengaturan
                     </a>
                     <hr class="my-2 border-gray-200" />
-                    <a href="{{ route('logout') }}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                        <i class="fas fa-sign-out-alt text-xs mr-2"></i>Logout
-                    </a>
+
+                    <!-- Logout Livewire Component -->
+                    @livewire('auth.logout')
                 </div>
             </div>
         </div>

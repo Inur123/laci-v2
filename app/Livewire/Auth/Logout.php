@@ -1,5 +1,4 @@
 <?php
-// filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/app/Livewire/Auth/Logout.php
 
 namespace App\Livewire\Auth;
 
@@ -10,11 +9,14 @@ class Logout extends Component
 {
     public function logout()
     {
-        Auth::logout();
-        session()->invalidate();
-        session()->regenerateToken();
+        $userName = Auth::user()->name;
 
-        return redirect()->route('login');
+        Auth::logout();
+        request()->session()->regenerateToken();
+
+        session()->flash('message', 'Logout berhasil! Sampai jumpa, ' . $userName . '.');
+
+        return $this->redirect(route('login'), navigate: true);
     }
 
     public function render()

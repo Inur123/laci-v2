@@ -6,7 +6,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ $title ?? 'LACI - Sekretaris Cabang' }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Favicon - Pindah ke Atas -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-laci-3.png') }}?v={{ time() }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/logo-laci-3.png') }}?v={{ time() }}" />
+
+    @vite(['resources/css/app.css'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     @livewireStyles
     <style>
@@ -21,6 +26,9 @@
 </head>
 
 <body class="bg-gray-100" x-data="{ sidebarOpen: window.innerWidth >= 1024 }" x-cloak>
+
+    <!-- Flash Message Component -->
+    @livewire('components.flash-message')
 
     <!-- Sidebar Desktop -->
     <x-sekretaris-cabang.sidebar />

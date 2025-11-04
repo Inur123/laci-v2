@@ -21,7 +21,7 @@ return new class extends Migration
 
             // Tambahan field
             $table->enum('role', ['sekretaris_pac', 'sekretaris_cabang'])->default('sekretaris_pac');
-            $table->boolean('is_active')->default(true);
+            $table->boolean('is_active')->default(false);
 
             $table->rememberToken();
             $table->timestamps();
