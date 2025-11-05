@@ -145,14 +145,18 @@
                                         class="text-blue-600 hover:text-blue-800 transition" title="Detail">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button wire:click="toggleStatus('{{ $user->id }}')"
-                                        wire:confirm="Apakah Anda yakin ingin mengubah status user ini?"
+
+                                    <!-- Toggle Status dengan SweetAlert -->
+                                    <button
+                                        onclick="confirmToggleStatus('{{ $user->id }}', '{{ addslashes($user->name) }}', {{ $user->is_active ? 'true' : 'false' }})"
                                         class="text-{{ $user->is_active ? 'red' : 'green' }}-600 hover:text-{{ $user->is_active ? 'red' : 'green' }}-800 transition"
                                         title="{{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
                                         <i class="fas fa-{{ $user->is_active ? 'ban' : 'check-circle' }}"></i>
                                     </button>
-                                    <button wire:click="resetPassword('{{ $user->id }}')"
-                                        wire:confirm="Password akan direset ke 'password123'. Lanjutkan?"
+
+                                    <!-- Reset Password dengan SweetAlert -->
+                                    <button
+                                        onclick="confirmResetPassword('{{ $user->id }}', '{{ addslashes($user->name) }}')"
                                         class="text-yellow-600 hover:text-yellow-800 transition" title="Reset Password">
                                         <i class="fas fa-key"></i>
                                     </button>
@@ -174,20 +178,17 @@
             </table>
         </div>
 
-        <!-- 🔥 Custom Pagination (Tanpa URL Parameter) -->
+        <!-- Custom Pagination -->
         @if($users->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <!-- Info -->
                     <div class="text-sm text-gray-700">
                         Menampilkan <span class="font-medium">{{ $users->firstItem() }}</span>
                         sampai <span class="font-medium">{{ $users->lastItem() }}</span>
                         dari <span class="font-medium">{{ $users->total() }}</span> hasil
                     </div>
 
-                    <!-- Pagination Buttons -->
                     <div class="flex items-center gap-2">
-                        {{-- Previous Button --}}
                         @if ($users->onFirstPage())
                             <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                                 <i class="fas fa-chevron-left"></i>
@@ -199,7 +200,6 @@
                             </button>
                         @endif
 
-                        {{-- Page Numbers --}}
                         @foreach ($users->getUrlRange(1, $users->lastPage()) as $page => $url)
                             @if ($page == $users->currentPage())
                                 <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">
@@ -213,7 +213,6 @@
                             @endif
                         @endforeach
 
-                        {{-- Next Button --}}
                         @if ($users->hasMorePages())
                             <button wire:click="$set('page', {{ $users->currentPage() + 1 }})" wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
@@ -230,3 +229,56 @@
         @endif
     </div>
 </div>
+
+{{-- SweetAlert2 Scripts --}}
+<script>
+    function confirmToggleStatus(id, name, isActive) {
+        const action = isActive ? 'nonaktifkan' : 'aktifkan';
+        const icon = isActive ? 'warning' : 'success';
+        const confirmColor = isActive ? '#ef4444' : '#10b981';
+        const title = isActive ? 'Nonaktifkan User?' : 'Aktifkan User?';
+        const html = `Apakah Anda yakin ingin <strong>${action}</strong> user <strong>${name}</strong>?`;
+
+        Swal.fire({
+            title: title,
+            html: html,
+            icon: icon,
+            showCancelButton: true,
+            confirmButtonColor: confirmColor,
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: `<i class="fas fa-${isActive ? 'ban' : 'check-circle'} mr-2"></i>Ya, ${isActive ? 'Nonaktifkan' : 'Aktifkan'}!`,
+            cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'px-4 py-2 rounded-lg',
+                cancelButton: 'px-4 py-2 rounded-lg'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('toggleStatus', id);
+            }
+        });
+    }
+
+    function confirmResetPassword(id, name) {
+        Swal.fire({
+            title: 'Reset Password?',
+            html: `Password user <strong>${name}</strong> akan direset menjadi <code class="bg-gray-100 px-2 py-1 rounded">password123</code>.<br><br>Lanjutkan?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#f59e0b',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fas fa-key mr-2"></i>Ya, Reset!',
+            cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'px-4 py-2 rounded-lg',
+                cancelButton: 'px-4 py-2 rounded-lg'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('resetPassword', id);
+            }
+        });
+    }
+</script>

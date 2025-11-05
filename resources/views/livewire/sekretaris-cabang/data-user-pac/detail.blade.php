@@ -6,7 +6,7 @@
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Detail User PAC</h1>
             <p class="text-sm text-gray-600 mt-1">Informasi lengkap user {{ $user->name }}</p>
         </div>
-        <button wire:click="back" class="text-gray-600 hover:text-gray-800 self-start sm:self-center">
+        <button wire:click="back" class="text-gray-600 hover:text-gray-800 self-start sm:self-center transition">
             <i class="fas fa-arrow-left mr-2"></i>Kembali
         </button>
     </div>
@@ -49,18 +49,20 @@
                         </span>
                     </div>
 
-                    <!-- Actions -->
+                    <!-- Actions with SweetAlert -->
                     <div class="space-y-2">
-                        <button wire:click="toggleStatus('{{ $user->id }}')"
-                            wire:confirm="Apakah Anda yakin ingin mengubah status user ini?"
-                            class="w-full px-4 py-2 {{ $user->is_active ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700' }} text-white rounded-lg transition text-sm">
+                        <!-- Toggle Status Button -->
+                        <button
+                            onclick="confirmToggleStatus('{{ $user->id }}', '{{ addslashes($user->name) }}', {{ $user->is_active ? 'true' : 'false' }})"
+                            class="w-full px-4 py-2 {{ $user->is_active ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700' }} text-white rounded-lg transition text-sm flex items-center justify-center">
                             <i class="fas fa-{{ $user->is_active ? 'ban' : 'check-circle' }} mr-2"></i>
                             {{ $user->is_active ? 'Nonaktifkan Akun' : 'Aktifkan Akun' }}
                         </button>
 
-                        <button wire:click="resetPassword('{{ $user->id }}')"
-                            wire:confirm="Password akan direset ke 'password123'. Lanjutkan?"
-                            class="w-full px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition text-sm">
+                        <!-- Reset Password Button -->
+                        <button
+                            onclick="confirmResetPassword('{{ $user->id }}', '{{ addslashes($user->name) }}')"
+                            class="w-full px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition text-sm flex items-center justify-center">
                             <i class="fas fa-key mr-2"></i>Reset Password
                         </button>
                     </div>
@@ -163,7 +165,7 @@
                             </div>
                             <div class="flex-1">
                                 <p class="text-sm text-gray-800">Menambahkan anggota terakhir</p>
-                                <p class="text-xs text-gray-500">{{ $user->anggotas->first()->created_at->diffForHumans() }}</p>
+                                <p class="text-xs text-gray-500">{{ $user->anggotas->sortByDesc('created_at')->first()->created_at->diffForHumans() }}</p>
                             </div>
                         </div>
                     @endif
@@ -175,7 +177,7 @@
                             </div>
                             <div class="flex-1">
                                 <p class="text-sm text-gray-800">Upload surat terakhir</p>
-                                <p class="text-xs text-gray-500">{{ $user->surats->first()->created_at->diffForHumans() }}</p>
+                                <p class="text-xs text-gray-500">{{ $user->surats->sortByDesc('created_at')->first()->created_at->diffForHumans() }}</p>
                             </div>
                         </div>
                     @endif
@@ -194,3 +196,58 @@
         </div>
     </div>
 </div>
+
+{{-- SweetAlert2 Scripts --}}
+<script>
+    function confirmToggleStatus(id, name, isActive) {
+        const action = isActive ? 'nonaktifkan' : 'aktifkan';
+        const icon = isActive ? 'warning' : 'success';
+        const confirmColor = isActive ? '#ef4444' : '#10b981';
+        const title = isActive ? 'Nonaktifkan User?' : 'Aktifkan User?';
+        const html = `Apakah Anda yakin ingin <strong>${action}</strong> akun <strong>${name}</strong>?`;
+
+        Swal.fire({
+            title: title,
+            html: html,
+            icon: icon,
+            showCancelButton: true,
+            confirmButtonColor: confirmColor,
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: `<i class="fas fa-${isActive ? 'ban' : 'check-circle'} mr-2"></i>Ya, ${isActive ? 'Nonaktifkan' : 'Aktifkan'}!`,
+            cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'px-4 py-2 rounded-lg',
+                cancelButton: 'px-4 py-2 rounded-lg'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('toggleStatus', id);
+            }
+        });
+    }
+
+    function confirmResetPassword(id, name) {
+        Swal.fire({
+            title: 'Reset Password?',
+            html: `Password untuk <strong>${name}</strong> akan direset menjadi:<br>
+                   <code class="bg-gray-100 px-3 py-1 rounded text-sm">password123</code><br><br>
+                   Lanjutkan?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#f59e0b',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fas fa-key mr-2"></i>Ya, Reset!',
+            cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'px-4 py-2 rounded-lg',
+                cancelButton: 'px-4 py-2 rounded-lg'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('resetPassword', id);
+            }
+        });
+    }
+</script>

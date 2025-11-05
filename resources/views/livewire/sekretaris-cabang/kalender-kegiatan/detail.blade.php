@@ -1,4 +1,3 @@
-<!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/kalender-kegiatan/detail.blade.php -->
 <div>
     <!-- Header -->
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -131,8 +130,9 @@
                         <i class="fas fa-edit mr-2"></i>Edit Kegiatan
                     </button>
 
-                    <button wire:click="delete('{{ $kegiatan->id }}')"
-                        wire:confirm="Apakah Anda yakin ingin menghapus kegiatan ini?"
+                    <!-- Tombol Hapus dengan SweetAlert -->
+                    <button
+                        onclick="confirmDeleteKegiatan('{{ $kegiatan->id }}', '{{ addslashes($kegiatan->judul) }}')"
                         class="w-full bg-red-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm sm:text-base">
                         <i class="fas fa-trash mr-2"></i>Hapus Kegiatan
                     </button>
@@ -141,3 +141,28 @@
         </div>
     </div>
 </div>
+
+<!-- SweetAlert2 untuk Konfirmasi Hapus -->
+<script>
+function confirmDeleteKegiatan(id, judul) {
+    Swal.fire({
+        title: 'Hapus Kegiatan?',
+        html: `Kegiatan <strong>${judul}</strong> akan dihapus secara permanen!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
+        cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'px-4 py-2 rounded-lg',
+            cancelButton: 'px-4 py-2 rounded-lg'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            @this.call('delete', id);
+        }
+    });
+}
+</script>

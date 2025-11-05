@@ -75,22 +75,6 @@
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
-
-            <!-- Remember Me -->
-            <div class="flex items-center justify-between">
-                <label class="flex items-center cursor-pointer">
-                    <input
-                        type="checkbox"
-                        wire:model="remember"
-                        class="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500 cursor-pointer"
-                    >
-                    <span class="ml-2 text-sm text-gray-700">Ingat saya</span>
-                </label>
-                <a href="#" class="text-sm text-green-700 hover:text-green-600 font-medium">
-                    Lupa password?
-                </a>
-            </div>
-
             <!-- Submit Button -->
             <div>
                 <button

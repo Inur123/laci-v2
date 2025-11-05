@@ -170,4 +170,15 @@ class Anggota extends Model
 
         return Carbon::parse($this->tanggal_lahir)->age;
     }
+    public function getTanggalLahirAttribute($value)
+{
+    if (empty($value)) return null;
+
+    try {
+        $decrypted = Crypt::decryptString($value);
+        return Carbon::createFromFormat('Y-m-d', $decrypted)->startOfDay();
+    } catch (\Exception $e) {
+        return null;
+    }
+}
 }
