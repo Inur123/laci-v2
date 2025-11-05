@@ -1,82 +1,74 @@
-<!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/pengajuan-pac.blade.php -->
+<!-- filepath: resources/views/livewire/sekretaris-cabang/pengajuan-pac/index.blade.php -->
 <div>
     <!-- Header -->
     <div class="mb-6">
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Pengajuan PAC</h1>
-        <p class="text-sm text-gray-600 mt-1">Kelola pengajuan pembentukan PAC baru</p>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Pengajuan Surat PAC</h1>
+        <p class="text-sm text-gray-600 mt-1">Kelola pengajuan surat dari seluruh PAC</p>
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow p-6">
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Pengajuan</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">24</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Total Pengajuan</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $total }}</h3>
                 </div>
-                <div class="bg-blue-100 text-blue-600 p-3 rounded-full">
-                    <i class="fas fa-file-alt text-2xl"></i>
+                <div class="bg-blue-100 text-blue-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-envelope-open-text text-xl sm:text-2xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Menunggu</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">8</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Pending</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $pending }}</h3>
                 </div>
-                <div class="bg-yellow-100 text-yellow-600 p-3 rounded-full">
-                    <i class="fas fa-clock text-2xl"></i>
+                <div class="bg-yellow-100 text-yellow-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-clock text-xl sm:text-2xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Disetujui</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">14</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm">Diterima</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $diterima }}</h3>
                 </div>
-                <div class="bg-green-100 text-green-600 p-3 rounded-full">
-                    <i class="fas fa-check-circle text-2xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-500 text-sm">Ditolak</p>
-                    <h3 class="text-2xl font-bold mt-1 text-gray-800">2</h3>
-                </div>
-                <div class="bg-red-100 text-red-600 p-3 rounded-full">
-                    <i class="fas fa-times-circle text-2xl"></i>
+                <div class="bg-green-100 text-green-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-check-circle text-xl sm:text-2xl"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Filter -->
+
+    <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option>Semua Status</option>
-                    <option>Menunggu Review</option>
-                    <option>Disetujui</option>
-                    <option>Ditolak</option>
-                </select>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Surat</label>
+                <input type="text" wire:model.live.debounce.500ms="search" placeholder="No Surat atau Keperluan..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Cari</label>
-                <input type="text" placeholder="Nama PAC, kecamatan..."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <select wire:model.live="filterStatus"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                    <option value="">Semua Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="diterima">Diterima</option>
+                    <option value="ditolak">Ditolak</option>
+                </select>
             </div>
             <div class="flex items-end">
-                <button class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                    <i class="fas fa-filter mr-2"></i>Filter
+                <button wire:click="$refresh"
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh
                 </button>
             </div>
         </div>
@@ -84,76 +76,170 @@
 
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="p-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-800">Daftar Pengajuan PAC</h3>
+        <div class="p-4 border-b border-gray-100">
+            <h3 class="text-lg font-semibold text-gray-800">Daftar Pengajuan Surat PAC</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full">
-                <thead class="bg-gray-50">
+                <thead class="bg-gray-50 border-b border-gray-100">
                     <tr>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Tanggal Pengajuan</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Nama PAC</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Kecamatan</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Ketua</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Jumlah Anggota</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-16">No</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">No Surat</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Penerima</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Tanggal</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Keperluan</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Status</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="py-3 px-4 text-sm text-gray-700">10 Jan 2025</td>
-                        <td class="py-3 px-4 text-sm font-medium text-gray-800">PAC Kec. Sukajaya</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">Sukajaya</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">Ahmad Fauzi</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">45 orang</td>
+                <tbody class="divide-y divide-gray-100">
+                    @forelse($pengajuans as $index => $surat)
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="py-3 px-4 text-sm text-gray-700">{{ $index + 1 }}</td>
+                        <td class="py-3 px-4 text-sm text-gray-800 font-semibold">{{ $surat->no_surat }}</td>
+                        <td class="py-3 px-4 text-sm text-gray-700 capitalize">{{ $surat->penerima }}</td>
+                        <td class="py-3 px-4 text-sm text-gray-700">
+                            {{ $surat->tanggal ? $surat->tanggal->format('d M Y') : '-' }}
+                        </td>
+                        <td class="py-3 px-4 text-sm text-gray-700">{{ $surat->keperluan }}</td>
                         <td class="py-3 px-4">
-                            <span class="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs font-medium">Menunggu</span>
+                            @if($surat->status === 'pending')
+                            <span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-medium">
+                                <i class="fas fa-clock mr-1"></i>Pending
+                            </span>
+                            @elseif($surat->status === 'diterima')
+                            <span class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium">
+                                <i class="fas fa-check-circle mr-1"></i>Diterima
+                            </span>
+                            @elseif($surat->status === 'ditolak')
+                            <span class="px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">
+                                <i class="fas fa-times-circle mr-1"></i>Ditolak
+                            </span>
+                            @endif
                         </td>
                         <td class="py-3 px-4">
-                            <button class="text-blue-600 hover:text-blue-800 mr-2" title="Lihat Detail">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="text-green-600 hover:text-green-800 mr-2" title="Setujui">
-                                <i class="fas fa-check"></i>
-                            </button>
-                            <button class="text-red-600 hover:text-red-800" title="Tolak">
-                                <i class="fas fa-times"></i>
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <button wire:click="detail('{{ $surat->id }}')"
+                                    class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition text-xs font-medium">
+                                    <i class="fas fa-eye mr-1"></i>Lihat
+                                </button>
+@if($surat->status === 'pending')
+    <button onclick="confirmApprove('{{ $surat->id }}')"
+        class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition text-xs font-medium">
+        <i class="fas fa-check mr-1"></i>Terima
+    </button>
+    <button onclick="confirmReject('{{ $surat->id }}')"
+        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition text-xs font-medium">
+        <i class="fas fa-times mr-1"></i>Tolak
+    </button>
+@endif
+                            </div>
+                        </td>
+
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="py-8 px-4 text-center text-gray-500">
+                            <i class="fas fa-envelope-open-text text-4xl mb-2 block"></i>
+                            <p>Belum ada pengajuan surat PAC</p>
                         </td>
                     </tr>
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="py-3 px-4 text-sm text-gray-700">12 Jan 2025</td>
-                        <td class="py-3 px-4 text-sm font-medium text-gray-800">PAC Kec. Mekarjaya</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">Mekarjaya</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">Budi Santoso</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">38 orang</td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">Disetujui</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-blue-600 hover:text-blue-800 mr-2" title="Lihat Detail">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="text-purple-600 hover:text-purple-800" title="Download SK">
-                                <i class="fas fa-download"></i>
-                            </button>
-                        </td>
-                    </tr>
+                    @endforelse
                 </tbody>
             </table>
-        </div>
-        <div class="p-4 border-t border-gray-200">
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-600">Menampilkan 1-10 dari 24 pengajuan</p>
-                <div class="flex space-x-2">
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">Prev</button>
-                    <button class="px-3 py-1 bg-blue-600 text-white rounded">1</button>
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">2</button>
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">3</button>
-                    <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">Next</button>
+            <!-- Tambahkan di bawah tabel pada resources/views/livewire/sekretaris-cabang/pengajuan-pac/index.blade.php -->
+            @if($pengajuans->hasPages())
+            <div class="px-4 py-3 border-t border-gray-100">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="text-sm text-gray-700">
+                        Menampilkan <span class="font-medium">{{ $pengajuans->firstItem() }}</span>
+                        sampai <span class="font-medium">{{ $pengajuans->lastItem() }}</span>
+                        dari <span class="font-medium">{{ $pengajuans->total() }}</span> hasil
+                    </div>
+                    <div class="flex items-center gap-2">
+                        @if ($pengajuans->onFirstPage())
+                        <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                            <i class="fas fa-chevron-left"></i>
+                        </span>
+                        @else
+                        <button wire:click="previousPage" wire:loading.attr="disabled"
+                            class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        @endif
+
+                        @foreach ($pengajuans->getUrlRange(1, $pengajuans->lastPage()) as $page => $url)
+                        @if ($page == $pengajuans->currentPage())
+                        <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">
+                            {{ $page }}
+                        </span>
+                        @else
+                        <button wire:click="gotoPage({{ $page }})" wire:loading.attr="disabled"
+                            class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                            {{ $page }}
+                        </button>
+                        @endif
+                        @endforeach
+
+                        @if ($pengajuans->hasMorePages())
+                        <button wire:click="nextPage" wire:loading.attr="disabled"
+                            class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        @else
+                        <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                        @endif
+                    </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </div>
+<script>
+function confirmApprove(id) {
+    Swal.fire({
+        title: 'Setujui Surat?',
+        text: 'Surat ini akan disetujui dan diproses lebih lanjut.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#22c55e',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-check mr-2"></i>Ya, Setujui!',
+        cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'px-4 py-2 rounded-lg',
+            cancelButton: 'px-4 py-2 rounded-lg'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            @this.call('approve', id);
+        }
+    });
+}
+
+function confirmReject(id) {
+    Swal.fire({
+        title: 'Tolak Surat?',
+        text: 'Surat ini akan ditolak dan tidak diproses.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-times mr-2"></i>Ya, Tolak!',
+        cancelButtonText: '<i class="fas fa-arrow-left mr-2"></i>Batal',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'px-4 py-2 rounded-lg',
+            cancelButton: 'px-4 py-2 rounded-lg'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            @this.call('reject', id);
+        }
+    });
+}
+</script>
