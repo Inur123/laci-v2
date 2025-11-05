@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Livewire\SekretarisPac\DataAnggota;
 
 use Livewire\Component;
@@ -22,6 +21,7 @@ class Periode extends Component
     public $periodeId;
     public $search = '';
     public $nama;
+    public $page = 1; // 🔥 Property untuk custom pagination
 
     protected $rules = [
         'nama' => 'required|string|max:255',
@@ -31,6 +31,12 @@ class Periode extends Component
         'nama.required' => 'Nama periode harus diisi',
         'nama.max' => 'Nama periode maksimal 255 karakter',
     ];
+
+    // 🔥 Reset page saat filter berubah
+    public function resetPage()
+    {
+        $this->page = 1;
+    }
 
     public function mount()
     {
@@ -165,6 +171,7 @@ class Periode extends Component
         }
     }
 
+    // 🔥 Auto-reset page saat search berubah
     public function updatingSearch()
     {
         $this->resetPage();
@@ -185,28 +192,34 @@ class Periode extends Component
 
     private function getFilteredPeriodes()
     {
+        // Ambil semua data
         $query = PeriodeModel::with('user')
             ->where('user_id', Auth::id())
             ->latest();
 
-        if ($this->search) {
-            $allData = $query->get()->filter(function($periode) {
-                return stripos($periode->nama, $this->search) !== false;
-            });
+        $allData = $query->get();
 
-            $perPage = 10;
-            $currentPage = request()->get('page', 1);
-            $offset = ($currentPage - 1) * $perPage;
+        // Filter search manual
+        $filtered = $allData->filter(function($periode) {
+            if (!$this->search) {
+                return true;
+            }
 
-            return new LengthAwarePaginator(
-                $allData->slice($offset, $perPage)->values(),
-                $allData->count(),
-                $perPage,
-                $currentPage,
-                ['path' => request()->url(), 'query' => request()->query()]
-            );
-        }
+            return str_contains(strtolower($periode->nama), strtolower($this->search));
+        });
 
-        return $query->paginate(10);
+        // Manual pagination
+        $perPage = 10;
+        $currentPage = $this->page; // 🔥 Gunakan property page
+        $total = $filtered->count();
+        $items = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        return new LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $currentPage,
+            ['path' => request()->url()]
+        );
     }
 }

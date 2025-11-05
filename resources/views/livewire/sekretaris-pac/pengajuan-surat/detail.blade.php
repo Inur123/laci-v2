@@ -99,10 +99,11 @@
                                 </div>
                             </div>
                             <div class="flex gap-2">
-                                <button wire:click="download('{{ $surat->id }}')"
-                                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center">
-                                    <i class="fas fa-download mr-2"></i>Download
-                                </button>
+                                <a href="{{ route('pac.pengajuan-pac.view-file', $surat->id) }}" target="_blank"
+   class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center">
+    <i class="fas fa-download mr-2"></i>Download
+</a>
+
                             </div>
                         </div>
                     </div>

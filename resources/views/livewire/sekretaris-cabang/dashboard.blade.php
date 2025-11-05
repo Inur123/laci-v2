@@ -100,36 +100,39 @@
             </div>
         </div>
 
-        <!-- Pengajuan PAC -->
-        <!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/dashboard.blade.php -->
-
         <!-- Pengajuan PAC - ✅ HARDCODE 0 (Fitur Belum Aktif) -->
+        <!-- Pengajuan PAC -->
+<div
+    class="bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+    <div class="p-6 relative">
         <div
-            class="bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
-            <div class="p-6 relative">
-                <div
-                    class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="relative">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                            <i class="fas fa-hourglass-half text-3xl text-white"></i>
-                        </div>
-                        {{-- ✅ Hapus badge karena data 0 --}}
-                    </div>
-                    <h3 class="text-white/80 text-sm font-medium mb-1">Pengajuan PAC</h3>
-                    <p class="text-4xl font-bold text-white mb-2">0</p> {{-- ✅ HARDCODE 0 --}}
-                    <p class="text-xs text-yellow-100">Menunggu persetujuan</p>
-                </div>
-            </div>
-            <div class="bg-yellow-900/30 px-6 py-3 backdrop-blur-sm">
-                <a href="{{ route('cabang.pengajuan-pac') }}"
-                    class="text-sm text-white hover:text-yellow-100 font-medium flex items-center justify-between group">
-                    <span>Lihat Detail</span>
-                    <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                </a>
-            </div>
+            class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500">
         </div>
+        <div class="relative">
+            <div class="flex items-center justify-between mb-4">
+                <div class="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-hourglass-half text-3xl text-white"></i>
+                </div>
+                @if($this->pengajuanPending > 0)
+                <span
+                    class="text-xs font-bold text-yellow-100 bg-red-500/30 px-3 py-1.5 rounded-full backdrop-blur-sm animate-pulse">
+                    <i class="fas fa-exclamation-triangle"></i> {{ $this->pengajuanPending }} Pending
+                </span>
+                @endif
+            </div>
+            <h3 class="text-white/80 text-sm font-medium mb-1">Pengajuan PAC</h3>
+            <p class="text-4xl font-bold text-white mb-2">{{ $this->pengajuanPending }}</p>
+            <p class="text-xs text-yellow-100">Menunggu persetujuan</p>
+        </div>
+    </div>
+    <div class="bg-yellow-900/30 px-6 py-3 backdrop-blur-sm">
+        <a href="{{ route('cabang.pengajuan-pac') }}"
+            class="text-sm text-white hover:text-yellow-100 font-medium flex items-center justify-between group">
+            <span>Lihat Detail</span>
+            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+        </a>
+    </div>
+</div>
 
         <!-- Arsip Surat -->
         <div

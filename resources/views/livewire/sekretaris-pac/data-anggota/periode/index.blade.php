@@ -14,7 +14,7 @@
                     <p class="text-gray-500 text-xs sm:text-sm">Total Periode</p>
                     <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->totalPeriode }}</h3>
                 </div>
-                <div class="bg-blue-100 text-blue-600 p-2 sm:p-3 rounded-full">
+                <div class="bg-green-100 text-green-600 p-2 sm:p-3 rounded-full">
                     <i class="fas fa-calendar-alt text-xl sm:text-2xl"></i>
                 </div>
             </div>
@@ -50,14 +50,14 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari Periode</label>
-                <input type="text" wire:model.live="search" placeholder="Nama periode..."
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                <input type="text" wire:model.live.debounce.500ms="search" placeholder="Nama periode..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
             </div>
             <div class="flex items-end">
                 <button wire:click="create"
-    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
-    <i class="fas fa-plus mr-2"></i>Tambah Periode
-</button>
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+                    <i class="fas fa-plus mr-2"></i>Tambah Periode
+                </button>
             </div>
         </div>
     </div>
@@ -114,43 +114,48 @@
             </table>
         </div>
 
-        <!-- Pagination -->
+        <!-- 🔥 Custom Pagination (Tanpa URL Parameter) -->
         @if($periodes->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <!-- Info -->
                     <div class="text-sm text-gray-700">
                         Menampilkan <span class="font-medium">{{ $periodes->firstItem() }}</span>
                         sampai <span class="font-medium">{{ $periodes->lastItem() }}</span>
                         dari <span class="font-medium">{{ $periodes->total() }}</span> hasil
                     </div>
 
+                    <!-- Pagination Buttons -->
                     <div class="flex items-center gap-2">
+                        {{-- Previous Button --}}
                         @if ($periodes->onFirstPage())
                             <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                                 <i class="fas fa-chevron-left"></i>
                             </span>
                         @else
-                            <button wire:click="previousPage" wire:loading.attr="disabled"
+                            <button wire:click="$set('page', {{ $periodes->currentPage() - 1 }})" wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                         @endif
 
+                        {{-- Page Numbers --}}
                         @foreach ($periodes->getUrlRange(1, $periodes->lastPage()) as $page => $url)
                             @if ($page == $periodes->currentPage())
-                                <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">
+                                <span class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium">
                                     {{ $page }}
                                 </span>
                             @else
-                                <button wire:click="gotoPage({{ $page }})" wire:loading.attr="disabled"
+                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
                                     class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                     {{ $page }}
                                 </button>
                             @endif
                         @endforeach
 
+                        {{-- Next Button --}}
                         @if ($periodes->hasMorePages())
-                            <button wire:click="nextPage" wire:loading.attr="disabled"
+                            <button wire:click="$set('page', {{ $periodes->currentPage() + 1 }})" wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <i class="fas fa-chevron-right"></i>
                             </button>

@@ -4,13 +4,14 @@
 namespace App\Livewire\SekretarisCabang;
 
 use App\Models\User;
-use App\Models\Anggota;
 use App\Models\Surat;
-use App\Models\Kegiatan;
+use App\Models\Anggota;
 use App\Models\Periode;
 use Livewire\Component;
-use Livewire\Attributes\Layout;
+use App\Models\Kegiatan;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Layout;
+use App\Models\PengajuanSuratPac;
 use Illuminate\Support\Facades\Auth;
 
 #[Layout('components.layouts.sekretaris-cabang')]
@@ -48,9 +49,29 @@ class Dashboard extends Component
             ->count();
     }
 
-    // ✅ HAPUS getPengajuanPacProperty() - Karena bukan untuk user registration
+public function getTotalPengajuanPacProperty()
+{
+    return PengajuanSuratPac::all()->count();
+}
 
-    // Statistik Anggota
+public function getPengajuanPendingProperty()
+{
+    return PengajuanSuratPac::all()
+        ->filter(function ($item) {
+            return $item->status === 'pending'; // status sudah didekrip otomatis via accessor
+        })
+        ->count();
+}
+
+public function getPengajuanDiterimaProperty()
+{
+    return PengajuanSuratPac::all()
+        ->filter(function ($item) {
+            return $item->status === 'diterima';
+        })
+        ->count();
+}
+
     public function getTotalAnggotaProperty()
     {
         return Anggota::count();
@@ -132,7 +153,7 @@ class Dashboard extends Component
     public function getAktivitasTerbaruProperty()
     {
         $activities = collect();
-        $limitPerCategory = ceil($this->activityLimit / 5); // ✅ Dibagi 5 (bukan 6)
+        $limitPerCategory = ceil($this->activityLimit / 6); // ✅ Dibagi 5 (bukan 6)
 
         // 1. USER PAC - Toggle & Reset Password
         $userPacs = User::where('role', 'sekretaris_pac')
@@ -273,6 +294,60 @@ class Dashboard extends Component
                     ];
                 }
             });
+            // 6. PENGAJUAN PAC - CREATE, UPDATE, APPROVE, REJECT
+$pengajuanPacs = PengajuanSuratPac::with('user')
+    ->latest('updated_at')
+    ->limit($limitPerCategory * 2)
+    ->get()
+    ->map(function($pengajuan) {
+        $isNew = $pengajuan->created_at->diffInMinutes($pengajuan->updated_at) < 1;
+
+        if ($isNew) {
+            return [
+                'type' => 'pengajuan_pac',
+                'icon' => 'fa-file-signature',
+                'color' => 'teal',
+                'title' => 'Pengajuan Surat Baru',
+                'description' => 'No: ' . $pengajuan->no_surat . ' - ' . $pengajuan->keperluan,
+                'time' => $pengajuan->created_at,
+                'user' => $pengajuan->user->name,
+            ];
+        }
+
+        // Update status (approve/reject)
+        $statusChange = $pengajuan->getOriginal('status') ?? $pengajuan->status;
+        if ($pengajuan->status === 'diterima' && $statusChange !== 'diterima') {
+            return [
+                'type' => 'pengajuan_pac',
+                'icon' => 'fa-check-circle',
+                'color' => 'green',
+                'title' => 'Pengajuan Disetujui',
+                'description' => 'No: ' . $pengajuan->no_surat . ' - Oleh Admin Cabang',
+                'time' => $pengajuan->updated_at,
+                'user' => 'Admin Cabang',
+            ];
+        } elseif ($pengajuan->status === 'ditolak' && $statusChange !== 'ditolak') {
+            return [
+                'type' => 'pengajuan_pac',
+                'icon' => 'fa-times-circle',
+                'color' => 'red',
+                'title' => 'Pengajuan Ditolak',
+                'description' => 'No: ' . $pengajuan->no_surat . ' - Oleh Admin Cabang',
+                'time' => $pengajuan->updated_at,
+                'user' => 'Admin Cabang',
+            ];
+        } else {
+            return [
+                'type' => 'pengajuan_pac',
+                'icon' => 'fa-edit',
+                'color' => 'orange',
+                'title' => 'Pengajuan Diperbarui',
+                'description' => 'No: ' . $pengajuan->no_surat . ' - Data diubah',
+                'time' => $pengajuan->updated_at,
+                'user' => $pengajuan->user->name,
+            ];
+        }
+    });
 
         // 5. PERIODE - CREATE & UPDATE
         $periodes = Periode::with('user')
@@ -311,6 +386,7 @@ class Dashboard extends Component
             ->concat($surats)
             ->concat($kegiatans)
             ->concat($periodes)
+            ->concat($pengajuanPacs)
             ->sortByDesc('time')
             ->take($this->activityLimit);
     }

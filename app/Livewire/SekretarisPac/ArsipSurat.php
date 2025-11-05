@@ -1,8 +1,5 @@
 <?php
 
-
-// filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/app/Livewire/SekretarisPac/ArsipSurat.php
-
 namespace App\Livewire\SekretarisPac;
 
 use App\Models\Surat;
@@ -25,6 +22,7 @@ class ArsipSurat extends Component
     public $arsipId;
     public $search = '';
     public $filterJenis = '';
+    public $page = 1; // Tambahkan property page
 
     // Form properties
     public $no_surat;
@@ -54,6 +52,27 @@ class ArsipSurat extends Component
         'file.mimes' => 'File harus berformat PDF',
         'file.max' => 'Ukuran file maksimal 5MB',
     ];
+
+    // Hapus method-method ini karena tidak diperlukan
+    // public function gotoPage($page)
+    // {
+    //     $this->setPage($page);
+    // }
+    //
+    // public function previousPage()
+    // {
+    //     $this->setPage($this->getPage() - 1);
+    // }
+    //
+    // public function nextPage()
+    // {
+    //     $this->setPage($this->getPage() + 1);
+    // }
+
+    public function resetPage()
+    {
+        $this->page = 1;
+    }
 
     public function mount()
     {
@@ -186,65 +205,6 @@ class ArsipSurat extends Component
         }
     }
 
-    public function download($id)
-    {
-        $surat = Surat::where('user_id', Auth::id())->findOrFail($id);
-
-        if (!$surat->file) {
-            $this->dispatch('flash', [
-                'type' => 'error',
-                'message' => 'File tidak tersedia!'
-            ]);
-            return;
-        }
-
-        try {
-            $decrypted = $surat->decrypted_file;
-            $filename = $surat->original_filename;
-
-            return response()->streamDownload(function() use ($decrypted) {
-                echo $decrypted;
-            }, $filename, [
-                'Content-Type' => 'application/pdf',
-            ]);
-        } catch (\Exception $e) {
-            $this->dispatch('flash', [
-                'type' => 'error',
-                'message' => 'Gagal mengunduh file: ' . $e->getMessage()
-            ]);
-        }
-    }
-
-    public function viewFile($id)
-    {
-        $surat = Surat::where('user_id', Auth::id())->findOrFail($id);
-
-        if (!$surat->file) {
-            $this->dispatch('flash', [
-                'type' => 'error',
-                'message' => 'File tidak tersedia!'
-            ]);
-            return;
-        }
-
-        try {
-            $decrypted = $surat->decrypted_file;
-            $filename = $surat->original_filename;
-
-            return response()->streamDownload(function() use ($decrypted) {
-                echo $decrypted;
-            }, $filename, [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="' . $filename . '"'
-            ]);
-        } catch (\Exception $e) {
-            $this->dispatch('flash', [
-                'type' => 'error',
-                'message' => 'Gagal membuka file: ' . $e->getMessage()
-            ]);
-        }
-    }
-
     public function updatingSearch()
     {
         $this->resetPage();
@@ -269,7 +229,7 @@ class ArsipSurat extends Component
 
     public function render()
     {
-        return match($this->action) {
+        return match ($this->action) {
             'create' => view('livewire.sekretaris-pac.arsip-surat.create'),
             'edit' => view('livewire.sekretaris-pac.arsip-surat.edit', [
                 'surat' => Surat::where('user_id', Auth::id())->findOrFail($this->arsipId)
@@ -293,15 +253,15 @@ class ArsipSurat extends Component
 
         $allSurats = $query->get();
 
-        $filtered = $allSurats->filter(function($surat) {
+        $filtered = $allSurats->filter(function ($surat) {
             $matchSearch = true;
             $matchJenis = true;
 
             if ($this->search) {
                 $searchLower = strtolower($this->search);
                 $matchSearch = str_contains(strtolower($surat->no_surat), $searchLower) ||
-                              str_contains(strtolower($surat->pengirim_penerima ?? ''), $searchLower) ||
-                              str_contains(strtolower($surat->deskripsi ?? ''), $searchLower);
+                    str_contains(strtolower($surat->pengirim_penerima ?? ''), $searchLower) ||
+                    str_contains(strtolower($surat->deskripsi ?? ''), $searchLower);
             }
 
             if ($this->filterJenis) {
@@ -312,7 +272,7 @@ class ArsipSurat extends Component
         });
 
         $perPage = 10;
-        $currentPage = $this->getPage();
+        $currentPage = $this->page; // Gunakan property page
         $total = $filtered->count();
         $items = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();
 

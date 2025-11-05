@@ -1,4 +1,4 @@
-<!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/data-user-pac/index.blade.php -->
+<!-- filepath: resources/views/livewire/sekretaris-cabang/data-user-pac/index.blade.php -->
 <div>
     <!-- Header -->
     <div class="mb-6">
@@ -164,6 +164,9 @@
                             <td colspan="7" class="py-8 px-4 text-center text-gray-500">
                                 <i class="fas fa-inbox text-4xl mb-2 block"></i>
                                 <p>Tidak ada data user PAC</p>
+                                @if($search || $filterStatus !== '')
+                                    <p class="text-sm mt-2">Coba ubah filter pencarian Anda</p>
+                                @endif
                             </td>
                         </tr>
                     @endforelse
@@ -171,7 +174,7 @@
             </table>
         </div>
 
-        <!-- Custom Pagination -->
+        <!-- 🔥 Custom Pagination (Tanpa URL Parameter) -->
         @if($users->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -190,7 +193,7 @@
                                 <i class="fas fa-chevron-left"></i>
                             </span>
                         @else
-                            <button wire:click="previousPage" wire:loading.attr="disabled"
+                            <button wire:click="$set('page', {{ $users->currentPage() - 1 }})" wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
@@ -199,11 +202,11 @@
                         {{-- Page Numbers --}}
                         @foreach ($users->getUrlRange(1, $users->lastPage()) as $page => $url)
                             @if ($page == $users->currentPage())
-                                <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium shadow-sm">
+                                <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">
                                     {{ $page }}
                                 </span>
                             @else
-                                <button wire:click="gotoPage({{ $page }})" wire:loading.attr="disabled"
+                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
                                     class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                     {{ $page }}
                                 </button>
@@ -212,7 +215,7 @@
 
                         {{-- Next Button --}}
                         @if ($users->hasMorePages())
-                            <button wire:click="nextPage" wire:loading.attr="disabled"
+                            <button wire:click="$set('page', {{ $users->currentPage() + 1 }})" wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <i class="fas fa-chevron-right"></i>
                             </button>

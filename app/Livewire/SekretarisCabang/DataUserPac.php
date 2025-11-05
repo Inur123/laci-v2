@@ -10,6 +10,7 @@ use Livewire\Attributes\Title;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 #[Layout('components.layouts.sekretaris-cabang')]
 #[Title('Data User PAC')]
@@ -21,6 +22,13 @@ class DataUserPac extends Component
     public $userId;
     public $search = '';
     public $filterStatus = '';
+    public $page = 1; // 🔥 Property untuk custom pagination
+
+    // 🔥 Reset page saat filter berubah
+    public function resetPage()
+    {
+        $this->page = 1;
+    }
 
     public function mount()
     {
@@ -121,6 +129,7 @@ class DataUserPac extends Component
         ]);
     }
 
+    // 🔥 Auto-reset page saat filter berubah
     public function updatingSearch()
     {
         $this->resetPage();
@@ -138,18 +147,51 @@ class DataUserPac extends Component
                 'user' => User::with(['anggotas', 'periodes', 'surats'])->findOrFail($this->userId)
             ]),
             default => view('livewire.sekretaris-cabang.data-user-pac.index', [
-                'users' => User::query()
-                    ->where('role', 'sekretaris_pac')
-                    ->when($this->search, function($query) {
-                        $query->where('name', 'like', '%' . $this->search . '%')
-                              ->orWhere('email', 'like', '%' . $this->search . '%');
-                    })
-                    ->when($this->filterStatus !== '', function($query) {
-                        $query->where('is_active', $this->filterStatus);
-                    })
-                    ->latest()
-                    ->paginate(10)
+                'users' => $this->getFilteredUsers()
             ]),
         };
+    }
+
+    // 🔥 Custom Pagination
+    private function getFilteredUsers()
+    {
+        // Ambil semua data user PAC
+        $query = User::where('role', 'sekretaris_pac')->latest();
+
+        $allData = $query->get();
+
+        // Filter manual
+        $filtered = $allData->filter(function($user) {
+            $matchSearch = true;
+            $matchStatus = true;
+
+            // Filter Search
+            if ($this->search) {
+                $searchLower = strtolower($this->search);
+                $matchSearch = str_contains(strtolower($user->name ?? ''), $searchLower) ||
+                               str_contains(strtolower($user->email ?? ''), $searchLower);
+            }
+
+            // Filter Status
+            if ($this->filterStatus !== '') {
+                $matchStatus = $user->is_active == $this->filterStatus;
+            }
+
+            return $matchSearch && $matchStatus;
+        });
+
+        // Manual pagination
+        $perPage = 10;
+        $currentPage = $this->page;
+        $total = $filtered->count();
+        $items = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        return new LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $currentPage,
+            ['path' => request()->url()]
+        );
     }
 }

@@ -1,26 +1,27 @@
 <?php
 
-
 namespace App\Livewire\SekretarisCabang\DataAnggota;
 
 use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\Attributes\Layout;
+use Livewire\WithFileUploads;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Periode as PeriodeModel;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 #[Layout('components.layouts.sekretaris-cabang')]
 #[Title('Periode Kepengurusan')]
 class Periode extends Component
 {
-    use WithPagination;
+    use WithFileUploads;
 
     public $action = 'index';
     public $periodeId;
     public $search = '';
     public $nama;
+    public $page = 1; // Custom pagination
 
     protected $rules = [
         'nama' => 'required|string|max:255',
@@ -38,7 +39,17 @@ class Periode extends Component
         }
     }
 
-    // Stats hanya milik user login
+    // Reset page saat search berubah
+    public function resetPage()
+    {
+        $this->page = 1;
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     #[Computed]
     public function totalPeriode()
     {
@@ -69,10 +80,8 @@ class Periode extends Component
     public function save()
     {
         $exists = PeriodeModel::where('user_id', Auth::id())
-            ->get()
-            ->contains(function($periode) {
-                return strtolower($periode->nama) === strtolower($this->nama);
-            });
+            ->whereRaw('LOWER(nama) = ?', [strtolower($this->nama)])
+            ->exists();
 
         if ($exists) {
             $this->addError('nama', 'Nama periode sudah digunakan');
@@ -98,10 +107,8 @@ class Periode extends Component
     public function edit($id)
     {
         $periode = PeriodeModel::where('user_id', Auth::id())->findOrFail($id);
-
         $this->periodeId = $id;
         $this->nama = $periode->nama;
-
         $this->action = 'edit';
     }
 
@@ -109,10 +116,8 @@ class Periode extends Component
     {
         $exists = PeriodeModel::where('user_id', Auth::id())
             ->where('id', '!=', $this->periodeId)
-            ->get()
-            ->contains(function($periode) {
-                return strtolower($periode->nama) === strtolower($this->nama);
-            });
+            ->whereRaw('LOWER(nama) = ?', [strtolower($this->nama)])
+            ->exists();
 
         if ($exists) {
             $this->addError('nama', 'Nama periode sudah digunakan');
@@ -122,10 +127,7 @@ class Periode extends Component
         $this->validate();
 
         $periode = PeriodeModel::where('user_id', Auth::id())->findOrFail($this->periodeId);
-
-        $periode->update([
-            'nama' => $this->nama,
-        ]);
+        $periode->update(['nama' => $this->nama]);
 
         $this->dispatch('flash', [
             'type' => 'success',
@@ -156,7 +158,6 @@ class Periode extends Component
             }
 
             $periode->delete();
-
             $this->dispatch('flash', [
                 'type' => 'success',
                 'message' => 'Periode berhasil dihapus!'
@@ -164,14 +165,9 @@ class Periode extends Component
         }
     }
 
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
     public function render()
     {
-        return match($this->action) {
+        return match ($this->action) {
             'create' => view('livewire.sekretaris-cabang.data-anggota.periode.create'),
             'edit' => view('livewire.sekretaris-cabang.data-anggota.periode.edit', [
                 'periode' => PeriodeModel::where('user_id', Auth::id())->findOrFail($this->periodeId)
@@ -186,26 +182,29 @@ class Periode extends Component
     {
         $query = PeriodeModel::with('user')
             ->where('user_id', Auth::id())
-            ->latest();
+            ->latest()
+            ->get();
+
+        $filtered = $query;
 
         if ($this->search) {
-            $allData = $query->get()->filter(function($periode) {
-                return stripos($periode->nama, $this->search) !== false;
-            });
-
-            $perPage = 10;
-            $currentPage = request()->get('page', 1);
-            $offset = ($currentPage - 1) * $perPage;
-
-            return new \Illuminate\Pagination\LengthAwarePaginator(
-                $allData->slice($offset, $perPage)->values(),
-                $allData->count(),
-                $perPage,
-                $currentPage,
-                ['path' => request()->url(), 'query' => request()->query()]
+            $searchLower = strtolower($this->search);
+            $filtered = $query->filter(fn($periode) =>
+                str_contains(strtolower($periode->nama), $searchLower)
             );
         }
 
-        return $query->paginate(10);
+        $perPage = 10;
+        $currentPage = $this->page;
+        $total = $filtered->count();
+        $items = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        return new LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $currentPage,
+            ['path' => request()->url()]
+        );
     }
 }

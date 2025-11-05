@@ -7,44 +7,44 @@
     </div>
 
     <!-- Stats Cards -->
-    <!-- filepath: resources/views/livewire/sekretaris-pac/data-anggota/index.blade.php -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6">
-    <div class="bg-white rounded-lg shadow p-4 sm:p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-xs sm:text-sm">Total Anggota</p>
-                <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->statsAnggota['total'] }}</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-xs sm:text-sm">Total Anggota</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->statsAnggota['total'] }}</h3>
+                </div>
+                <div class="bg-green-100 text-green-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-users text-xl sm:text-2xl"></i>
+                </div>
             </div>
-            <div class="bg-green-100 text-green-600 p-2 sm:p-3 rounded-full">
-                <i class="fas fa-users text-xl sm:text-2xl"></i>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-xs sm:text-sm">Laki-laki</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->statsAnggota['laki'] }}</h3>
+                </div>
+                <div class="bg-green-100 text-green-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-male text-xl sm:text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-xs sm:text-sm">Perempuan</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->statsAnggota['perempuan'] }}</h3>
+                </div>
+                <div class="bg-pink-100 text-pink-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-female text-xl sm:text-2xl"></i>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-4 sm:p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-xs sm:text-sm">Laki-laki</p>
-                <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->statsAnggota['laki'] }}</h3>
-            </div>
-            <div class="bg-green-100 text-green-600 p-2 sm:p-3 rounded-full">
-                <i class="fas fa-male text-xl sm:text-2xl"></i>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-lg shadow p-4 sm:p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-xs sm:text-sm">Perempuan</p>
-                <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->statsAnggota['perempuan'] }}</h3>
-            </div>
-            <div class="bg-pink-100 text-pink-600 p-2 sm:p-3 rounded-full">
-                <i class="fas fa-female text-xl sm:text-2xl"></i>
-            </div>
-        </div>
-    </div>
-</div>
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -176,43 +176,48 @@
             </table>
         </div>
 
-        <!-- Pagination -->
+        <!-- 🔥 Custom Pagination (Tanpa URL Parameter) -->
         @if($anggotas->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <!-- Info -->
                     <div class="text-sm text-gray-700">
                         Menampilkan <span class="font-medium">{{ $anggotas->firstItem() }}</span>
                         sampai <span class="font-medium">{{ $anggotas->lastItem() }}</span>
                         dari <span class="font-medium">{{ $anggotas->total() }}</span> hasil
                     </div>
 
+                    <!-- Pagination Buttons -->
                     <div class="flex items-center gap-2">
+                        {{-- Previous Button --}}
                         @if ($anggotas->onFirstPage())
                             <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                                 <i class="fas fa-chevron-left"></i>
                             </span>
                         @else
-                            <button wire:click="previousPage" wire:loading.attr="disabled"
+                            <button wire:click="$set('page', {{ $anggotas->currentPage() - 1 }})" wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                         @endif
 
+                        {{-- Page Numbers --}}
                         @foreach ($anggotas->getUrlRange(1, $anggotas->lastPage()) as $page => $url)
                             @if ($page == $anggotas->currentPage())
                                 <span class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium">
                                     {{ $page }}
                                 </span>
                             @else
-                                <button wire:click="gotoPage({{ $page }})" wire:loading.attr="disabled"
+                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
                                     class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                     {{ $page }}
                                 </button>
                             @endif
                         @endforeach
 
+                        {{-- Next Button --}}
                         @if ($anggotas->hasMorePages())
-                            <button wire:click="nextPage" wire:loading.attr="disabled"
+                            <button wire:click="$set('page', {{ $anggotas->currentPage() + 1 }})" wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <i class="fas fa-chevron-right"></i>
                             </button>

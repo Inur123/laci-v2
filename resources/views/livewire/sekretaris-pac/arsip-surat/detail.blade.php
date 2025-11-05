@@ -67,41 +67,38 @@
             <!-- File Attachment -->
             <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-gray-500 mb-3">File Lampiran</label>
-                @if($surat->file)
-                    <div class="border-2 border-green-200 rounded-lg p-4 bg-green-50">
-                        <div class="flex items-center justify-between flex-wrap gap-3">
-                            <div class="flex items-center">
-                                <div class="bg-green-100 p-3 rounded-lg">
-                                    <i class="fas fa-file-pdf text-3xl text-red-600"></i>
-                                </div>
-                                <div class="ml-4">
-                                    <p class="font-semibold text-gray-900">File Surat (PDF)</p>
-                                    <p class="text-sm text-gray-600">
-                                        <i class="fas fa-lock text-green-600 mr-1"></i>
-                                        File terenkripsi dengan aman
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex gap-2">
-                                <!-- Tombol Lihat File (Preview) - PERBAIKAN DISINI -->
-                                <button wire:click="viewFile('{{ $surat->id }}')"
-                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center">
-                                    <i class="fas fa-eye mr-2"></i>Lihat File
-                                </button>
-                                <!-- Tombol Download - PERBAIKAN DISINI -->
-                                <button wire:click="download('{{ $surat->id }}')"
-                                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center">
-                                    <i class="fas fa-download mr-2"></i>Download
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                        <i class="fas fa-file-excel text-4xl text-gray-400 mb-2"></i>
-                        <p class="text-gray-500">Tidak ada file lampiran</p>
-                    </div>
-                @endif
+               @if($surat->file)
+    <div class="border-2 border-green-200 rounded-lg p-4 bg-green-50">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+            <div class="flex items-center">
+                <div class="bg-green-100 p-3 rounded-lg">
+                    <i class="fas fa-file-pdf text-3xl text-red-600"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="font-semibold text-gray-900">File Surat (PDF)</p>
+                    <p class="text-sm text-gray-600">
+                        <i class="fas fa-lock text-green-600 mr-1"></i>
+                        File terenkripsi dengan aman
+                    </p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+    <!-- Tombol Lihat File -->
+    <a href="{{ route('pac.arsip-surat.view-file', $surat->id) }}" target="_blank"
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center">
+        <i class="fas fa-eye mr-2"></i>Lihat File
+    </a>
+</div>
+
+        </div>
+    </div>
+@else
+    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+        <i class="fas fa-file-excel text-4xl text-gray-400 mb-2"></i>
+        <p class="text-gray-500">Tidak ada file lampiran</p>
+    </div>
+@endif
+
             </div>
         </div>
 

@@ -206,55 +206,59 @@
             </table>
         </div>
 
-        <!-- Pagination -->
-        @if($anggotas->hasPages())
-            <div class="px-4 py-3 border-t border-gray-100">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="text-sm text-gray-700">
-                        Menampilkan <span class="font-medium">{{ $anggotas->firstItem() }}</span>
-                        sampai <span class="font-medium">{{ $anggotas->lastItem() }}</span>
-                        dari <span class="font-medium">{{ $anggotas->total() }}</span> hasil
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        @if ($anggotas->onFirstPage())
-                            <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
-                                <i class="fas fa-chevron-left"></i>
-                            </span>
-                        @else
-                            <button wire:click="previousPage" wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                        @endif
-
-                        @foreach ($anggotas->getUrlRange(1, $anggotas->lastPage()) as $page => $url)
-                            @if ($page == $anggotas->currentPage())
-                                <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">
-                                    {{ $page }}
-                                </span>
-                            @else
-                                <button wire:click="gotoPage({{ $page }})" wire:loading.attr="disabled"
-                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                    {{ $page }}
-                                </button>
-                            @endif
-                        @endforeach
-
-                        @if ($anggotas->hasMorePages())
-                            <button wire:click="nextPage" wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        @else
-                            <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
-                                <i class="fas fa-chevron-right"></i>
-                            </span>
-                        @endif
-                    </div>
-                </div>
+       <!-- Custom Pagination (Tanpa URL Parameter) -->
+@if($anggotas->hasPages())
+    <div class="px-4 py-3 border-t border-gray-100">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <!-- Info -->
+            <div class="text-sm text-gray-700">
+                Menampilkan <span class="font-medium">{{ $anggotas->firstItem() }}</span>
+                sampai <span class="font-medium">{{ $anggotas->lastItem() }}</span>
+                dari <span class="font-medium">{{ $anggotas->total() }}</span> hasil
             </div>
-        @endif
+            <!-- Pagination Buttons -->
+            <div class="flex items-center gap-2">
+                {{-- Previous Button --}}
+                @if ($anggotas->onFirstPage())
+                    <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                        <i class="fas fa-chevron-left"></i>
+                    </span>
+                @else
+                    <button wire:click="$set('page', {{ $anggotas->currentPage() - 1 }})" wire:loading.attr="disabled"
+                        class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                @endif
+
+                {{-- Page Numbers --}}
+                @foreach ($anggotas->getUrlRange(1, $anggotas->lastPage()) as $page => $url)
+                    @if ($page == $anggotas->currentPage())
+                        <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">
+                            {{ $page }}
+                        </span>
+                    @else
+                        <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
+                            class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                            {{ $page }}
+                        </button>
+                    @endif
+                @endforeach
+
+                {{-- Next Button --}}
+                @if ($anggotas->hasMorePages())
+                    <button wire:click="$set('page', {{ $anggotas->currentPage() + 1 }})" wire:loading.attr="disabled"
+                        class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                @else
+                    <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
+                @endif
+            </div>
+        </div>
+    </div>
+@endif
     </div>
 </div>
 

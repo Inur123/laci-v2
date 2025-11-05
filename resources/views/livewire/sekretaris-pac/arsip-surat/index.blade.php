@@ -6,31 +6,7 @@
         <p class="text-sm text-gray-600 mt-1">Kelola dan lihat arsip surat masuk & keluar PAC</p>
     </div>
 
-    <!-- Filter & Search -->
-    <div class="bg-white rounded-lg shadow p-4 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Surat</label>
-                <input type="text" wire:model.live="search" placeholder="Nomor surat, pengirim/penerima..."
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Surat</label>
-                <select wire:model.live="filterJenis"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                    <option value="">Semua</option>
-                    <option value="masuk">Surat Masuk</option>
-                    <option value="keluar">Surat Keluar</option>
-                </select>
-            </div>
-            <div class="flex items-end">
-                <button wire:click="create"
-                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
-                    <i class="fas fa-plus mr-2"></i>Tambah Surat
-                </button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Stats Cards - GUNAKAN VARIABLE DARI CONTROLLER -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -70,6 +46,31 @@
             </div>
         </div>
     </div>
+    <!-- Filter & Search -->
+    <div class="bg-white rounded-lg shadow p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Surat</label>
+                <input type="text" wire:model.live.debounce.500ms="search" placeholder="Nomor surat, pengirim/penerima..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Surat</label>
+                <select wire:model.live="filterJenis"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
+                    <option value="">Semua</option>
+                    <option value="masuk">Surat Masuk</option>
+                    <option value="keluar">Surat Keluar</option>
+                </select>
+            </div>
+            <div class="flex items-end">
+                <button wire:click="create"
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+                    <i class="fas fa-plus mr-2"></i>Tambah Surat
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -100,9 +101,13 @@
                             <td class="py-3 px-4 text-sm text-gray-700">{{ $surat->tanggal->format('d M Y') }}</td>
                             <td class="py-3 px-4">
                                 @if($surat->jenis_surat === 'masuk')
-                                    <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">Masuk</span>
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">
+                                        <i class="fas fa-inbox mr-1"></i>Masuk
+                                    </span>
                                 @else
-                                    <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">Keluar</span>
+                                    <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">
+                                        <i class="fas fa-paper-plane mr-1"></i>Keluar
+                                    </span>
                                 @endif
                             </td>
                             <td class="py-3 px-4 text-sm text-gray-700">{{ Str::limit($surat->deskripsi, 40) }}</td>
@@ -117,12 +122,13 @@
                                         class="text-yellow-600 hover:text-yellow-800 transition" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    @if($surat->file)
-                                        <button wire:click="download('{{ $surat->id }}')"
-                                            class="text-green-600 hover:text-green-800 transition" title="Download">
-                                            <i class="fas fa-download"></i>
-                                        </button>
+                                   @if($surat->file)
+                                    <a href="{{ route('pac.arsip-surat.view-file', $surat->id) }}" target="_blank"
+                                        class="text-green-600 hover:text-green-800 transition" title="Download">
+                                        <i class="fas fa-download"></i>
+                                    </a>
                                     @endif
+
                                     <button onclick="confirmDelete('{{ $surat->id }}', '{{ $surat->no_surat }}')"
                                         class="text-red-600 hover:text-red-800 transition" title="Hapus">
                                         <i class="fas fa-trash"></i>
@@ -161,7 +167,7 @@
                                 <i class="fas fa-chevron-left"></i>
                             </span>
                         @else
-                            <button wire:click="previousPage" wire:loading.attr="disabled"
+                            <button wire:click="$set('page', {{ $surats->currentPage() - 1 }})" wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
@@ -170,11 +176,11 @@
                         {{-- Page Numbers --}}
                         @foreach ($surats->getUrlRange(1, $surats->lastPage()) as $page => $url)
                             @if ($page == $surats->currentPage())
-                                <span class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium shadow-sm">
+                                <span class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium">
                                     {{ $page }}
                                 </span>
                             @else
-                                <button wire:click="gotoPage({{ $page }})" wire:loading.attr="disabled"
+                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
                                     class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                     {{ $page }}
                                 </button>
@@ -183,7 +189,7 @@
 
                         {{-- Next Button --}}
                         @if ($surats->hasMorePages())
-                            <button wire:click="nextPage" wire:loading.attr="disabled"
+                            <button wire:click="$set('page', {{ $surats->currentPage() + 1 }})" wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <i class="fas fa-chevron-right"></i>
                             </button>

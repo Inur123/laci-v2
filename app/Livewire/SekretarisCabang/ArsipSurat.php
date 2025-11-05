@@ -22,6 +22,7 @@ class ArsipSurat extends Component
     public $arsipId;
     public $search = '';
     public $filterJenis = '';
+    public $page = 1; // 🔥 Property untuk custom pagination
 
     // Form properties
     public $no_surat;
@@ -52,6 +53,12 @@ class ArsipSurat extends Component
         'file.max' => 'Ukuran file maksimal 5MB',
     ];
 
+    // 🔥 Reset page saat filter berubah
+    public function resetPage()
+    {
+        $this->page = 1;
+    }
+
     public function mount()
     {
         if (Auth::user()->role !== 'sekretaris_cabang') {
@@ -78,7 +85,6 @@ class ArsipSurat extends Component
             'deskripsi' => $this->deskripsi,
         ];
 
-        // Enkripsi file jika ada
         if ($this->file) {
             $data['file'] = Surat::encryptAndStoreFile($this->file);
         }
@@ -96,7 +102,6 @@ class ArsipSurat extends Component
 
     public function edit($id)
     {
-        // 🔒 Hanya bisa edit surat milik user yang login
         $surat = Surat::where('user_id', Auth::id())->findOrFail($id);
 
         $this->arsipId = $id;
@@ -121,7 +126,6 @@ class ArsipSurat extends Component
             'file' => 'nullable|file|mimes:pdf|max:5120',
         ]);
 
-        // 🔒 Hanya bisa update surat milik user yang login
         $surat = Surat::where('user_id', Auth::id())->findOrFail($this->arsipId);
 
         $data = [
@@ -132,13 +136,10 @@ class ArsipSurat extends Component
             'deskripsi' => $this->deskripsi,
         ];
 
-        // Enkripsi file baru jika ada
         if ($this->file) {
-            // Hapus file lama
             if ($this->oldFile && Storage::disk('local')->exists($this->oldFile)) {
                 Storage::disk('local')->delete($this->oldFile);
             }
-
             $data['file'] = Surat::encryptAndStoreFile($this->file);
         }
 
@@ -167,11 +168,9 @@ class ArsipSurat extends Component
 
     public function delete($id)
     {
-        // 🔒 Hanya bisa delete surat milik user yang login
         $surat = Surat::where('user_id', Auth::id())->find($id);
 
         if ($surat) {
-            // Hapus file terenkripsi
             if ($surat->file && Storage::disk('local')->exists($surat->file)) {
                 Storage::disk('local')->delete($surat->file);
             }
@@ -186,68 +185,7 @@ class ArsipSurat extends Component
         }
     }
 
-    public function download($id)
-    {
-        // 🔒 Hanya bisa download surat milik user yang login
-        $surat = Surat::where('user_id', Auth::id())->findOrFail($id);
-
-        if (!$surat->file) {
-            $this->dispatch('flash', [
-                'type' => 'error',
-                'message' => 'File tidak tersedia!'
-            ]);
-            return;
-        }
-
-        try {
-            $decrypted = $surat->decrypted_file;
-            $filename = $surat->original_filename;
-
-            return response()->streamDownload(function() use ($decrypted) {
-                echo $decrypted;
-            }, $filename, [
-                'Content-Type' => 'application/pdf',
-            ]);
-        } catch (\Exception $e) {
-            $this->dispatch('flash', [
-                'type' => 'error',
-                'message' => 'Gagal mengunduh file: ' . $e->getMessage()
-            ]);
-        }
-    }
-
-    // 🔥 METHOD BARU: View file inline
-    public function viewFile($id)
-    {
-        // 🔒 Hanya bisa view surat milik user yang login
-        $surat = Surat::where('user_id', Auth::id())->findOrFail($id);
-
-        if (!$surat->file) {
-            $this->dispatch('flash', [
-                'type' => 'error',
-                'message' => 'File tidak tersedia!'
-            ]);
-            return;
-        }
-
-        try {
-            $decrypted = $surat->decrypted_file;
-            $filename = $surat->original_filename;
-
-            return response()->streamDownload(function() use ($decrypted) {
-                echo $decrypted;
-            }, $filename, [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="' . $filename . '"'
-            ]);
-        } catch (\Exception $e) {
-            $this->dispatch('flash', [
-                'type' => 'error',
-                'message' => 'Gagal membuka file: ' . $e->getMessage()
-            ]);
-        }
-    }
-
+    // 🔥 Auto-reset page saat filter berubah
     public function updatingSearch()
     {
         $this->resetPage();
@@ -258,7 +196,7 @@ class ArsipSurat extends Component
         $this->resetPage();
     }
 
-    // 🔥 METHOD BARU: Ambil Stats untuk Card (sama seperti PAC)
+    // Stats untuk Card
     private function getStats()
     {
         $allSurats = Surat::where('user_id', Auth::id())->get();
@@ -282,20 +220,21 @@ class ArsipSurat extends Component
             ]),
             default => view('livewire.sekretaris-cabang.arsip-surat.index', [
                 'surats' => $this->getFilteredSurats(),
-                'stats' => $this->getStats() // 🔥 Kirim stats ke view
+                'stats' => $this->getStats()
             ]),
         };
     }
 
     private function getFilteredSurats()
     {
-        // 🔒 HANYA AMBIL DATA SURAT MILIK USER YANG LOGIN
+        // Ambil semua data
         $query = Surat::with('user')
             ->where('user_id', Auth::id())
             ->latest();
 
         $allSurats = $query->get();
 
+        // Filter manual
         $filtered = $allSurats->filter(function($surat) {
             $matchSearch = true;
             $matchJenis = true;
@@ -314,8 +253,9 @@ class ArsipSurat extends Component
             return $matchSearch && $matchJenis;
         });
 
+        // Manual pagination
         $perPage = 10;
-        $currentPage = $this->getPage();
+        $currentPage = $this->page; // 🔥 Gunakan property page
         $total = $filtered->count();
         $items = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();
 

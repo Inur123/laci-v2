@@ -7,7 +7,6 @@
     </div>
 
     <!-- Stats Cards -->
-    <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6">
         <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
@@ -95,7 +94,7 @@
                 <tbody class="divide-y divide-gray-100">
                     @forelse($pengajuans as $index => $surat)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="py-3 px-4 text-sm text-gray-700">{{ $index + 1 }}</td>
+                        <td class="py-3 px-4 text-sm text-gray-700">{{ $pengajuans->firstItem() + $index }}</td>
                         <td class="py-3 px-4 text-sm text-gray-800 font-semibold">{{ $surat->no_surat }}</td>
                         <td class="py-3 px-4 text-sm text-gray-700 capitalize">{{ $surat->penerima }}</td>
                         <td class="py-3 px-4 text-sm text-gray-700">
@@ -123,16 +122,16 @@
                                     class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition text-xs font-medium">
                                     <i class="fas fa-eye mr-1"></i>Lihat
                                 </button>
-@if($surat->status === 'pending')
-    <button onclick="confirmApprove('{{ $surat->id }}')"
-        class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition text-xs font-medium">
-        <i class="fas fa-check mr-1"></i>Terima
-    </button>
-    <button onclick="confirmReject('{{ $surat->id }}')"
-        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition text-xs font-medium">
-        <i class="fas fa-times mr-1"></i>Tolak
-    </button>
-@endif
+                                @if($surat->status === 'pending')
+                                <button onclick="confirmApprove('{{ $surat->id }}')"
+                                    class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition text-xs font-medium">
+                                    <i class="fas fa-check mr-1"></i>Terima
+                                </button>
+                                <button onclick="confirmReject('{{ $surat->id }}')"
+                                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition text-xs font-medium">
+                                    <i class="fas fa-times mr-1"></i>Tolak
+                                </button>
+                                @endif
                             </div>
                         </td>
 
@@ -162,7 +161,8 @@
                             <i class="fas fa-chevron-left"></i>
                         </span>
                         @else
-                        <button wire:click="previousPage" wire:loading.attr="disabled"
+                        <button wire:click="$set('page', {{ $pengajuans->currentPage() - 1 }})"
+                            wire:loading.attr="disabled"
                             class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                             <i class="fas fa-chevron-left"></i>
                         </button>
@@ -174,7 +174,7 @@
                             {{ $page }}
                         </span>
                         @else
-                        <button wire:click="gotoPage({{ $page }})" wire:loading.attr="disabled"
+                        <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
                             class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                             {{ $page }}
                         </button>
@@ -182,7 +182,8 @@
                         @endforeach
 
                         @if ($pengajuans->hasMorePages())
-                        <button wire:click="nextPage" wire:loading.attr="disabled"
+                        <button wire:click="$set('page', {{ $pengajuans->currentPage() + 1 }})"
+                            wire:loading.attr="disabled"
                             class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                             <i class="fas fa-chevron-right"></i>
                         </button>
@@ -199,7 +200,7 @@
     </div>
 </div>
 <script>
-function confirmApprove(id) {
+    function confirmApprove(id) {
     Swal.fire({
         title: 'Setujui Surat?',
         text: 'Surat ini akan disetujui dan diproses lebih lanjut.',

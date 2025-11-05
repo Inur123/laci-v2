@@ -4,10 +4,11 @@ namespace App\Livewire\SekretarisCabang;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 use App\Models\PengajuanSuratPac;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 #[Layout('components.layouts.sekretaris-cabang')]
 #[Title('Pengajuan PAC')]
@@ -19,19 +20,23 @@ class PengajuanPac extends Component
     public $filterStatus = '';
     public $detailId = null;
     public $detailData = null;
+    public $page = 1; // Tambahkan property page
 
     protected $paginationTheme = 'tailwind';
 
-    // Reset pagination saat search berubah
     public function updatingSearch()
     {
         $this->resetPage();
     }
 
-    // Reset pagination saat filter berubah
     public function updatingFilterStatus()
     {
         $this->resetPage();
+    }
+
+    public function resetPage()
+    {
+        $this->page = 1;
     }
 
     public function mount()
@@ -42,39 +47,39 @@ class PengajuanPac extends Component
     }
 
     public function detail($id)
-{
-    try {
-        $surat = PengajuanSuratPac::with('user')->findOrFail($id);
+    {
+        try {
+            $surat = PengajuanSuratPac::with('user')->findOrFail($id);
 
-        $this->detailId = $id;
-        $this->detailData = [
-            'id' => $surat->id,
-            'no_surat' => $surat->no_surat,
-            'penerima' => $surat->penerima,
-            'tanggal' => $surat->tanggal,
-            'tanggal_formatted' => $surat->tanggal ? $surat->tanggal->format('d F Y') : '-',
-            'keperluan' => $surat->keperluan,
-            'deskripsi' => $surat->deskripsi ?? '-',
-            'status' => $surat->status,
-            'has_file' => !empty($surat->file),
-            'file' => $surat->file ?? null, // Tambahkan baris ini
-            'created_at_formatted' => $surat->created_at ? $surat->created_at->format('d F Y H:i') : '-',
-            'updated_at_formatted' => $surat->updated_at ? $surat->updated_at->format('d F Y H:i') : '-',
-            'user' => [
-                'id' => $surat->user->id ?? null,
-                'name' => $surat->user->name ?? '-',
-                'email' => $surat->user->email ?? '-',
-            ]
-        ];
+            $this->detailId = $id;
+            $this->detailData = [
+                'id' => $surat->id,
+                'no_surat' => $surat->no_surat,
+                'penerima' => $surat->penerima,
+                'tanggal' => $surat->tanggal,
+                'tanggal_formatted' => $surat->tanggal ? $surat->tanggal->format('d F Y') : '-',
+                'keperluan' => $surat->keperluan,
+                'deskripsi' => $surat->deskripsi ?? '-',
+                'status' => $surat->status,
+                'has_file' => !empty($surat->file),
+                'file' => $surat->file ?? null, // Tambahkan baris ini
+                'created_at_formatted' => $surat->created_at ? $surat->created_at->format('d F Y H:i') : '-',
+                'updated_at_formatted' => $surat->updated_at ? $surat->updated_at->format('d F Y H:i') : '-',
+                'user' => [
+                    'id' => $surat->user->id ?? null,
+                    'name' => $surat->user->name ?? '-',
+                    'email' => $surat->user->email ?? '-',
+                ]
+            ];
 
-        $this->dispatch('openDetailModal', data: $this->detailData);
-    } catch (\Exception $e) {
-        $this->dispatch('flash', [
-            'type' => 'error',
-            'message' => 'Data tidak ditemukan!'
-        ]);
+            $this->dispatch('openDetailModal', data: $this->detailData);
+        } catch (\Exception $e) {
+            $this->dispatch('flash', [
+                'type' => 'error',
+                'message' => 'Data tidak ditemukan!'
+            ]);
+        }
     }
-}
 
     public function approve($id)
     {
@@ -140,44 +145,51 @@ class PengajuanPac extends Component
         }
     }
 
- public function render()
-{
-    // === DATA UNTUK STATISTIK ===
-    $total = PengajuanSuratPac::count();
-    $pending = PengajuanSuratPac::where('status', 'pending')->count();
-    $diterima = PengajuanSuratPac::where('status', 'diterima')->count();
+    public function render()
+    {
+        $allStats = PengajuanSuratPac::with('user')->latest()->get();
+        $total = $allStats->count();
+        $pending = $allStats->filter(fn($s) => $s->status === 'pending')->count();
+        $diterima = $allStats->filter(fn($s) => $s->status === 'diterima')->count();
 
-    // === QUERY UNTUK TABEL ===
-    $query = PengajuanSuratPac::with('user')->latest();
+        $all = $allStats;
 
-    if ($this->search) {
-        $search = strtolower($this->search);
-        $query->where(function($q) use ($search) {
-            $q->whereRaw("LOWER(no_surat) LIKE ?", ['%' . $search . '%'])
-              ->orWhereRaw("LOWER(keperluan) LIKE ?", ['%' . $search . '%']);
-        });
-    }
+        if ($this->search) {
+            $search = strtolower($this->search);
+            $all = $all->filter(function ($item) use ($search) {
+                return str_contains(strtolower($item->no_surat), $search)
+                    || str_contains(strtolower($item->keperluan), $search);
+            });
+        }
 
-    if ($this->filterStatus) {
-        $query->where('status', $this->filterStatus);
-    }
+        if ($this->filterStatus) {
+            $all = $all->filter(function ($item) {
+                return $item->status === $this->filterStatus;
+            });
+        }
 
-    $pengajuans = $query->paginate(10);
+        $page = $this->page; // Gunakan property page
+        $perPage = 10;
+        $items = $all->slice(($page - 1) * $perPage, $perPage)->values();
+        $pengajuans = new LengthAwarePaginator(
+            $items,
+            $all->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url()]
+        );
 
-    // Jika detailId ada, tampilkan halaman detail
-    if ($this->detailId && $this->detailData) {
-        return view('livewire.sekretaris-cabang.pengajuan-pac.detail', [
-            'detail' => $this->detailData,
+        if ($this->detailId && $this->detailData) {
+            return view('livewire.sekretaris-cabang.pengajuan-pac.detail', [
+                'detail' => $this->detailData,
+            ]);
+        }
+
+        return view('livewire.sekretaris-cabang.pengajuan-pac.index', [
+            'pengajuans' => $pengajuans,
+            'total' => $total,
+            'pending' => $pending,
+            'diterima' => $diterima,
         ]);
     }
-
-    // Default: tampilkan tabel utama
-    return view('livewire.sekretaris-cabang.pengajuan-pac.index', [
-        'pengajuans' => $pengajuans,
-        'total' => $total,
-        'pending' => $pending,
-        'diterima' => $diterima,
-    ]);
-}
-
 }

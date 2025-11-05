@@ -26,6 +26,7 @@ class Anggota extends Component
     public $search = '';
     public $filterPeriode = '';
     public $filterUser = '';
+    public $page = 1; // 🔥 Property untuk custom pagination
 
     // Form properties
     public $periode_id;
@@ -75,6 +76,12 @@ class Anggota extends Component
         'nia.max' => 'NIA maksimal 20 karakter',
         'no_hp.max' => 'No. HP maksimal 15 karakter',
     ];
+
+    // 🔥 Reset page saat filter berubah
+    public function resetPage()
+    {
+        $this->page = 1;
+    }
 
     public function mount()
     {
@@ -134,8 +141,6 @@ class Anggota extends Component
             'total' => $all->count(),
             'laki' => $all->where('jenis_kelamin', 'Laki-laki')->count(),
             'perempuan' => $all->where('jenis_kelamin', 'Perempuan')->count(),
-            'pac' => $all->where('user.role', 'sekretaris_pac')->count(),
-            'cab' => $all->where('user.role', 'sekretaris_cabang')->count(),
         ];
     }
 
@@ -290,6 +295,7 @@ class Anggota extends Component
         }
     }
 
+    // 🔥 Auto-reset page saat filter berubah
     public function updatingSearch()
     {
         $this->resetPage();
@@ -323,6 +329,7 @@ class Anggota extends Component
 
     private function getFilteredAnggotas()
     {
+        // Ambil semua data dengan filter
         $query = AnggotaModel::with(['periode', 'user'])
             ->where('user_id', Auth::id())
             ->latest();
@@ -334,31 +341,36 @@ class Anggota extends Component
             $query->where('user_id', $this->filterUser);
         }
 
-        if ($this->search) {
-            $allData = $query->get()->filter(function($anggota) {
-                $searchLower = strtolower($this->search);
-                return stripos($anggota->nama_lengkap ?? '', $searchLower) !== false ||
-                       stripos($anggota->nik ?? '', $searchLower) !== false ||
-                       stripos($anggota->nia ?? '', $searchLower) !== false ||
-                       stripos($anggota->email ?? '', $searchLower) !== false ||
-                       stripos($anggota->no_hp ?? '', $searchLower) !== false ||
-                       stripos($anggota->tempat_lahir ?? '', $searchLower) !== false ||
-                       stripos($anggota->jabatan ?? '', $searchLower) !== false;
-            });
+        $allData = $query->get();
 
-            $perPage = 10;
-            $currentPage = request()->get('page', 1);
-            $offset = ($currentPage - 1) * $perPage;
+        // Filter search manual
+        $filtered = $allData->filter(function($anggota) {
+            if (!$this->search) {
+                return true;
+            }
 
-            return new LengthAwarePaginator(
-                $allData->slice($offset, $perPage)->values(),
-                $allData->count(),
-                $perPage,
-                $currentPage,
-                ['path' => request()->url(), 'query' => request()->query()]
-            );
-        }
+            $searchLower = strtolower($this->search);
+            return str_contains(strtolower($anggota->nama_lengkap ?? ''), $searchLower) ||
+                   str_contains(strtolower($anggota->nik ?? ''), $searchLower) ||
+                   str_contains(strtolower($anggota->nia ?? ''), $searchLower) ||
+                   str_contains(strtolower($anggota->email ?? ''), $searchLower) ||
+                   str_contains(strtolower($anggota->no_hp ?? ''), $searchLower) ||
+                   str_contains(strtolower($anggota->tempat_lahir ?? ''), $searchLower) ||
+                   str_contains(strtolower($anggota->jabatan ?? ''), $searchLower);
+        });
 
-        return $query->paginate(10);
+        // Manual pagination
+        $perPage = 1;
+        $currentPage = $this->page; // 🔥 Gunakan property page
+        $total = $filtered->count();
+        $items = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        return new LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $currentPage,
+            ['path' => request()->url()]
+        );
     }
 }
