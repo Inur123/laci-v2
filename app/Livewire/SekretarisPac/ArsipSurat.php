@@ -1,6 +1,9 @@
 <?php
 
-namespace App\Livewire\SekretarisCabang;
+
+// filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/app/Livewire/SekretarisPac/ArsipSurat.php
+
+namespace App\Livewire\SekretarisPac;
 
 use App\Models\Surat;
 use Livewire\Component;
@@ -12,8 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-#[Layout('components.layouts.sekretaris-cabang')]
-#[Title('Arsip Surat')]
+#[Layout('components.layouts.sekretaris-pac')]
+#[Title('Arsip Surat - PAC')]
 class ArsipSurat extends Component
 {
     use WithPagination, WithFileUploads;
@@ -54,7 +57,7 @@ class ArsipSurat extends Component
 
     public function mount()
     {
-        if (Auth::user()->role !== 'sekretaris_cabang') {
+        if (Auth::user()->role !== 'sekretaris_pac') {
             abort(403, 'Akses ditolak');
         }
     }
@@ -96,7 +99,6 @@ class ArsipSurat extends Component
 
     public function edit($id)
     {
-        // 🔒 Hanya bisa edit surat milik user yang login
         $surat = Surat::where('user_id', Auth::id())->findOrFail($id);
 
         $this->arsipId = $id;
@@ -121,7 +123,6 @@ class ArsipSurat extends Component
             'file' => 'nullable|file|mimes:pdf|max:5120',
         ]);
 
-        // 🔒 Hanya bisa update surat milik user yang login
         $surat = Surat::where('user_id', Auth::id())->findOrFail($this->arsipId);
 
         $data = [
@@ -167,7 +168,6 @@ class ArsipSurat extends Component
 
     public function delete($id)
     {
-        // 🔒 Hanya bisa delete surat milik user yang login
         $surat = Surat::where('user_id', Auth::id())->find($id);
 
         if ($surat) {
@@ -188,7 +188,6 @@ class ArsipSurat extends Component
 
     public function download($id)
     {
-        // 🔒 Hanya bisa download surat milik user yang login
         $surat = Surat::where('user_id', Auth::id())->findOrFail($id);
 
         if (!$surat->file) {
@@ -216,10 +215,8 @@ class ArsipSurat extends Component
         }
     }
 
-    // 🔥 METHOD BARU: View file inline
     public function viewFile($id)
     {
-        // 🔒 Hanya bisa view surat milik user yang login
         $surat = Surat::where('user_id', Auth::id())->findOrFail($id);
 
         if (!$surat->file) {
@@ -258,7 +255,7 @@ class ArsipSurat extends Component
         $this->resetPage();
     }
 
-    // 🔥 METHOD BARU: Ambil Stats untuk Card (sama seperti PAC)
+    // 🔥 METHOD BARU: Ambil Stats untuk Card
     private function getStats()
     {
         $allSurats = Surat::where('user_id', Auth::id())->get();
@@ -273,14 +270,14 @@ class ArsipSurat extends Component
     public function render()
     {
         return match($this->action) {
-            'create' => view('livewire.sekretaris-cabang.arsip-surat.create'),
-            'edit' => view('livewire.sekretaris-cabang.arsip-surat.edit', [
+            'create' => view('livewire.sekretaris-pac.arsip-surat.create'),
+            'edit' => view('livewire.sekretaris-pac.arsip-surat.edit', [
                 'surat' => Surat::where('user_id', Auth::id())->findOrFail($this->arsipId)
             ]),
-            'detail' => view('livewire.sekretaris-cabang.arsip-surat.detail', [
+            'detail' => view('livewire.sekretaris-pac.arsip-surat.detail', [
                 'surat' => Surat::where('user_id', Auth::id())->findOrFail($this->arsipId)
             ]),
-            default => view('livewire.sekretaris-cabang.arsip-surat.index', [
+            default => view('livewire.sekretaris-pac.arsip-surat.index', [
                 'surats' => $this->getFilteredSurats(),
                 'stats' => $this->getStats() // 🔥 Kirim stats ke view
             ]),

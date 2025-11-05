@@ -1,4 +1,4 @@
-<!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/data-anggota/index.blade.php -->
+<!-- filepath: resources/views/livewire/sekretaris-pac/data-anggota/index.blade.php -->
 <div>
     <!-- Header -->
     <div class="mb-6">
@@ -7,15 +7,15 @@
     </div>
 
     <!-- Stats Cards -->
-    <!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/data-anggota/index.blade.php -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 mb-6">
+    <!-- filepath: resources/views/livewire/sekretaris-pac/data-anggota/index.blade.php -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6">
     <div class="bg-white rounded-lg shadow p-4 sm:p-6">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-gray-500 text-xs sm:text-sm">Total Anggota</p>
                 <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->statsAnggota['total'] }}</h3>
             </div>
-            <div class="bg-blue-100 text-blue-600 p-2 sm:p-3 rounded-full">
+            <div class="bg-green-100 text-green-600 p-2 sm:p-3 rounded-full">
                 <i class="fas fa-users text-xl sm:text-2xl"></i>
             </div>
         </div>
@@ -27,7 +27,7 @@
                 <p class="text-gray-500 text-xs sm:text-sm">Laki-laki</p>
                 <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->statsAnggota['laki'] }}</h3>
             </div>
-            <div class="bg-blue-100 text-blue-600 p-2 sm:p-3 rounded-full">
+            <div class="bg-green-100 text-green-600 p-2 sm:p-3 rounded-full">
                 <i class="fas fa-male text-xl sm:text-2xl"></i>
             </div>
         </div>
@@ -44,35 +44,19 @@
             </div>
         </div>
     </div>
-
-    <div class="bg-white rounded-lg shadow p-4 sm:p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-xs sm:text-sm">By Role</p>
-                <div class="flex gap-2 mt-1">
-                    <span class="text-sm font-bold text-blue-600">PAC: {{ $this->statsAnggota['pac'] }}</span>
-                    <span class="text-sm font-bold text-green-600">Cab: {{ $this->statsAnggota['cab'] }}</span>
-                </div>
-            </div>
-            <div class="bg-purple-100 text-purple-600 p-2 sm:p-3 rounded-full">
-                <i class="fas fa-user-shield text-xl sm:text-2xl"></i>
-            </div>
-        </div>
-    </div>
 </div>
-
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari Anggota</label>
                 <input type="text" wire:model.live.debounce.500ms="search" placeholder="Nama lengkap..."
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Periode</label>
                 <select wire:model.live="filterPeriode"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
                     <option value="">Semua Periode</option>
                     @foreach($this->periodeList as $periode)
                         <option value="{{ $periode->id }}">{{ $periode->nama }}</option>
@@ -82,22 +66,20 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     Dibuat Oleh
-                    <span class="text-xs text-gray-500">(Aktif & Verified)</span>
                 </label>
                 <select wire:model.live="filterUser"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
                     <option value="">Semua User</option>
                     @foreach($this->userList as $user)
                         <option value="{{ $user->id }}">
                             {{ $user->name }}
-                            <span class="text-xs">({{ $user->role === 'sekretaris_cabang' ? 'Cabang' : 'PAC' }})</span>
                         </option>
                     @endforeach
                 </select>
             </div>
             <div class="flex items-end">
                 <button wire:click="create"
-                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
                     <i class="fas fa-plus mr-2"></i>Tambah Anggota
                 </button>
             </div>
@@ -145,13 +127,13 @@
                                     <span class="text-xs">NIK: {{ $anggota->nik }}</span><br>
                                 @endif
                                 @if($anggota->nia)
-                                    <span class="text-xs text-blue-600">NIA: {{ $anggota->nia }}</span>
+                                    <span class="text-xs text-green-600">NIA: {{ $anggota->nia }}</span>
                                 @endif
                             </td>
                             <td class="py-3 px-4 text-sm text-gray-700">{{ $anggota->periode->nama }}</td>
                             <td class="py-3 px-4 text-sm text-gray-700">
                                 @if($anggota->jenis_kelamin === 'Laki-laki')
-                                    <span class="text-blue-600"><i class="fas fa-male"></i></span>
+                                    <span class="text-green-600"><i class="fas fa-male"></i></span>
                                 @elseif($anggota->jenis_kelamin === 'Perempuan')
                                     <span class="text-pink-600"><i class="fas fa-female"></i></span>
                                 @else
@@ -160,27 +142,15 @@
                             </td>
                             <td class="py-3 px-4 text-sm text-gray-700">{{ $anggota->no_hp ?? '-' }}</td>
                             <td class="py-3 px-4">
-                                <div class="flex flex-col gap-1">
-                                    <span class="px-2 py-1 text-xs rounded-full {{ $anggota->user->role === 'sekretaris_cabang' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700' }} inline-flex items-center gap-1">
-                                        <i class="fas fa-user-shield"></i>
-                                        {{ $anggota->user->role === 'sekretaris_cabang' ? 'Cabang' : 'PAC' }}
-                                    </span>
-                                    @if($anggota->user->is_active && $anggota->user->email_verified_at)
-                                        <div class="flex gap-1">
-                                            <span class="px-2 py-0.5 bg-green-50 text-green-600 rounded text-[10px]" title="Akun Aktif">
-                                                <i class="fas fa-check-circle"></i>
-                                            </span>
-                                            <span class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-[10px]" title="Email Verified">
-                                                <i class="fas fa-envelope-circle-check"></i>
-                                            </span>
-                                        </div>
-                                    @endif
-                                </div>
+                                <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700 inline-flex items-center gap-1">
+                                    <i class="fas fa-user-shield"></i>
+                                    PAC
+                                </span>
                             </td>
                             <td class="py-3 px-4">
                                 <div class="flex items-center gap-2">
                                     <button wire:click="detail('{{ $anggota->id }}')"
-                                        class="text-blue-600 hover:text-blue-800 transition" title="Detail">
+                                        class="text-green-600 hover:text-green-800 transition" title="Detail">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                     <button wire:click="edit('{{ $anggota->id }}')"
@@ -230,7 +200,7 @@
 
                         @foreach ($anggotas->getUrlRange(1, $anggotas->lastPage()) as $page => $url)
                             @if ($page == $anggotas->currentPage())
-                                <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">
+                                <span class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium">
                                     {{ $page }}
                                 </span>
                             @else

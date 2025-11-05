@@ -1,22 +1,35 @@
 <!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/components/layouts/sekretaris-pac.blade.php -->
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ $title ?? 'LACI - Sekretaris PAC' }}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-laci-3.png') }}?v={{ time() }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/logo-laci-3.png') }}?v={{ time() }}" />
+
     @vite(['resources/css/app.css'])
-      <link rel="icon" href="{{ asset('images/logo-laci-3.png') }}" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @livewireStyles
     <style>
-        [x-cloak] { display: none !important; }
+        [x-cloak] {
+            display: none !important;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
     </style>
 </head>
+
 <body class="bg-gray-100" x-data="{ sidebarOpen: window.innerWidth >= 1024 }" x-cloak>
+
+    <!-- Flash Message Component -->
+    @livewire('components.flash-message')
 
     <!-- Sidebar Desktop -->
     <x-sekretaris-pac.sidebar />
@@ -40,5 +53,7 @@
     </div>
 
     @livewireScripts
+
 </body>
+
 </html>

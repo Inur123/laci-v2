@@ -1,17 +1,18 @@
 <?php
 
 
-namespace App\Livewire\SekretarisCabang\DataAnggota;
+namespace App\Livewire\SekretarisPac\DataAnggota;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Periode as PeriodeModel;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-#[Layout('components.layouts.sekretaris-cabang')]
+#[Layout('components.layouts.sekretaris-pac')]
 #[Title('Periode Kepengurusan')]
 class Periode extends Component
 {
@@ -33,7 +34,7 @@ class Periode extends Component
 
     public function mount()
     {
-        if (Auth::user()->role !== 'sekretaris_cabang') {
+        if (Auth::user()->role !== 'sekretaris_pac') {
             abort(403, 'Akses ditolak');
         }
     }
@@ -172,11 +173,11 @@ class Periode extends Component
     public function render()
     {
         return match($this->action) {
-            'create' => view('livewire.sekretaris-cabang.data-anggota.periode.create'),
-            'edit' => view('livewire.sekretaris-cabang.data-anggota.periode.edit', [
+            'create' => view('livewire.sekretaris-pac.data-anggota.periode.create'),
+            'edit' => view('livewire.sekretaris-pac.data-anggota.periode.edit', [
                 'periode' => PeriodeModel::where('user_id', Auth::id())->findOrFail($this->periodeId)
             ]),
-            default => view('livewire.sekretaris-cabang.data-anggota.periode.index', [
+            default => view('livewire.sekretaris-pac.data-anggota.periode.index', [
                 'periodes' => $this->getFilteredPeriodes()
             ]),
         };
@@ -197,7 +198,7 @@ class Periode extends Component
             $currentPage = request()->get('page', 1);
             $offset = ($currentPage - 1) * $perPage;
 
-            return new \Illuminate\Pagination\LengthAwarePaginator(
+            return new LengthAwarePaginator(
                 $allData->slice($offset, $perPage)->values(),
                 $allData->count(),
                 $perPage,

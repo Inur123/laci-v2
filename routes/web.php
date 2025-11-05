@@ -14,6 +14,11 @@ use App\Livewire\SekretarisCabang\DataAnggota\Anggota;
 use App\Livewire\SekretarisCabang\DataAnggota\Periode;
 use App\Livewire\SekretarisPac\Dashboard as PacDashboard;
 use App\Livewire\SekretarisCabang\Dashboard as CabangDashboard;
+use App\Livewire\SekretarisPac\ArsipSurat as PacArsipSurat;
+use App\Livewire\SekretarisPac\PengajuanSurat as PacPengajuanSurat;
+use App\Livewire\SekretarisPac\ReferensiSurat as PacReferensiSurat;
+use App\Livewire\SekretarisPac\DataAnggota\Anggota as PacAnggota;
+use App\Livewire\SekretarisPac\DataAnggota\Periode as PacPeriode;
 
 // Guest routes
 Route::middleware('guest')->group(function () {
@@ -36,4 +41,9 @@ Route::middleware(['auth', 'role:sekretaris_cabang'])->prefix('cabang')->name('c
 // Sekretaris PAC Routes
 Route::middleware(['auth', 'role:sekretaris_pac'])->prefix('pac')->name('pac.')->group(function () {
     Route::get('/dashboard', PacDashboard::class)->name('dashboard');
+    Route::get('/arsip-surat', PacArsipSurat::class)->name('arsip-surat');
+    Route::get('/pengajuan-surat', PacPengajuanSurat::class)->name('pengajuan-surat');
+    Route::get('/referensi-surat', PacReferensiSurat::class)->name('referensi-surat');
+    Route::get('/data-anggota', PacAnggota::class)->name('data-anggota');
+    Route::get('/periode', PacPeriode::class)->name('periode');
 });

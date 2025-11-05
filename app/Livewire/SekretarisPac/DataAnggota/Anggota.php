@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\SekretarisCabang\DataAnggota;
+namespace App\Livewire\SekretarisPac\DataAnggota;
 
 use App\Models\User;
 use Livewire\Component;
@@ -15,8 +15,8 @@ use App\Models\Periode as PeriodeModel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-#[Layout('components.layouts.sekretaris-cabang')]
-#[Title('Data Anggota')]
+#[Layout('components.layouts.sekretaris-pac')]
+#[Title('Data Anggota - PAC')]
 class Anggota extends Component
 {
     use WithPagination, WithFileUploads;
@@ -78,7 +78,7 @@ class Anggota extends Component
 
     public function mount()
     {
-        if (Auth::user()->role !== 'sekretaris_cabang') {
+        if (Auth::user()->role !== 'sekretaris_pac') {
             abort(403, 'Akses ditolak');
         }
     }
@@ -87,79 +87,56 @@ class Anggota extends Component
     #[Computed]
     public function totalAnggota()
     {
-        return AnggotaModel::count();
+        return AnggotaModel::where('user_id', Auth::id())->count();
     }
 
     #[Computed]
     public function anggotaLakiLaki()
     {
-        return AnggotaModel::all()->filter(function($anggota) {
-            return $anggota->jenis_kelamin === 'Laki-laki';
-        })->count();
+        return AnggotaModel::where('user_id', Auth::id())
+            ->where('jenis_kelamin', 'Laki-laki')->count();
     }
 
     #[Computed]
     public function anggotaPerempuan()
     {
-        return AnggotaModel::all()->filter(function($anggota) {
-            return $anggota->jenis_kelamin === 'Perempuan';
-        })->count();
+        return AnggotaModel::where('user_id', Auth::id())
+            ->where('jenis_kelamin', 'Perempuan')->count();
     }
 
     #[Computed]
-   public function periodeList()
-{
-    return PeriodeModel::where('user_id', Auth::id())->latest()->get();
-}
+    public function periodeList()
+    {
+        return PeriodeModel::where('user_id', Auth::id())->latest()->get();
+    }
 
     #[Computed]
     public function userList()
     {
-        // Filter: Hanya user yang aktif, email verified, dan punya anggota
-        return User::whereHas('anggotas')
-            ->where('is_active', true)  // ✅ Hanya user aktif
-            ->whereNotNull('email_verified_at')  // ✅ Email sudah verified
-            ->orderBy('role', 'desc')  // Cabang dulu, baru PAC
-            ->orderBy('name')
-            ->get();
+        return User::where('id', Auth::id())->get();
     }
-    #[Computed]
-public function statsAnggota()
-{
-    $query = AnggotaModel::query();
-
-    if ($this->filterPeriode) {
-        $query->where('periode_id', $this->filterPeriode);
-    }
-    if ($this->filterUser) {
-        $query->where('user_id', $this->filterUser);
-    }
-
-    $all = $query->get();
-
-    return [
-        'total' => $all->count(),
-        'laki' => $all->where('jenis_kelamin', 'Laki-laki')->count(),
-        'perempuan' => $all->where('jenis_kelamin', 'Perempuan')->count(),
-        'pac' => $all->where('user.role', 'sekretaris_pac')->count(),
-        'cab' => $all->where('user.role', 'sekretaris_cabang')->count(),
-    ];
-}
 
     #[Computed]
-    public function anggotaBySekretarisPac()
+    public function statsAnggota()
     {
-        return AnggotaModel::whereHas('user', function($query) {
-            $query->where('role', 'sekretaris_pac');
-        })->count();
-    }
+        $query = AnggotaModel::where('user_id', Auth::id());
 
-    #[Computed]
-    public function anggotaBySekretarisCabang()
-    {
-        return AnggotaModel::whereHas('user', function($query) {
-            $query->where('role', 'sekretaris_cabang');
-        })->count();
+        if ($this->filterPeriode) {
+            $query->where('periode_id', $this->filterPeriode);
+        }
+        if ($this->filterUser) {
+            $query->where('user_id', $this->filterUser);
+        }
+
+        $all = $query->get();
+
+        return [
+            'total' => $all->count(),
+            'laki' => $all->where('jenis_kelamin', 'Laki-laki')->count(),
+            'perempuan' => $all->where('jenis_kelamin', 'Perempuan')->count(),
+            'pac' => $all->where('user.role', 'sekretaris_pac')->count(),
+            'cab' => $all->where('user.role', 'sekretaris_cabang')->count(),
+        ];
     }
 
     public function create()
@@ -193,7 +170,6 @@ public function statsAnggota()
             'no_rfid' => $this->no_rfid,
         ];
 
-        // Enkripsi foto jika ada
         if ($this->foto) {
             $data['foto'] = AnggotaModel::encryptAndStoreFoto($this->foto);
         }
@@ -215,7 +191,7 @@ public function statsAnggota()
 
     public function edit($id)
     {
-        $anggota = AnggotaModel::findOrFail($id);
+        $anggota = AnggotaModel::where('user_id', Auth::id())->findOrFail($id);
 
         $this->anggotaId = $id;
         $this->periode_id = $anggota->periode_id;
@@ -240,7 +216,7 @@ public function statsAnggota()
     {
         $this->validate();
 
-        $anggota = AnggotaModel::findOrFail($this->anggotaId);
+        $anggota = AnggotaModel::where('user_id', Auth::id())->findOrFail($this->anggotaId);
 
         $data = [
             'periode_id' => $this->periode_id,
@@ -258,13 +234,10 @@ public function statsAnggota()
             'no_rfid' => $this->no_rfid,
         ];
 
-        // Enkripsi foto baru jika ada
         if ($this->foto) {
-            // Hapus foto lama
             if ($this->fotoLama && Storage::disk('local')->exists($this->fotoLama)) {
                 Storage::disk('local')->delete($this->fotoLama);
             }
-
             $data['foto'] = AnggotaModel::encryptAndStoreFoto($this->foto);
         }
 
@@ -301,10 +274,9 @@ public function statsAnggota()
 
     public function delete($id)
     {
-        $anggota = AnggotaModel::find($id);
+        $anggota = AnggotaModel::where('user_id', Auth::id())->find($id);
 
         if ($anggota) {
-            // Hapus foto terenkripsi
             if ($anggota->foto && Storage::disk('local')->exists($anggota->foto)) {
                 Storage::disk('local')->delete($anggota->foto);
             }
@@ -336,38 +308,35 @@ public function statsAnggota()
     public function render()
     {
         return match($this->action) {
-            'create' => view('livewire.sekretaris-cabang.data-anggota.create'),
-            'edit' => view('livewire.sekretaris-cabang.data-anggota.edit', [
-                'anggota' => AnggotaModel::findOrFail($this->anggotaId)
+            'create' => view('livewire.sekretaris-pac.data-anggota.create'),
+            'edit' => view('livewire.sekretaris-pac.data-anggota.edit', [
+                'anggota' => AnggotaModel::where('user_id', Auth::id())->findOrFail($this->anggotaId)
             ]),
-            'detail' => view('livewire.sekretaris-cabang.data-anggota.detail', [
-                'anggota' => AnggotaModel::findOrFail($this->anggotaId)
+            'detail' => view('livewire.sekretaris-pac.data-anggota.detail', [
+                'anggota' => AnggotaModel::where('user_id', Auth::id())->findOrFail($this->anggotaId)
             ]),
-            default => view('livewire.sekretaris-cabang.data-anggota.index', [
+            default => view('livewire.sekretaris-pac.data-anggota.index', [
                 'anggotas' => $this->getFilteredAnggotas()
             ]),
         };
     }
 
-    // Method untuk filter & search encrypted data
     private function getFilteredAnggotas()
     {
-        // Jika ada search, ambil semua data dulu (tanpa pagination)
+        $query = AnggotaModel::with(['periode', 'user'])
+            ->where('user_id', Auth::id())
+            ->latest();
+
+        if ($this->filterPeriode) {
+            $query->where('periode_id', $this->filterPeriode);
+        }
+        if ($this->filterUser) {
+            $query->where('user_id', $this->filterUser);
+        }
+
         if ($this->search) {
-            $query = AnggotaModel::with(['periode', 'user'])
-                ->when($this->filterPeriode, function($q) {
-                    $q->where('periode_id', $this->filterPeriode);
-                })
-                ->when($this->filterUser, function($q) {
-                    $q->where('user_id', $this->filterUser);
-                })
-                ->latest()
-                ->get();
-
-            // Filter setelah decrypt
-            $filtered = $query->filter(function($anggota) {
+            $allData = $query->get()->filter(function($anggota) {
                 $searchLower = strtolower($this->search);
-
                 return stripos($anggota->nama_lengkap ?? '', $searchLower) !== false ||
                        stripos($anggota->nik ?? '', $searchLower) !== false ||
                        stripos($anggota->nia ?? '', $searchLower) !== false ||
@@ -377,29 +346,19 @@ public function statsAnggota()
                        stripos($anggota->jabatan ?? '', $searchLower) !== false;
             });
 
-            // Manual pagination
             $perPage = 10;
             $currentPage = request()->get('page', 1);
             $offset = ($currentPage - 1) * $perPage;
 
             return new LengthAwarePaginator(
-                $filtered->slice($offset, $perPage)->values(),
-                $filtered->count(),
+                $allData->slice($offset, $perPage)->values(),
+                $allData->count(),
                 $perPage,
                 $currentPage,
                 ['path' => request()->url(), 'query' => request()->query()]
             );
         }
 
-        // Jika tidak ada search, pagination biasa
-        return AnggotaModel::with(['periode', 'user'])
-            ->when($this->filterPeriode, function($query) {
-                $query->where('periode_id', $this->filterPeriode);
-            })
-            ->when($this->filterUser, function($query) {
-                $query->where('user_id', $this->filterUser);
-            })
-            ->latest()
-            ->paginate(10);
+        return $query->paginate(10);
     }
 }
