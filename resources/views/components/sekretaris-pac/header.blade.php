@@ -7,18 +7,6 @@
         </button>
 
         <div class="flex items-center space-x-2 md:space-x-4">
-            <!-- Search -->
-            <div class="hidden md:block">
-                <input type="text" placeholder="Cari..."
-                    class="px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
-            </div>
-
-            <!-- Notifications -->
-            <button class="relative text-gray-600 hover:text-gray-900 p-2">
-                <i class="fas fa-bell text-base md:text-lg"></i>
-                <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-
             <!-- Profile -->
             <div x-data="{ profileOpen: false }" class="relative">
                 <button @click="profileOpen = !profileOpen"
@@ -31,12 +19,10 @@
 
                 <div x-show="profileOpen" @click.away="profileOpen = false" x-transition
                     class="absolute right-0 mt-2 w-40 md:w-48 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <i class="fas fa-user text-xs mr-2"></i>Profile
-                    </a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <i class="fas fa-cog text-xs mr-2"></i>Pengaturan
-                    </a>
+                     <a href="{{ route('edit-profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+        <i class="fas fa-user-edit text-xs mr-2"></i>Edit Profil
+    </a>
+
                     <hr class="my-2 border-gray-200" />
 
                     <!-- Logout Livewire Component -->

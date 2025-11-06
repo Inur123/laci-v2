@@ -360,7 +360,7 @@ class Anggota extends Component
         });
 
         // Manual pagination
-        $perPage = 1;
+        $perPage = 10;
         $currentPage = $this->page; // 🔥 Gunakan property page
         $total = $filtered->count();
         $items = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();

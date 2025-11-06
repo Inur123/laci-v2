@@ -31,11 +31,8 @@
 
                 <div x-show="profileOpen" @click.away="profileOpen = false" x-transition
                     class="absolute right-0 mt-2 w-40 md:w-48 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <a href="{{ route('edit-profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         <i class="fas fa-user text-xs mr-2"></i>Profile
-                    </a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <i class="fas fa-cog text-xs mr-2"></i>Pengaturan
                     </a>
                     <hr class="my-2 border-gray-200" />
 
