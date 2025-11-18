@@ -71,18 +71,33 @@
                     @enderror
                 </div>
 
-                <!-- Deskripsi -->
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Deskripsi/Perihal
-                    </label>
-                    <textarea wire:model="deskripsi" rows="4"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent @error('deskripsi') border-red-500 @enderror"
-                        placeholder="Deskripsi singkat mengenai surat (opsional)"></textarea>
-                    @error('deskripsi')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
+               <!-- Deskripsi & Perihal sejajar -->
+<div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Deskripsi -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            Deskripsi
+        </label>
+        <textarea wire:model="deskripsi" rows="4"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent @error('deskripsi') border-red-500 @enderror"
+            placeholder="Deskripsi singkat mengenai surat (opsional)"></textarea>
+        @error('deskripsi')
+            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <!-- Perihal -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Perihal</label>
+        <input type="text" wire:model="perihal"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent @error('perihal') border-red-500 @enderror"
+            placeholder="Perihal / singkat isi surat">
+        @error('perihal')
+            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+        @enderror
+    </div>
+</div>
+
 
                 <!-- File Upload -->
                 <div class="md:col-span-2">

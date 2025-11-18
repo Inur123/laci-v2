@@ -17,12 +17,14 @@
     <div class="bg-white rounded-lg shadow p-6">
         <!-- Badge Status -->
         <div class="mb-6">
-            @if($surat->jenis_surat === 'masuk')
-                <span class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm font-medium">
+            @if ($surat->jenis_surat === 'masuk')
+                <span
+                    class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm font-medium">
                     <i class="fas fa-inbox mr-2"></i>Surat Masuk
                 </span>
             @else
-                <span class="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm font-medium">
+                <span
+                    class="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm font-medium">
                     <i class="fas fa-paper-plane mr-2"></i>Surat Keluar
                 </span>
             @endif
@@ -59,45 +61,50 @@
             <!-- Deskripsi -->
             <div class="border-b border-gray-200 pb-4 md:col-span-2">
                 <label class="block text-sm font-medium text-gray-500 mb-2">Deskripsi/Perihal</label>
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <p class="text-gray-900 whitespace-pre-line">{{ $surat->deskripsi ?? 'Tidak ada deskripsi' }}</p>
+                <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                    <p class="text-gray-900 whitespace-pre-line">
+                        <strong>Deskripsi:</strong> {{ $surat->deskripsi ?? 'Tidak ada deskripsi' }}
+                    </p>
+                    <p class="text-gray-900 whitespace-pre-line">
+                        <strong>Perihal:</strong> {{ $surat->perihal ?? 'Tidak ada perihal' }}
+                    </p>
                 </div>
             </div>
 
             <!-- File Attachment -->
             <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-gray-500 mb-3">File Lampiran</label>
-               @if($surat->file)
-    <div class="border-2 border-green-200 rounded-lg p-4 bg-green-50">
-        <div class="flex items-center justify-between flex-wrap gap-3">
-            <div class="flex items-center">
-                <div class="bg-green-100 p-3 rounded-lg">
-                    <i class="fas fa-file-pdf text-3xl text-red-600"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="font-semibold text-gray-900">File Surat (PDF)</p>
-                    <p class="text-sm text-gray-600">
-                        <i class="fas fa-lock text-green-600 mr-1"></i>
-                        File terenkripsi dengan aman
-                    </p>
-                </div>
-            </div>
-            <div class="flex gap-2">
-    <!-- Tombol Lihat File -->
-    <a href="{{ route('pac.arsip-surat.view-file', $surat->id) }}" target="_blank"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center">
-        <i class="fas fa-eye mr-2"></i>Lihat File
-    </a>
-</div>
+                @if ($surat->file)
+                    <div class="border-2 border-green-200 rounded-lg p-4 bg-green-50">
+                        <div class="flex items-center justify-between flex-wrap gap-3">
+                            <div class="flex items-center">
+                                <div class="bg-green-100 p-3 rounded-lg">
+                                    <i class="fas fa-file-pdf text-3xl text-red-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="font-semibold text-gray-900">File Surat (PDF)</p>
+                                    <p class="text-sm text-gray-600">
+                                        <i class="fas fa-lock text-green-600 mr-1"></i>
+                                        File terenkripsi dengan aman
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <!-- Tombol Lihat File -->
+                                <a href="{{ route('pac.arsip-surat.view-file', $surat->id) }}" target="_blank"
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center">
+                                    <i class="fas fa-eye mr-2"></i>Lihat File
+                                </a>
+                            </div>
 
-        </div>
-    </div>
-@else
-    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-        <i class="fas fa-file-excel text-4xl text-gray-400 mb-2"></i>
-        <p class="text-gray-500">Tidak ada file lampiran</p>
-    </div>
-@endif
+                        </div>
+                    </div>
+                @else
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <i class="fas fa-file-excel text-4xl text-gray-400 mb-2"></i>
+                        <p class="text-gray-500">Tidak ada file lampiran</p>
+                    </div>
+                @endif
 
             </div>
         </div>
@@ -116,7 +123,7 @@
                     <span class="font-medium mr-2">Dibuat pada:</span>
                     <span>{{ $surat->created_at->format('d M Y, H:i') }}</span>
                 </div>
-                @if($surat->updated_at != $surat->created_at)
+                @if ($surat->updated_at != $surat->created_at)
                     <div class="flex items-center text-sm text-gray-600 md:col-span-2">
                         <i class="fas fa-edit text-green-600 mr-2"></i>
                         <span class="font-medium mr-2">Terakhir diupdate:</span>
@@ -132,12 +139,12 @@
                 class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
                 <i class="fas fa-arrow-left mr-2"></i>Kembali
             </button>
-           @if($surat->status === 'pending')
-    <button wire:click="edit('{{ $surat->id }}')"
-        class="px-6 py-2.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition">
-        <i class="fas fa-edit mr-2"></i>Edit
-    </button>
-@endif
+            @if ($surat->status === 'pending')
+                <button wire:click="edit('{{ $surat->id }}')"
+                    class="px-6 py-2.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition">
+                    <i class="fas fa-edit mr-2"></i>Edit
+                </button>
+            @endif
         </div>
     </div>
 </div>

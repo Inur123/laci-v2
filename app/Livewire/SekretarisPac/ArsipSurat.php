@@ -32,6 +32,7 @@ class ArsipSurat extends Component
     public $deskripsi;
     public $file;
     public $oldFile;
+    public $perihal;
 
     protected $rules = [
         'no_surat' => 'required|string|max:255',
@@ -40,12 +41,14 @@ class ArsipSurat extends Component
         'pengirim_penerima' => 'required|string|max:255',
         'deskripsi' => 'nullable|string',
         'file' => 'nullable|file|mimes:pdf|max:5120',
+        'perihal' => 'required|string|max:255',
     ];
 
     protected $messages = [
         'no_surat.required' => 'Nomor surat harus diisi',
         'jenis_surat.required' => 'Jenis surat harus dipilih',
         'jenis_surat.in' => 'Jenis surat tidak valid',
+        'perihal.required' => 'Perihal harus diisi',
         'tanggal.required' => 'Tanggal harus diisi',
         'tanggal.date' => 'Format tanggal tidak valid',
         'pengirim_penerima.required' => 'Pengirim/Penerima harus diisi',
@@ -83,7 +86,7 @@ class ArsipSurat extends Component
 
     public function create()
     {
-        $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file']);
+        $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file', 'perihal']);
         $this->action = 'create';
     }
 
@@ -98,6 +101,7 @@ class ArsipSurat extends Component
             'tanggal' => $this->tanggal,
             'pengirim_penerima' => $this->pengirim_penerima,
             'deskripsi' => $this->deskripsi,
+            'perihal' => $this->perihal,
         ];
 
         // Enkripsi file jika ada
@@ -113,7 +117,7 @@ class ArsipSurat extends Component
         ]);
 
         $this->action = 'index';
-        $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file']);
+        $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file', 'perihal']);
     }
 
     public function edit($id)
@@ -127,6 +131,7 @@ class ArsipSurat extends Component
         $this->pengirim_penerima = $surat->pengirim_penerima;
         $this->deskripsi = $surat->deskripsi;
         $this->oldFile = $surat->file;
+        $this->perihal = $surat->perihal;
 
         $this->action = 'edit';
     }
@@ -140,6 +145,7 @@ class ArsipSurat extends Component
             'pengirim_penerima' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'file' => 'nullable|file|mimes:pdf|max:5120',
+            'perihal' => 'required|string|max:255',
         ]);
 
         $surat = Surat::where('user_id', Auth::id())->findOrFail($this->arsipId);
@@ -150,6 +156,7 @@ class ArsipSurat extends Component
             'tanggal' => $this->tanggal,
             'pengirim_penerima' => $this->pengirim_penerima,
             'deskripsi' => $this->deskripsi,
+            'perihal' => $this->perihal,
         ];
 
         // Enkripsi file baru jika ada
@@ -170,7 +177,7 @@ class ArsipSurat extends Component
         ]);
 
         $this->action = 'index';
-        $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file', 'arsipId', 'oldFile']);
+        $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file', 'arsipId', 'oldFile','perihal']);
     }
 
     public function detail($id)
@@ -182,7 +189,7 @@ class ArsipSurat extends Component
     public function back()
     {
         $this->action = 'index';
-        $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file', 'arsipId', 'oldFile']);
+        $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file', 'arsipId', 'oldFile','perihal']);
     }
 
     public function delete($id)
