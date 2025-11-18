@@ -22,7 +22,8 @@ return new class extends Migration
             // Tambahan field
             $table->enum('role', ['sekretaris_pac', 'sekretaris_cabang'])->default('sekretaris_pac');
             $table->boolean('is_active')->default(false);
-
+            $table->timestamp('last_password_reset_at')->nullable();
+            $table->timestamp('last_status_changed_by_admin_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

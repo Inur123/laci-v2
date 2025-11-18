@@ -80,31 +80,30 @@ class DataUserPac extends Component
         $this->reset(['userId']);
     }
 
-    // Toggle Active/Nonactive
     public function toggleStatus($id)
-    {
-        $user = User::findOrFail($id);
+{
+    $user = User::findOrFail($id);
 
-        if ($user->role !== 'sekretaris_pac') {
-            $this->dispatch('flash', [
-                'type' => 'error',
-                'message' => 'Hanya bisa mengubah status user PAC!'
-            ]);
-            return;
-        }
-
-        $user->update([
-            'is_active' => !$user->is_active
-        ]);
-
-        $status = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
-
+    if ($user->role !== 'sekretaris_pac') {
         $this->dispatch('flash', [
-            'type' => 'success',
-            'message' => "Akun {$user->name} berhasil {$status}!"
+            'type' => 'error',
+            'message' => 'Hanya bisa mengubah status user PAC!'
         ]);
+        return;
     }
 
+    $user->update([
+        'is_active' => !$user->is_active,
+        'last_status_changed_by_admin_at' => now(), // tambahkan ini
+    ]);
+
+    $status = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
+
+    $this->dispatch('flash', [
+        'type' => 'success',
+        'message' => "Akun {$user->name} berhasil {$status}!"
+    ]);
+}
     // Reset Password (set ke default)
     public function resetPassword($id)
     {
@@ -118,9 +117,9 @@ class DataUserPac extends Component
             return;
         }
 
-        // Set password default (misalnya: password123)
         $user->update([
-            'password' => Hash::make('password123')
+            'password' => Hash::make('password123'),
+            'last_password_reset_at' => now(), // tambahkan ini
         ]);
 
         $this->dispatch('flash', [
@@ -142,7 +141,7 @@ class DataUserPac extends Component
 
     public function render()
     {
-        return match($this->action) {
+        return match ($this->action) {
             'detail' => view('livewire.sekretaris-cabang.data-user-pac.detail', [
                 'user' => User::with(['anggotas', 'periodes', 'surats'])->findOrFail($this->userId)
             ]),
@@ -161,7 +160,7 @@ class DataUserPac extends Component
         $allData = $query->get();
 
         // Filter manual
-        $filtered = $allData->filter(function($user) {
+        $filtered = $allData->filter(function ($user) {
             $matchSearch = true;
             $matchStatus = true;
 
@@ -169,7 +168,7 @@ class DataUserPac extends Component
             if ($this->search) {
                 $searchLower = strtolower($this->search);
                 $matchSearch = str_contains(strtolower($user->name ?? ''), $searchLower) ||
-                               str_contains(strtolower($user->email ?? ''), $searchLower);
+                    str_contains(strtolower($user->email ?? ''), $searchLower);
             }
 
             // Filter Status

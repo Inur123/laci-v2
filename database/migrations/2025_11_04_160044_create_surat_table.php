@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('jenis_surat');
             $table->text('tanggal');
             $table->text('pengirim_penerima');
+            $table->text('perihal');
             $table->text('deskripsi')->nullable();
             $table->string('file')->nullable();
             $table->timestamps();

@@ -94,20 +94,20 @@ class Dashboard extends Component
     }
 
     public function getPengajuanPendingProperty()
-{
-    return PengajuanSuratPac::where('user_id', Auth::id())
-        ->get()
-        ->filter(fn($p) => $p->status === 'pending')
-        ->count();
-}
+    {
+        return PengajuanSuratPac::where('user_id', Auth::id())
+            ->get()
+            ->filter(fn($p) => $p->status === 'pending')
+            ->count();
+    }
 
-public function getPengajuanDiterimaProperty()
-{
-    return PengajuanSuratPac::where('user_id', Auth::id())
-        ->get()
-        ->filter(fn($p) => $p->status === 'diterima')
-        ->count();
-}
+    public function getPengajuanDiterimaProperty()
+    {
+        return PengajuanSuratPac::where('user_id', Auth::id())
+            ->get()
+            ->filter(fn($p) => $p->status === 'diterima')
+            ->count();
+    }
     public function getAktivitasTerbaruProperty(): Collection
     {
         $activities = collect();
@@ -135,25 +135,25 @@ public function getPengajuanDiterimaProperty()
             });
 
         // 2. SURAT
-        $surats = Surat::where('user_id', $userId)
-            ->latest('updated_at')
-            ->limit($limitPerCategory * 2)
-            ->get()
-            ->map(function ($surat) {
-                $isNew = $surat->created_at->diffInMinutes($surat->updated_at) < 1;
+       $surats = Surat::where('user_id', $userId)
+    ->latest('updated_at')
+    ->limit($limitPerCategory * 2)
+    ->get()
+    ->map(function ($surat) {
+        $isNew = $surat->created_at->diffInMinutes($surat->updated_at) < 1;
 
-                return [
-                    'type' => 'surat',
-                    'icon' => $isNew ? 'fa-envelope' : 'fa-envelope-open-text',
-                    'color' => $isNew ? ($surat->jenis_surat === 'masuk' ? 'teal' : 'indigo') : 'orange',
-                    'title' => $isNew
-                        ? 'Surat ' . ucfirst($surat->jenis_surat) . ' Baru'
-                        : 'Surat Diperbarui',
-                    'description' => 'No: ' . $surat->no_surat . ' - ' . $surat->pengirim_penerima,
-                    'time' => $isNew ? $surat->created_at : $surat->updated_at,
-                    'user' => Auth::user()->name,
-                ];
-            });
+        return [
+            'type' => 'surat',
+            'icon' => $isNew ? 'fa-folder-plus' : 'fa-folder-open',
+            'color' => $isNew ? 'teal' : 'orange',
+            'title' => $isNew
+                ? 'Arsip Surat Ditambahkan'
+                : 'Arsip Surat Diperbarui',
+            'description' => 'No: ' . $surat->no_surat . ' - ' . $surat->pengirim_penerima,
+            'time' => $isNew ? $surat->created_at : $surat->updated_at,
+            'user' => Auth::user()->name,
+        ];
+    });
 
         // 3. PERIODE
         $periodes = Periode::where('user_id', $userId)
@@ -175,22 +175,16 @@ public function getPengajuanDiterimaProperty()
             });
 
         // 4. PENGAJUAN SURAT
-$pengajuans = PengajuanSuratPac::where('user_id', $userId)
+        $pengajuans = PengajuanSuratPac::where('user_id', $userId)
     ->latest('updated_at')
     ->limit($limitPerCategory * 2)
     ->get()
-    ->map(function ($pengajuan) {
-        $isNew = $pengajuan->created_at->diffInMinutes($pengajuan->updated_at) < 1;
-        $currentStatus = $pengajuan->status; // ← sudah di-decrypt oleh accessor
-
-        // --- DEKRIP STATUS LAMA PAKAI ACCESSOR MODEL ---
-        $originalStatus = $pengajuan->getOriginal('status')
-            ? $pengajuan->newInstance()->forceFill(['status' => $pengajuan->getOriginal('status')])->status
-            : null;
+    ->flatMap(function ($pengajuan) {
+        $items = [];
 
         // 1. Pengajuan baru
-        if ($isNew) {
-            return [
+        if ($pengajuan->created_at->eq($pengajuan->updated_at)) {
+            $items[] = [
                 'type' => 'pengajuan',
                 'icon' => 'fa-file-signature',
                 'color' => 'yellow',
@@ -202,34 +196,42 @@ $pengajuans = PengajuanSuratPac::where('user_id', $userId)
         }
 
         // 2. Status berubah: Diterima
-        if ($currentStatus === 'diterima' && $originalStatus !== 'diterima') {
-            return [
-                'type' => 'pengajuan',
+        if (
+            $pengajuan->last_status_changed_at &&
+            $pengajuan->status === 'diterima'
+        ) {
+            $items[] = [
+                'type' => 'pengajuan_status',
                 'icon' => 'fa-check-circle',
                 'color' => 'green',
                 'title' => 'Pengajuan Disetujui',
                 'description' => 'No: ' . $pengajuan->no_surat . ' - Oleh Cabang',
-                'time' => $pengajuan->updated_at,
+                'time' => $pengajuan->last_status_changed_at,
                 'user' => 'Admin Cabang',
             ];
+            return $items; // STOP di sini, JANGAN tambahkan aktivitas update
         }
 
         // 3. Status berubah: Ditolak
-        if ($currentStatus === 'ditolak' && $originalStatus !== 'ditolak') {
-            return [
-                'type' => 'pengajuan',
+        if (
+            $pengajuan->last_status_changed_at &&
+            $pengajuan->status === 'ditolak'
+        ) {
+            $items[] = [
+                'type' => 'pengajuan_status',
                 'icon' => 'fa-times-circle',
                 'color' => 'red',
                 'title' => 'Pengajuan Ditolak',
                 'description' => 'No: ' . $pengajuan->no_surat . ' - Oleh Cabang',
-                'time' => $pengajuan->updated_at,
+                'time' => $pengajuan->last_status_changed_at,
                 'user' => 'Admin Cabang',
             ];
+            return $items; // STOP di sini, JANGAN tambahkan aktivitas update
         }
 
-        // 4. Diperbarui (bukan status baru)
+        // 4. Diperbarui (bukan perubahan status)
         if ($pengajuan->updated_at->gt($pengajuan->created_at)) {
-            return [
+            $items[] = [
                 'type' => 'pengajuan',
                 'icon' => 'fa-edit',
                 'color' => 'orange',
@@ -240,12 +242,24 @@ $pengajuans = PengajuanSuratPac::where('user_id', $userId)
             ];
         }
 
-        return null; // skip
-    })->filter(); // hapus null
+        return $items;
+    })->filter();
 
         // 5. PROFIL USER
         $user = Auth::user();
-        if ($user->updated_at->gt($user->created_at)) {
+
+        // 5a. Profil diperbarui oleh user sendiri
+        if (
+            $user->updated_at->gt($user->created_at)
+            && (
+                // updated_at tidak sama dengan last_password_reset_at
+                !$user->last_password_reset_at || !$user->updated_at->ne($user->last_password_reset_at)
+            )
+            && (
+                // updated_at tidak sama dengan last_status_changed_by_admin_at
+                !$user->last_status_changed_by_admin_at || !$user->updated_at->ne($user->last_status_changed_by_admin_at)
+            )
+        ) {
             $activities->push([
                 'type' => 'profil',
                 'icon' => 'fa-user-edit',
@@ -257,6 +271,38 @@ $pengajuans = PengajuanSuratPac::where('user_id', $userId)
             ]);
         }
 
+        // 5b. Password direset oleh admin
+        if (
+            $user->last_password_reset_at &&
+            $user->last_password_reset_at->gt($user->created_at)
+        ) {
+            $activities->push([
+                'type' => 'profil',
+                'icon' => 'fa-key',
+                'color' => 'orange',
+                'title' => 'Password Direset oleh Admin',
+                'description' => 'Password akun Anda direset ke default oleh Admin Cabang',
+                'time' => $user->last_password_reset_at,
+                'user' => 'Admin Cabang',
+            ]);
+        }
+
+        // 5c. Status aktif/nonaktif oleh admin
+        if (
+            isset($user->last_status_changed_by_admin_at) &&
+            $user->last_status_changed_by_admin_at &&
+            $user->last_status_changed_by_admin_at->gt($user->created_at)
+        ) {
+            $activities->push([
+                'type' => 'profil',
+                'icon' => $user->is_active ? 'fa-toggle-on' : 'fa-toggle-off',
+                'color' => $user->is_active ? 'green' : 'red',
+                'title' => $user->is_active ? 'Akun Diaktifkan oleh Admin' : 'Akun Dinonaktifkan oleh Admin',
+                'description' => 'Status akun Anda diubah oleh Admin Cabang',
+                'time' => $user->last_status_changed_by_admin_at,
+                'user' => 'Admin Cabang',
+            ]);
+        }
         // GABUNG SEMUA & SORT
         return $activities
             ->concat($anggotas)

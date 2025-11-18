@@ -23,7 +23,11 @@ class PengajuanSuratPac extends Model
         'deskripsi',
         'file',
         'status',
+        'last_status_changed_at',
     ];
+    protected $casts = [
+    'last_status_changed_at' => 'datetime',
+];
 
     // No Surat
     public function getNoSuratAttribute($value)

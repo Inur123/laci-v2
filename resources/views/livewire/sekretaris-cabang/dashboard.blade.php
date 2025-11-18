@@ -33,27 +33,32 @@
     <!-- Main Statistics Cards - Auto refresh every 30s -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6" wire:poll.30s>
         <!-- Total PAC -->
-        <div
-            class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+        <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-lg overflow-hidden group">
             <div class="p-6 relative">
-                <div
-                    class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500">
-                </div>
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4">
-                        <div class="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                        <div class="bg-white/20 p-3 rounded-xl">
                             <i class="fas fa-building text-3xl text-white"></i>
                         </div>
-                        @if($this->pacBulanIni > 0)
-                        <span
-                            class="text-xs font-bold text-blue-100 bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <i class="fas fa-arrow-up"></i> +{{ $this->pacBulanIni }}
-                        </span>
-                        @endif
                     </div>
-                    <h3 class="text-white/80 text-sm font-medium mb-1">Total PAC Aktif</h3>
-                    <p class="text-4xl font-bold text-white mb-2">{{ $this->totalPac }}</p>
-                    <p class="text-xs text-blue-100">PAC terverifikasi & aktif</p>
+                    <h3 class="text-white/80 text-sm font-medium mb-1">Statistik PAC</h3>
+                    <p class="text-4xl font-bold text-white mb-2">{{ $this->totalPacActive }}</p>
+                    <p class="text-xs text-blue-100 mb-4">PAC Aktif & Terverifikasi</p>
+                    <div class="space-y-1 text-xs">
+                        <div class="flex items-center justify-between text-white/80">
+                            <span><i class="fas fa-check-circle text-green-300 mr-1"></i>Sudah Verifikasi</span>
+                            <span class="font-bold">{{ $this->totalPacVerified }}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-white/80">
+                            <span><i class="fas fa-exclamation-circle text-yellow-300 mr-1"></i>Belum Verifikasi</span>
+                            <span class="font-bold">{{ $this->totalPacUnverified }}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-white/80">
+                            <span><i class="fas fa-user-slash text-gray-300 mr-1"></i>Belum Aktif</span>
+                            <span class="font-bold">{{ $this->totalPacInactive }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="bg-blue-900/30 px-6 py-3 backdrop-blur-sm">
@@ -101,39 +106,47 @@
             </div>
         </div>
 
-        <!-- Pengajuan PAC - ✅ HARDCODE 0 (Fitur Belum Aktif) -->
+
         <!-- Pengajuan PAC -->
-<div
-    class="bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
-    <div class="p-6 relative">
         <div
-            class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500">
-        </div>
-        <div class="relative">
-            <div class="flex items-center justify-between mb-4">
-                <div class="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-hourglass-half text-3xl text-white"></i>
+            class="bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+            <div class="p-6 relative">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500">
                 </div>
-                @if($this->pengajuanPending > 0)
-                <span
-                    class="text-xs font-bold text-yellow-100 bg-red-500/30 px-3 py-1.5 rounded-full backdrop-blur-sm animate-pulse">
-                    <i class="fas fa-exclamation-triangle"></i> {{ $this->pengajuanPending }} Pending
-                </span>
-                @endif
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-white/20 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-hourglass-half text-3xl text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-white/80 text-sm font-medium mb-1">Pengajuan PAC</h3>
+                    <p class="text-4xl font-bold text-white mb-2">{{ $this->totalPengajuanPac }}</p>
+                    <p class="text-xs text-blue-100 mb-4">Seluruah Pengajuan</p>
+                    <div class="space-y-1 text-xs">
+                        <div class="flex items-center justify-between text-white/80">
+                            <span><i class="fas fa-check-circle text-green-300 mr-1"></i>Diterima</span>
+                            <span class="font-bold">{{ $this->pengajuanDiterima }}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-white/80">
+                            <span><i class="fas fa-times-circle text-red-300 mr-1"></i>Ditolak</span>
+                            <span class="font-bold">{{ $this->pengajuanDitolak }}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-white/80">
+                            <span><i class="fas fa-hourglass-half text-yellow-300 mr-1"></i>Pending</span>
+                            <span class="font-bold">{{ $this->pengajuanPending }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <h3 class="text-white/80 text-sm font-medium mb-1">Pengajuan PAC</h3>
-            <p class="text-4xl font-bold text-white mb-2">{{ $this->pengajuanPending }}</p>
-            <p class="text-xs text-yellow-100">Menunggu persetujuan</p>
+            <div class="bg-yellow-900/30 px-6 py-3 backdrop-blur-sm">
+                <a href="{{ route('cabang.pengajuan-pac') }}"
+                    class="text-sm text-white hover:text-yellow-100 font-medium flex items-center justify-between group">
+                    <span>Lihat Detail</span>
+                    <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
         </div>
-    </div>
-    <div class="bg-yellow-900/30 px-6 py-3 backdrop-blur-sm">
-        <a href="{{ route('cabang.pengajuan-pac') }}"
-            class="text-sm text-white hover:text-yellow-100 font-medium flex items-center justify-between group">
-            <span>Lihat Detail</span>
-            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-        </a>
-    </div>
-</div>
 
         <!-- Arsip Surat -->
         <div
@@ -419,7 +432,7 @@
                 <div
                     class="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl hover:shadow-lg transition-shadow">
                     <i class="fas fa-check-circle text-4xl text-green-600 mb-3"></i>
-                    <p class="text-3xl font-bold text-gray-800">{{ $this->totalPac }}</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $this->totalPacActive }}</p>
                     <p class="text-sm text-gray-600 mt-2 font-medium">PAC Aktif</p>
                 </div>
                 <div

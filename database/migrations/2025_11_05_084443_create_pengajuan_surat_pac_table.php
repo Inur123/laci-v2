@@ -23,6 +23,7 @@ return new class extends Migration
             $table->longText('status');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->timestamp('last_status_changed_at')->nullable();
         });
     }
 

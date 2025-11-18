@@ -70,18 +70,29 @@
                 </div>
 
                 <!-- Deskripsi -->
-                <div class="md:col-span-2 w-full">
+                <!-- Deskripsi (sejajar dengan Perihal di md+) -->
+                <div class="w-full md:col-span-1">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Deskripsi/Perihal
+                        Deskripsi
                     </label>
                     <textarea wire:model="deskripsi" rows="4"
                         class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
-                        placeholder="Masukkan deskripsi atau perihal surat"></textarea>
+                        placeholder="Masukkan deskripsi"></textarea>
                     @error('deskripsi')
                         <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
+                <!-- Perihal (sejajar dengan Deskripsi) -->
+                <div class="w-full md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Perihal</label>
+                    <input type="text" wire:model="perihal"
+                        class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                        placeholder="Perihal / singkat isi surat">
+                    @error('perihal')
+                        <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
                 <!-- File Upload -->
                 <div class="md:col-span-2 w-full">
                     <label class="block text-sm font-medium text-gray-700 mb-2">

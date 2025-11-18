@@ -26,6 +26,7 @@ class Surat extends Model
         'pengirim_penerima',
         'deskripsi',
         'file',
+        'perihal',
     ];
 
     protected $casts = [
@@ -33,6 +34,7 @@ class Surat extends Model
         'jenis_surat' => 'encrypted',
         'pengirim_penerima' => 'encrypted',
         'deskripsi' => 'encrypted',
+        'perihal' => 'encrypted',
         // ❌ HAPUS 'tanggal' => 'date' karena kita enkripsi manual
     ];
 

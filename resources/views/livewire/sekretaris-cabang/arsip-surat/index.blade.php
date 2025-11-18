@@ -87,6 +87,7 @@
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">No. Surat</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Tanggal</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Jenis</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Perihal</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Deskripsi</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Pengirim/Penerima</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
@@ -109,6 +110,7 @@
                                 </span>
                             @endif
                         </td>
+                         <td class="py-3 px-4 text-sm text-gray-700">{{ Str::limit($surat->perihal, 40) }}</td>
                         <td class="py-3 px-4 text-sm text-gray-700">{{ Str::limit($surat->deskripsi, 40) }}</td>
                         <td class="py-3 px-4 text-sm text-gray-700">{{ $surat->pengirim_penerima }}</td>
                         <td class="py-3 px-4">

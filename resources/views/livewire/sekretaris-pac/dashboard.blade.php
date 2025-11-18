@@ -10,8 +10,8 @@
         <div class="relative flex items-center justify-between">
             <div>
                 <h1 class="text-2xl md:text-4xl font-bold mb-2">
-    Selamat Datang, {{ \Illuminate\Support\Str::title(auth()->user()->name) }}!
-</h1>
+                    Selamat Datang, {{ \Illuminate\Support\Str::title(auth()->user()->name) }}!
+                </h1>
                 <p class="text-green-100 text-base md:text-lg mb-1">Dashboard Sekretaris PAC IPNU IPPNU</p>
                 <p class="text-green-200 text-sm">
                     <i class="fas fa-calendar-day mr-2"></i>

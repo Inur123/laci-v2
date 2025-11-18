@@ -55,6 +55,10 @@
                         <label class="text-xs sm:text-sm font-medium text-gray-500">Deskripsi/Perihal</label>
                         <p class="text-sm sm:text-base text-gray-800 mt-1 whitespace-pre-wrap break-words">{{ $surat->deskripsi ?? '-' }}</p>
                     </div>
+                    <div>
+        <label class="text-xs sm:text-sm font-medium text-gray-500">Perihal</label>
+        <p class="text-sm sm:text-base text-gray-800 mt-1 break-words">{{ $surat->perihal ?? '-' }}</p>
+    </div>
 
                     <div class="pt-3 border-t border-gray-200">
                         <label class="text-xs sm:text-sm font-medium text-gray-500">Dibuat Oleh</label>

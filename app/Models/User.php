@@ -20,6 +20,8 @@ class User extends Authenticatable
         'password',
         'role',
         'is_active',
+        'last_password_reset_at',
+        'last_status_changed_by_admin_at',
     ];
 
     protected $hidden = [
@@ -30,6 +32,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_active' => 'boolean',
+        'last_password_reset_at' => 'datetime',
+        'last_status_changed_by_admin_at' => 'datetime',
     ];
 
     // Relationships

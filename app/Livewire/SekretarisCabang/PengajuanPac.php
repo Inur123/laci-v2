@@ -88,6 +88,7 @@ class PengajuanPac extends Component
 
             if ($surat->status === 'pending') {
                 $surat->status = 'diterima';
+                $surat->last_status_changed_at = now(); // tambahkan ini
                 $surat->save();
 
                 $this->dispatch('flash', [
@@ -120,6 +121,7 @@ class PengajuanPac extends Component
 
             if ($surat->status === 'pending') {
                 $surat->status = 'ditolak';
+                 $surat->last_status_changed_at = now(); // tambahkan ini
                 $surat->save();
 
                 $this->dispatch('flash', [
