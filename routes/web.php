@@ -47,6 +47,7 @@ Route::middleware(['auth', 'role:sekretaris_cabang'])->prefix('cabang')->name('c
 
     Route::get('/arsip-surat', ArsipSurat::class)->name('arsip-surat');
     Route::get('/arsip-surat/view-file/{id}', [DetailArsipSurat::class, 'viewFile'])->name('arsip-surat.view-file');
+     Route::get('/arsip-surat/export', [ArsipSurat::class, 'export'])->name('arsip-surat.export');
 
     Route::get('/pengajuan-pac', PengajuanPac::class)->name('pengajuan-pac');
     Route::get('/pengajuan-pac/file/{id}', [PengajuanPacFileController::class, 'show'])->name('pengajuan-pac.file');
@@ -63,6 +64,7 @@ Route::middleware(['auth', 'role:sekretaris_pac'])->prefix('pac')->name('pac.')-
 
     Route::get('/arsip-surat', PacArsipSurat::class)->name('arsip-surat');
     Route::get('/arsip-surat/view-file/{id}', [DetailArsipSuratPac::class, 'viewFile'])->name('arsip-surat.view-file');
+    Route::get('/arsip-surat/export', [PacArsipSurat::class, 'export'])->name('arsip-surat.export');
 
     Route::get('/pengajuan-surat', PacPengajuanSurat::class)->name('pengajuan-surat');
     Route::get('/pengajuan-pac/view-file/{id}', [DetailPengajuanPacFileController::class, 'viewFile'])->name('pengajuan-pac.view-file');

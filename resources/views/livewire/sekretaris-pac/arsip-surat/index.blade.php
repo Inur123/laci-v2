@@ -47,30 +47,49 @@
         </div>
     </div>
     <!-- Filter & Search -->
+    <!-- Filter & Search (Samakan dengan Cabang) -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari Surat</label>
-                <input type="text" wire:model.live.debounce.500ms="search" placeholder="Nomor surat, pengirim/penerima..."
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
+                <input type="text" wire:model.live.debounce.500ms="search"
+                    placeholder="Nomor surat, pengirim/penerima..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
             </div>
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Surat</label>
                 <select wire:model.live="filterJenis"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
                     <option value="">Semua</option>
                     <option value="masuk">Surat Masuk</option>
                     <option value="keluar">Surat Keluar</option>
                 </select>
             </div>
-            <div class="flex items-end">
+
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button wire:click="export" wire:loading.attr="disabled"
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span wire:loading.remove wire:target="export">
+                        <i class="fas fa-file-excel mr-2"></i>Export Excel
+                    </span>
+                    <span wire:loading wire:target="export">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>Mengunduh...
+                    </span>
+                </button>
+            </div>
+
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
                 <button wire:click="create"
-                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
                     <i class="fas fa-plus mr-2"></i>Tambah Surat
                 </button>
             </div>
         </div>
     </div>
+
 
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -88,7 +107,7 @@
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">No. Surat</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Tanggal</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Jenis</th>
-                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Perihal</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Perihal</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Deskripsi</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Pengirim/Penerima</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
@@ -101,12 +120,13 @@
                             <td class="py-3 px-4 text-sm text-gray-700">{{ $surat->no_surat }}</td>
                             <td class="py-3 px-4 text-sm text-gray-700">{{ $surat->tanggal->format('d M Y') }}</td>
                             <td class="py-3 px-4">
-                                @if($surat->jenis_surat === 'masuk')
+                                @if ($surat->jenis_surat === 'masuk')
                                     <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">
                                         <i class="fas fa-inbox mr-1"></i>Masuk
                                     </span>
                                 @else
-                                    <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">
+                                    <span
+                                        class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">
                                         <i class="fas fa-paper-plane mr-1"></i>Keluar
                                     </span>
                                 @endif
@@ -124,11 +144,11 @@
                                         class="text-yellow-600 hover:text-yellow-800 transition" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                   @if($surat->file)
-                                    <a href="{{ route('pac.arsip-surat.view-file', $surat->id) }}" target="_blank"
-                                        class="text-green-600 hover:text-green-800 transition" title="Download">
-                                        <i class="fas fa-download"></i>
-                                    </a>
+                                    @if ($surat->file)
+                                        <a href="{{ route('pac.arsip-surat.view-file', $surat->id) }}" target="_blank"
+                                            class="text-green-600 hover:text-green-800 transition" title="Download">
+                                            <i class="fas fa-download"></i>
+                                        </a>
                                     @endif
 
                                     <button onclick="confirmDelete('{{ $surat->id }}', '{{ $surat->no_surat }}')"
@@ -151,7 +171,7 @@
         </div>
 
         <!-- Custom Pagination -->
-        @if($surats->hasPages())
+        @if ($surats->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <!-- Info -->
@@ -169,7 +189,8 @@
                                 <i class="fas fa-chevron-left"></i>
                             </span>
                         @else
-                            <button wire:click="$set('page', {{ $surats->currentPage() - 1 }})" wire:loading.attr="disabled"
+                            <button wire:click="$set('page', {{ $surats->currentPage() - 1 }})"
+                                wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
@@ -191,7 +212,8 @@
 
                         {{-- Next Button --}}
                         @if ($surats->hasMorePages())
-                            <button wire:click="$set('page', {{ $surats->currentPage() + 1 }})" wire:loading.attr="disabled"
+                            <button wire:click="$set('page', {{ $surats->currentPage() + 1 }})"
+                                wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
@@ -208,25 +230,25 @@
 </div>
 
 <script>
-function confirmDelete(id, noSurat) {
-    Swal.fire({
-        title: 'Hapus Surat?',
-        html: `Surat <strong>${noSurat}</strong> akan dihapus secara permanen!`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
-        cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
-        reverseButtons: true,
-        customClass: {
-            confirmButton: 'px-4 py-2 rounded-lg',
-            cancelButton: 'px-4 py-2 rounded-lg'
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            @this.call('delete', id);
-        }
-    });
-}
+    function confirmDelete(id, noSurat) {
+        Swal.fire({
+            title: 'Hapus Surat?',
+            html: `Surat <strong>${noSurat}</strong> akan dihapus secara permanen!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
+            cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'px-4 py-2 rounded-lg',
+                cancelButton: 'px-4 py-2 rounded-lg'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('delete', id);
+            }
+        });
+    }
 </script>

@@ -9,9 +9,10 @@
         x-transition:leave="transition ease-in duration-300 transform" x-transition:leave-start="translate-x-0"
         x-transition:leave-end="-translate-x-full" class="fixed inset-y-0 left-0 w-72 bg-white shadow-lg">
         <!-- Logo -->
-        <div class="flex items-center justify-between p-4 h-[77px] border-b border-gray-200">
+       <div class="flex items-center justify-between p-4 h-[77px] border-b border-gray-200">
             <div class="flex items-center space-x-3">
-                <i class="fas fa-building text-2xl text-blue-600"></i>
+                <!-- 🔥 Ganti dengan Image Logo -->
+                <img src="{{ asset('images/logo-laci-3.png') }}" alt="Logo LACI" class="w-20 h-20 object-contain">
                 <span class="text-xl font-bold text-gray-800">LACI Cabang</span>
             </div>
             <button @click="sidebarOpen = false" class="text-gray-600 hover:text-gray-800 p-2">

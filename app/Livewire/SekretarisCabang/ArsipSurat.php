@@ -11,6 +11,8 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Exports\SekretarisCabang\ArsipSuratExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 #[Layout('components.layouts.sekretaris-cabang')]
 #[Title('Arsip Surat')]
@@ -169,7 +171,7 @@ class ArsipSurat extends Component
     public function back()
     {
         $this->action = 'index';
-        $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file', 'arsipId', 'oldFile','perihal']);
+        $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file', 'arsipId', 'oldFile', 'perihal']);
     }
 
     public function delete($id)
@@ -216,7 +218,7 @@ class ArsipSurat extends Component
 
     public function render()
     {
-        return match($this->action) {
+        return match ($this->action) {
             'create' => view('livewire.sekretaris-cabang.arsip-surat.create'),
             'edit' => view('livewire.sekretaris-cabang.arsip-surat.edit', [
                 'surat' => Surat::where('user_id', Auth::id())->findOrFail($this->arsipId)
@@ -241,15 +243,15 @@ class ArsipSurat extends Component
         $allSurats = $query->get();
 
         // Filter manual
-        $filtered = $allSurats->filter(function($surat) {
+        $filtered = $allSurats->filter(function ($surat) {
             $matchSearch = true;
             $matchJenis = true;
 
             if ($this->search) {
                 $searchLower = strtolower($this->search);
                 $matchSearch = str_contains(strtolower($surat->no_surat), $searchLower) ||
-                              str_contains(strtolower($surat->pengirim_penerima ?? ''), $searchLower) ||
-                              str_contains(strtolower($surat->deskripsi ?? ''), $searchLower);
+                    str_contains(strtolower($surat->pengirim_penerima ?? ''), $searchLower) ||
+                    str_contains(strtolower($surat->deskripsi ?? ''), $searchLower);
             }
 
             if ($this->filterJenis) {
@@ -271,6 +273,15 @@ class ArsipSurat extends Component
             $perPage,
             $currentPage,
             ['path' => request()->url()]
+        );
+    }
+    public function export()
+    {
+        $filename = 'Arsip_Surat_Cabang_' . now()->format('Y-m-d_His') . '.xlsx';
+
+        return Excel::download(
+            new ArsipSuratExport($this->search, $this->filterJenis),
+            $filename
         );
     }
 }

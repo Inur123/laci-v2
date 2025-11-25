@@ -47,7 +47,7 @@
 
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari Surat</label>
                 <input type="text" wire:model.live.debounce.500ms="search"
@@ -63,7 +63,21 @@
                     <option value="keluar">Surat Keluar</option>
                 </select>
             </div>
-            <div class="flex items-end">
+            <!-- 🔥 Tombol Export Excel -->
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button wire:click="export" wire:loading.attr="disabled"
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span wire:loading.remove wire:target="export">
+                        <i class="fas fa-file-excel mr-2"></i>Export Excel
+                    </span>
+                    <span wire:loading wire:target="export">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>Mengunduh...
+                    </span>
+                </button>
+            </div>
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
                 <button wire:click="create"
                     class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
                     <i class="fas fa-plus mr-2"></i>Tambah Surat
@@ -74,11 +88,23 @@
 
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+        <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <h3 class="text-lg font-semibold text-gray-800">Daftar Arsip Surat</h3>
-            <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
-                <i class="fas fa-lock mr-1"></i>Data Terenkripsi
-            </span>
+            <div class="flex items-center gap-2">
+                <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
+                    <i class="fas fa-lock mr-1"></i>Data Terenkripsi
+                </span>
+                <!-- 🔥 Tombol Export Alternatif (di header tabel) -->
+                <button wire:click="export" wire:loading.attr="disabled"
+                    class="text-xs px-3 py-1 bg-green-600 text-white rounded-full hover:bg-green-700 transition disabled:opacity-50">
+                    <span wire:loading.remove wire:target="export">
+                        <i class="fas fa-download mr-1"></i>Export
+                    </span>
+                    <span wire:loading wire:target="export">
+                        <i class="fas fa-spinner fa-spin mr-1"></i>
+                    </span>
+                </button>
+            </div>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full">
@@ -155,7 +181,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="py-8 px-4 text-center text-gray-500">
+                            <td colspan="8" class="py-8 px-4 text-center text-gray-500">
                                 <i class="fas fa-inbox text-4xl mb-2 block"></i>
                                 <p>Belum ada data surat</p>
                             </td>
@@ -244,6 +270,6 @@
             if (result.isConfirmed) {
                 @this.call('delete', id);
             }
-        });
+            });
     }
 </script>

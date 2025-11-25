@@ -7,11 +7,6 @@
         </button>
 
         <div class="flex items-center space-x-2 md:space-x-4">
-            <!-- Search -->
-            <div class="hidden md:block">
-                <input type="text" placeholder="Cari..."
-                    class="px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
 
             <!-- Notifications -->
             <button class="relative text-gray-600 hover:text-gray-900 p-2">

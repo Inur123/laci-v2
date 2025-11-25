@@ -4,7 +4,8 @@
     <!-- Logo -->
     <div class="flex items-center justify-center p-4 h-[77px] border-b border-gray-200">
         <div class="flex items-center space-x-2" :class="!sidebarOpen && 'justify-center w-full'">
-            <i class="fas fa-building text-2xl text-blue-600"></i>
+            <!-- 🔥 Ganti dengan Image Logo -->
+            <img src="{{ asset('images/logo-laci-3.png') }}" alt="Logo LACI" class="w-20 h-20 object-contain">
             <span x-show="sidebarOpen" x-transition.opacity class="text-xl font-bold text-gray-800">
                 LACI Cabang
             </span>

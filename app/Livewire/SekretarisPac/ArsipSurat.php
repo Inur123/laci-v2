@@ -11,6 +11,8 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Exports\SekretarisPac\ArsipSuratExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 #[Layout('components.layouts.sekretaris-pac')]
 #[Title('Arsip Surat - PAC')]
@@ -291,4 +293,13 @@ class ArsipSurat extends Component
             ['path' => request()->url()]
         );
     }
+    public function export()
+{
+    $filename = 'Arsip_Surat_PAC_' . now()->format('Y-m-d_His') . '.xlsx';
+
+    return Excel::download(
+        new ArsipSuratExport($this->search, $this->filterJenis),
+        $filename
+    );
+}
 }
