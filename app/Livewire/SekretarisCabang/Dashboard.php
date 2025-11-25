@@ -31,51 +31,51 @@ class Dashboard extends Component
         $this->activityLimit += 15;
     }
 
-   public function getTotalPacActiveProperty()
-{
-    return User::where('role', 'sekretaris_pac')
-        ->where('is_active', true)
-        ->whereNotNull('email_verified_at')
-        ->count();
-}
+    public function getTotalPacActiveProperty()
+    {
+        return User::where('role', 'sekretaris_pac')
+            ->where('is_active', true)
+            ->whereNotNull('email_verified_at')
+            ->count();
+    }
 
-public function getTotalPacVerifiedProperty()
-{
-    return User::where('role', 'sekretaris_pac')
-        ->whereNotNull('email_verified_at')
-        ->count();
-}
+    public function getTotalPacVerifiedProperty()
+    {
+        return User::where('role', 'sekretaris_pac')
+            ->whereNotNull('email_verified_at')
+            ->count();
+    }
 
-public function getTotalPacUnverifiedProperty()
-{
-    return User::where('role', 'sekretaris_pac')
-        ->whereNull('email_verified_at')
-        ->count();
-}
+    public function getTotalPacUnverifiedProperty()
+    {
+        return User::where('role', 'sekretaris_pac')
+            ->whereNull('email_verified_at')
+            ->count();
+    }
 
-public function getTotalPacInactiveProperty()
-{
-    return User::where('role', 'sekretaris_pac')
-        ->where('is_active', false)
-        ->count();
-}
+    public function getTotalPacInactiveProperty()
+    {
+        return User::where('role', 'sekretaris_pac')
+            ->where('is_active', false)
+            ->count();
+    }
 
-   public function getTotalPengajuanPacProperty()
-{
-    return PengajuanSuratPac::count();
-}
-public function getPengajuanPendingProperty()
-{
-    return PengajuanSuratPac::where('status', 'pending')->count();
-}
-public function getPengajuanDiterimaProperty()
-{
-    return PengajuanSuratPac::where('status', 'diterima')->count();
-}
-public function getPengajuanDitolakProperty()
-{
-    return PengajuanSuratPac::where('status', 'ditolak')->count();
-}
+    public function getTotalPengajuanPacProperty()
+    {
+        return PengajuanSuratPac::count();
+    }
+    public function getPengajuanPendingProperty()
+    {
+        return PengajuanSuratPac::where('status', 'pending')->count();
+    }
+    public function getPengajuanDiterimaProperty()
+    {
+        return PengajuanSuratPac::where('status', 'diterima')->count();
+    }
+    public function getPengajuanDitolakProperty()
+    {
+        return PengajuanSuratPac::where('status', 'ditolak')->count();
+    }
 
     // === STATISTIK ANGGOTA ===
     public function getTotalAnggotaProperty()
@@ -99,29 +99,35 @@ public function getPengajuanDitolakProperty()
     {
         return Anggota::where('jenis_kelamin', 'Perempuan')->count();
     }
-
     // === STATISTIK SURAT ===
     public function getTotalSuratProperty()
     {
-        return Surat::count();
+        return Surat::where('user_id', Auth::user()->id)->count();
     }
 
     public function getSuratBulanIniProperty()
     {
-        return Surat::whereMonth('created_at', now()->month)
+        return Surat::where('user_id', Auth::user()->id)
+            ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->count();
     }
 
     public function getSuratMasukProperty()
     {
-        return Surat::where('jenis_surat', 'masuk')->count();
+        return Surat::where('user_id', Auth::user()->id)
+            ->where('jenis_surat', 'masuk')
+            ->count();
     }
 
     public function getSuratKeluarProperty()
     {
-        return Surat::where('jenis_surat', 'keluar')->count();
+        return Surat::where('user_id', Auth::user()->id)
+            ->where('jenis_surat', 'keluar')
+            ->count();
     }
+
+
 
     // === STATISTIK KEGIATAN ===
     public function getTotalKegiatanProperty()

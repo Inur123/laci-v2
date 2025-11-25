@@ -50,7 +50,8 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari Surat</label>
-                <input type="text" wire:model.live.debounce.500ms="search" placeholder="Nomor surat, pengirim/penerima..."
+                <input type="text" wire:model.live.debounce.500ms="search"
+                    placeholder="Nomor surat, pengirim/penerima..."
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
             </div>
             <div>
@@ -95,61 +96,77 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @forelse($surats as $index => $surat)
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="py-3 px-4 text-sm text-gray-700">{{ $surats->firstItem() + $index }}</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">{{ $surat->no_surat }}</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">{{ $surat->tanggal->format('d M Y') }}</td>
-                        <td class="py-3 px-4">
-                            @if($surat->jenis_surat === 'masuk')
-                                <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">
-                                    <i class="fas fa-inbox mr-1"></i>Masuk
-                                </span>
-                            @else
-                                <span class="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs font-medium">
-                                    <i class="fas fa-paper-plane mr-1"></i>Keluar
-                                </span>
-                            @endif
-                        </td>
-                         <td class="py-3 px-4 text-sm text-gray-700">{{ Str::limit($surat->perihal, 40) }}</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">{{ Str::limit($surat->deskripsi, 40) }}</td>
-                        <td class="py-3 px-4 text-sm text-gray-700">{{ $surat->pengirim_penerima }}</td>
-                        <td class="py-3 px-4">
-                            <div class="flex items-center gap-2">
-                                <button wire:click="detail('{{ $surat->id }}')"
-                                    class="text-blue-600 hover:text-blue-800 transition" title="Detail">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button wire:click="edit('{{ $surat->id }}')"
-                                    class="text-yellow-600 hover:text-yellow-800 transition" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                @if($surat->file)
-                                    <a href="{{ route('cabang.arsip-surat.view-file', $surat->id) }}" target="_blank"
-                                        class="text-green-600 hover:text-green-800 transition" title="Download">
-                                        <i class="fas fa-download"></i>
-                                    </a>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ $surats->firstItem() + $index }}</td>
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
+                                {{ Str::title(Str::limit($surat->no_surat, 25)) }}
+                            </td>
+
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
+                                {{ $surat->tanggal->format('d M Y') }}
+                            </td>
+
+                            <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">
+                                @if ($surat->jenis_surat === 'masuk')
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">
+                                        <i class="fas fa-inbox mr-1"></i>Masuk
+                                    </span>
+                                @else
+                                    <span
+                                        class="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs font-medium">
+                                        <i class="fas fa-paper-plane mr-1"></i>Keluar
+                                    </span>
                                 @endif
-                                <button onclick="confirmDelete('{{ $surat->id }}', '{{ $surat->no_surat }}')"
-                                    class="text-red-600 hover:text-red-800 transition" title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
+                                {{ Str::title(Str::limit($surat->perihal, 30)) }}
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
+                                {{ Str::limit($surat->deskripsi, 10) }}
+                            </td>
+
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
+                                {{ Str::title(Str::limit($surat->pengirim_penerima, 30)) }}
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-2">
+                                    <button wire:click="detail('{{ $surat->id }}')"
+                                        class="text-blue-600 hover:text-blue-800 transition" title="Detail">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button wire:click="edit('{{ $surat->id }}')"
+                                        class="text-yellow-600 hover:text-yellow-800 transition" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    @if ($surat->file)
+                                        <a href="{{ route('cabang.arsip-surat.view-file', $surat->id) }}"
+                                            target="_blank" class="text-green-600 hover:text-green-800 transition"
+                                            title="Download">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                    @endif
+                                    <button onclick="confirmDelete('{{ $surat->id }}', '{{ $surat->no_surat }}')"
+                                        class="text-red-600 hover:text-red-800 transition" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
                     @empty
-                    <tr>
-                        <td colspan="7" class="py-8 px-4 text-center text-gray-500">
-                            <i class="fas fa-inbox text-4xl mb-2 block"></i>
-                            <p>Belum ada data surat</p>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td colspan="7" class="py-8 px-4 text-center text-gray-500">
+                                <i class="fas fa-inbox text-4xl mb-2 block"></i>
+                                <p>Belum ada data surat</p>
+                            </td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
         <!-- 🔥 Custom Pagination (Tanpa URL Parameter) -->
-        @if($surats->hasPages())
+        @if ($surats->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <!-- Info -->
@@ -167,7 +184,8 @@
                                 <i class="fas fa-chevron-left"></i>
                             </span>
                         @else
-                            <button wire:click="$set('page', {{ $surats->currentPage() - 1 }})" wire:loading.attr="disabled"
+                            <button wire:click="$set('page', {{ $surats->currentPage() - 1 }})"
+                                wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
@@ -189,7 +207,8 @@
 
                         {{-- Next Button --}}
                         @if ($surats->hasMorePages())
-                            <button wire:click="$set('page', {{ $surats->currentPage() + 1 }})" wire:loading.attr="disabled"
+                            <button wire:click="$set('page', {{ $surats->currentPage() + 1 }})"
+                                wire:loading.attr="disabled"
                                 class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
@@ -206,25 +225,25 @@
 </div>
 
 <script>
-function confirmDelete(id, noSurat) {
-    Swal.fire({
-        title: 'Hapus Surat?',
-        html: `Surat <strong>${noSurat}</strong> akan dihapus secara permanen!`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
-        cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
-        reverseButtons: true,
-        customClass: {
-            confirmButton: 'px-4 py-2 rounded-lg',
-            cancelButton: 'px-4 py-2 rounded-lg'
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            @this.call('delete', id);
-        }
-    });
-}
+    function confirmDelete(id, noSurat) {
+        Swal.fire({
+            title: 'Hapus Surat?',
+            html: `Surat <strong>${noSurat}</strong> akan dihapus secara permanen!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
+            cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'px-4 py-2 rounded-lg',
+                cancelButton: 'px-4 py-2 rounded-lg'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('delete', id);
+            }
+        });
+    }
 </script>
