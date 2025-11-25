@@ -20,7 +20,7 @@ class PengajuanPac extends Component
     public $filterStatus = '';
     public $detailId = null;
     public $detailData = null;
-    public $page = 1; // Tambahkan property page
+    public $page = 1;
 
     protected $paginationTheme = 'tailwind';
 
@@ -28,12 +28,10 @@ class PengajuanPac extends Component
     {
         $this->resetPage();
     }
-
     public function updatingFilterStatus()
     {
         $this->resetPage();
     }
-
     public function resetPage()
     {
         $this->page = 1;
@@ -50,7 +48,6 @@ class PengajuanPac extends Component
     {
         try {
             $surat = PengajuanSuratPac::with('user')->findOrFail($id);
-
             $this->detailId = $id;
             $this->detailData = [
                 'id' => $surat->id,
@@ -62,7 +59,7 @@ class PengajuanPac extends Component
                 'deskripsi' => $surat->deskripsi ?? '-',
                 'status' => $surat->status,
                 'has_file' => !empty($surat->file),
-                'file' => $surat->file ?? null, // Tambahkan baris ini
+                'file' => $surat->file ?? null,
                 'created_at_formatted' => $surat->created_at ? $surat->created_at->format('d F Y H:i') : '-',
                 'updated_at_formatted' => $surat->updated_at ? $surat->updated_at->format('d F Y H:i') : '-',
                 'user' => [
@@ -71,79 +68,36 @@ class PengajuanPac extends Component
                     'email' => $surat->user->email ?? '-',
                 ]
             ];
-
             $this->dispatch('openDetailModal', data: $this->detailData);
         } catch (\Exception $e) {
-            $this->dispatch('flash', [
-                'type' => 'error',
-                'message' => 'Data tidak ditemukan!'
-            ]);
+            $this->dispatch('flash', ['type' => 'error', 'message' => 'Data tidak ditemukan!']);
         }
     }
 
     public function approve($id)
     {
-        try {
-            $surat = PengajuanSuratPac::findOrFail($id);
-
-            if ($surat->status === 'pending') {
-                $surat->status = 'diterima';
-                $surat->last_status_changed_at = now(); // tambahkan ini
-                $surat->save();
-
-                $this->dispatch('flash', [
-                    'type' => 'success',
-                    'message' => 'Surat berhasil disetujui!'
-                ]);
-
-                // Refresh data jika modal masih terbuka
-                if ($this->detailId == $id) {
-                    $this->detail($id);
-                }
-            } else {
-                $this->dispatch('flash', [
-                    'type' => 'warning',
-                    'message' => 'Surat sudah diproses sebelumnya!'
-                ]);
-            }
-        } catch (\Exception $e) {
-            $this->dispatch('flash', [
-                'type' => 'error',
-                'message' => 'Terjadi kesalahan saat menyetujui surat!'
-            ]);
-        }
+        $this->setStatus($id, 'diterima', 'Surat berhasil disetujui!');
+    }
+    public function reject($id)
+    {
+        $this->setStatus($id, 'ditolak', 'Surat berhasil ditolak!');
     }
 
-    public function reject($id)
+    private function setStatus($id, $status, $message)
     {
         try {
             $surat = PengajuanSuratPac::findOrFail($id);
-
             if ($surat->status === 'pending') {
-                $surat->status = 'ditolak';
-                 $surat->last_status_changed_at = now(); // tambahkan ini
+                $surat->status = $status;
+                $surat->last_status_changed_at = now();
                 $surat->save();
-
-                $this->dispatch('flash', [
-                    'type' => 'success',
-                    'message' => 'Surat berhasil ditolak!'
-                ]);
-
-                // Refresh data jika modal masih terbuka
-                if ($this->detailId == $id) {
-                    $this->detail($id);
-                }
+                $this->dispatch('flash', ['type' => 'success', 'message' => $message]);
+                if ($this->detailId == $id) $this->detail($id);
             } else {
-                $this->dispatch('flash', [
-                    'type' => 'warning',
-                    'message' => 'Surat sudah diproses sebelumnya!'
-                ]);
+                $this->dispatch('flash', ['type' => 'warning', 'message' => 'Surat sudah diproses sebelumnya!']);
             }
         } catch (\Exception $e) {
-            $this->dispatch('flash', [
-                'type' => 'error',
-                'message' => 'Terjadi kesalahan saat menolak surat!'
-            ]);
+            $this->dispatch('flash', ['type' => 'error', 'message' => 'Terjadi kesalahan saat memproses surat!']);
         }
     }
 
@@ -153,38 +107,27 @@ class PengajuanPac extends Component
         $total = $allStats->count();
         $pending = $allStats->filter(fn($s) => $s->status === 'pending')->count();
         $diterima = $allStats->filter(fn($s) => $s->status === 'diterima')->count();
-
         $all = $allStats;
 
         if ($this->search) {
             $search = strtolower($this->search);
-            $all = $all->filter(function ($item) use ($search) {
-                return str_contains(strtolower($item->no_surat), $search)
-                    || str_contains(strtolower($item->keperluan), $search);
-            });
+            $all = $all->filter(
+                fn($item) =>
+                str_contains(strtolower($item->no_surat), $search)
+                    || str_contains(strtolower($item->keperluan), $search)
+            );
         }
 
         if ($this->filterStatus) {
-            $all = $all->filter(function ($item) {
-                return $item->status === $this->filterStatus;
-            });
+            $all = $all->filter(fn($item) => $item->status === $this->filterStatus);
         }
 
-        $page = $this->page; // Gunakan property page
         $perPage = 10;
-        $items = $all->slice(($page - 1) * $perPage, $perPage)->values();
-        $pengajuans = new LengthAwarePaginator(
-            $items,
-            $all->count(),
-            $perPage,
-            $page,
-            ['path' => request()->url()]
-        );
+        $items = $all->slice(($this->page - 1) * $perPage, $perPage)->values();
+        $pengajuans = new LengthAwarePaginator($items, $all->count(), $perPage, $this->page, ['path' => request()->url()]);
 
         if ($this->detailId && $this->detailData) {
-            return view('livewire.sekretaris-cabang.pengajuan-pac.detail', [
-                'detail' => $this->detailData,
-            ]);
+            return view('livewire.sekretaris-cabang.pengajuan-pac.detail', ['detail' => $this->detailData]);
         }
 
         return view('livewire.sekretaris-cabang.pengajuan-pac.index', [

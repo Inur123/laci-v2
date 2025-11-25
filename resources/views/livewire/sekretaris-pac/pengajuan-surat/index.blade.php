@@ -94,89 +94,130 @@
             </span>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead class="bg-gray-50 border-b border-gray-100">
-                    <tr>
-                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 w-16">No</th>
-                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">No Surat</th>
-                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Penerima</th>
-                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Tanggal</th>
-                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Keperluan</th>
-                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Status</th>
-                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @forelse($surats as $index => $surat)
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="py-3 px-4 text-sm text-gray-700">{{ $surats->firstItem() + $index }}</td>
-                        <td class="py-3 px-4 text-sm text-gray-800 font-semibold">{{ $surat->no_surat }}</td>
-                        <td class="py-3 px-4">
-                            @if($surat->penerima === 'ipnu')
-                                <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700 font-medium">
-                                    <i class="fas fa-male mr-1"></i>IPNU
-                                </span>
-                            @elseif($surat->penerima === 'ippnu')
-                                <span class="px-2 py-1 text-xs rounded-full bg-pink-100 text-pink-700 font-medium">
-                                    <i class="fas fa-female mr-1"></i>IPPNU
-                                </span>
-                            @else
-                                <span class="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-700 font-medium">
-                                    <i class="fas fa-users mr-1"></i>Bersama
-                                </span>
-                            @endif
-                        </td>
-                        <td class="py-3 px-4 text-sm text-gray-700">
-                            {{ $surat->tanggal ? $surat->tanggal->format('d M Y') : '-' }}
-                        </td>
-                        <td class="py-3 px-4 text-sm text-gray-700">{{ Str::limit($surat->keperluan, 30) }}</td>
-                        <td class="py-3 px-4 text-sm">
-                            @if($surat->status === 'pending')
-                                <span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-medium">
-                                    <i class="fas fa-clock mr-1"></i>Pending
-                                </span>
-                            @elseif($surat->status === 'diterima')
-                                <span class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium">
-                                    <i class="fas fa-check-circle mr-1"></i>Diterima
-                                </span>
-                            @elseif($surat->status === 'ditolak')
-                                <span class="px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">
-                                    <i class="fas fa-times-circle mr-1"></i>Ditolak
-                                </span>
-                            @endif
-                        </td>
-                        <td class="py-3 px-4">
-                            <div class="flex items-center gap-2">
-                                <button wire:click="detail('{{ $surat->id }}')"
-                                    class="text-green-600 hover:text-green-800 transition" title="Detail">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                @if($surat->status === 'pending')
-                                    <button wire:click="edit('{{ $surat->id }}')"
-                                        class="text-yellow-600 hover:text-yellow-800 transition" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                @endif
-                                <button onclick="confirmDeletePengajuan('{{ $surat->id }}', '{{ $surat->no_surat }}')"
-                                    class="text-red-600 hover:text-red-800 transition" title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="py-8 px-4 text-center text-gray-500">
-                            <i class="fas fa-envelope-open-text text-4xl mb-2 block"></i>
-                            <p>Belum ada pengajuan surat</p>
-                            @if($search || $filterStatus)
-                                <p class="text-sm mt-2">Coba ubah filter pencarian Anda</p>
-                            @endif
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+            <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+        <tr>
+            <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-16">
+                No
+            </th>
+            <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                No Surat
+            </th>
+            <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Penerima
+            </th>
+            <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden sm:table-cell">
+                Tanggal
+            </th>
+            <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Keperluan
+            </th>
+            <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Status
+            </th>
+            <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Aksi
+            </th>
+        </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+        @forelse($surats as $index => $surat)
+            <tr class="hover:bg-gray-50 transition-colors">
+                <!-- No -->
+                <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                    {{ $surats->firstItem() + $index }}
+                </td>
+
+                <!-- No Surat -->
+                <td class="px-4 py-3 text-sm font-semibold text-gray-800 whitespace-nowrap">
+                    {{ $surat->no_surat }}
+                </td>
+
+                <!-- Penerima -->
+                <td class="px-4 py-3 text-sm whitespace-nowrap">
+                    @if($surat->penerima === 'ipnu')
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            <i class="fas fa-male mr-1"></i>IPNU
+                        </span>
+                    @elseif($surat->penerima === 'ippnu')
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                            <i class="fas fa-female mr-1"></i>IPPNU
+                        </span>
+                    @else
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            <i class="fas fa-users mr-1"></i>Bersama
+                        </span>
+                    @endif
+                </td>
+
+                <!-- Tanggal (hidden di mobile) -->
+                <td class="px-4 py-3 text-sm text-gray-700 hidden sm:table-cell whitespace-nowrap">
+                    {{ $surat->tanggal?->format('d M Y') ?? '-' }}
+                </td>
+
+                <!-- Keperluan -->
+                <td class="px-4 py-3 text-sm text-gray-700 max-w-xs truncate" title="{{ $surat->keperluan }}">
+                    {{ $surat->keperluan }}
+                </td>
+
+                <!-- Status -->
+                <td class="px-4 py-3 text-sm whitespace-nowrap">
+                    @if($surat->status === 'pending')
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            <i class="fas fa-clock mr-1"></i>Pending
+                        </span>
+                    @elseif($surat->status === 'diterima')
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <i class="fas fa-check-circle mr-1"></i>Diterima
+                        </span>
+                    @elseif($surat->status === 'ditolak')
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            <i class="fas fa-times-circle mr-1"></i>Ditolak
+                        </span>
+                    @endif
+                </td>
+
+                <!-- Aksi → Ikon kecil seperti kode lama -->
+                <td class="px-4 py-3 text-sm whitespace-nowrap">
+                    <div class="flex items-center gap-3 text-lg">
+                        <!-- Detail -->
+                        <button wire:click="detail('{{ $surat->id }}')"
+                            class="text-blue-600 hover:text-blue-800 transition-transform hover:scale-110"
+                            title="Lihat Detail">
+                            <i class="fas fa-eye"></i>
+                        </button>
+
+                        <!-- Edit (hanya jika pending) -->
+                        @if($surat->status === 'pending')
+                            <button wire:click="edit('{{ $surat->id }}')"
+                                class="text-yellow-600 hover:text-yellow-800 transition-transform hover:scale-110"
+                                title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        @endif
+
+                        <!-- Hapus -->
+                        <button onclick="confirmDeletePengajuan('{{ $surat->id }}', '{{ $surat->no_surat }}')"
+                            class="text-red-600 hover:text-red-800 transition-transform hover:scale-110"
+                            title="Hapus">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="7" class="px-4 py-12 text-center text-gray-500">
+                    <i class="fas fa-envelope-open-text text-4xl mb-3 block"></i>
+                    <p class="text-base">Belum ada pengajuan surat</p>
+                    @if($search || $filterStatus)
+                        <p class="text-sm mt-2">Coba ubah filter atau kata kunci pencarian Anda</p>
+                    @endif
+                </td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
         </div>
 
         <!-- Custom Pagination -->
