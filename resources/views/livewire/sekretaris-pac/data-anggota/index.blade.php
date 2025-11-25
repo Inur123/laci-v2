@@ -87,150 +87,151 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="p-4 border-b border-gray-100">
-            <h3 class="text-base sm:text-lg font-semibold text-gray-800">Daftar Anggota</h3>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead class="bg-gray-50 border-b border-gray-100">
-                    <tr>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-16">No</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Nama Lengkap</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">NIK/NIA</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Periode</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">JK</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">No. HP</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Dibuat Oleh</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @forelse($anggotas as $index => $anggota)
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="py-3 px-4 text-sm text-gray-700">{{ $anggotas->firstItem() + $index }}</td>
-                            <td class="py-3 px-4">
-                                <div class="flex items-center gap-3">
-                                    <img src="{{ $anggota->avatar_url }}"
-                                         class="w-10 h-10 rounded-full object-cover"
-                                         alt="{{ $anggota->nama_lengkap }}">
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-800">{{ $anggota->nama_lengkap }}</p>
-                                        @if($anggota->email)
-                                            <p class="text-xs text-gray-500">{{ $anggota->email }}</p>
-                                        @endif
-                                    </div>
+   <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="p-4 border-b border-gray-100">
+        <h3 class="text-base sm:text-lg font-semibold text-gray-800">Daftar Anggota</h3>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50 border-b border-gray-100">
+                <tr>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-16">No</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Nama Lengkap</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">NIK/NIA</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Periode</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">JK</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">No. HP</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Dibuat Oleh</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                @forelse($anggotas as $index => $anggota)
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">{{ $anggotas->firstItem() + $index }}</td>
+                        <td class="py-3 px-4 whitespace-nowrap">
+                            <div class="flex items-center gap-3">
+                                <img src="{{ $anggota->avatar_url }}"
+                                     class="w-10 h-10 rounded-full object-cover"
+                                     alt="{{ $anggota->nama_lengkap }}">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800">{{ $anggota->nama_lengkap }}</p>
+                                    @if($anggota->email)
+                                        <p class="text-xs text-gray-500">{{ $anggota->email }}</p>
+                                    @endif
                                 </div>
-                            </td>
-                            <td class="py-3 px-4 text-sm text-gray-700">
-                                @if($anggota->nik)
-                                    <span class="text-xs">NIK: {{ $anggota->nik }}</span><br>
-                                @endif
-                                @if($anggota->nia)
-                                    <span class="text-xs text-green-600">NIA: {{ $anggota->nia }}</span>
-                                @endif
-                            </td>
-                            <td class="py-3 px-4 text-sm text-gray-700">{{ $anggota->periode->nama }}</td>
-                            <td class="py-3 px-4 text-sm text-gray-700">
-                                @if($anggota->jenis_kelamin === 'Laki-laki')
-                                    <span class="text-green-600"><i class="fas fa-male"></i></span>
-                                @elseif($anggota->jenis_kelamin === 'Perempuan')
-                                    <span class="text-pink-600"><i class="fas fa-female"></i></span>
-                                @else
-                                    -
-                                @endif
-                            </td>
-                            <td class="py-3 px-4 text-sm text-gray-700">{{ $anggota->no_hp ?? '-' }}</td>
-                            <td class="py-3 px-4">
-                                <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700 inline-flex items-center gap-1">
-                                    <i class="fas fa-user-shield"></i>
-                                    PAC
-                                </span>
-                            </td>
-                            <td class="py-3 px-4">
-                                <div class="flex items-center gap-2">
-                                    <button wire:click="detail('{{ $anggota->id }}')"
-                                        class="text-green-600 hover:text-green-800 transition" title="Detail">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button wire:click="edit('{{ $anggota->id }}')"
-                                        class="text-yellow-600 hover:text-yellow-800 transition" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button onclick="confirmDeleteAnggota('{{ $anggota->id }}', '{{ $anggota->nama_lengkap }}')"
-                                        class="text-red-600 hover:text-red-800 transition" title="Hapus">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="py-8 px-4 text-center text-gray-500">
-                                <i class="fas fa-users-slash text-4xl mb-2 block"></i>
-                                <p>Belum ada data anggota</p>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 🔥 Custom Pagination (Tanpa URL Parameter) -->
-        @if($anggotas->hasPages())
-            <div class="px-4 py-3 border-t border-gray-100">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <!-- Info -->
-                    <div class="text-sm text-gray-700">
-                        Menampilkan <span class="font-medium">{{ $anggotas->firstItem() }}</span>
-                        sampai <span class="font-medium">{{ $anggotas->lastItem() }}</span>
-                        dari <span class="font-medium">{{ $anggotas->total() }}</span> hasil
-                    </div>
-
-                    <!-- Pagination Buttons -->
-                    <div class="flex items-center gap-2">
-                        {{-- Previous Button --}}
-                        @if ($anggotas->onFirstPage())
-                            <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
-                                <i class="fas fa-chevron-left"></i>
-                            </span>
-                        @else
-                            <button wire:click="$set('page', {{ $anggotas->currentPage() - 1 }})" wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                        @endif
-
-                        {{-- Page Numbers --}}
-                        @foreach ($anggotas->getUrlRange(1, $anggotas->lastPage()) as $page => $url)
-                            @if ($page == $anggotas->currentPage())
-                                <span class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium">
-                                    {{ $page }}
-                                </span>
-                            @else
-                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
-                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                    {{ $page }}
-                                </button>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
+                            @if($anggota->nik)
+                                <span class="text-xs">NIK: {{ $anggota->nik }}</span><br>
                             @endif
-                        @endforeach
-
-                        {{-- Next Button --}}
-                        @if ($anggotas->hasMorePages())
-                            <button wire:click="$set('page', {{ $anggotas->currentPage() + 1 }})" wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        @else
-                            <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
-                                <i class="fas fa-chevron-right"></i>
+                            @if($anggota->nia)
+                                <span class="text-xs text-green-600">NIA: {{ $anggota->nia }}</span>
+                            @endif
+                        </td>
+                        <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">{{ $anggota->periode->nama }}</td>
+                        <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
+                            @if($anggota->jenis_kelamin === 'Laki-laki')
+                                <span class="text-green-600"><i class="fas fa-male"></i></span>
+                            @elseif($anggota->jenis_kelamin === 'Perempuan')
+                                <span class="text-pink-600"><i class="fas fa-female"></i></span>
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">{{ $anggota->no_hp ?? '-' }}</td>
+                        <td class="py-3 px-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700 inline-flex items-center gap-1">
+                                <i class="fas fa-user-shield"></i>
+                                PAC
                             </span>
+                        </td>
+                        <td class="py-3 px-4 whitespace-nowrap">
+                            <div class="flex items-center gap-2">
+                                <button wire:click="detail('{{ $anggota->id }}')"
+                                    class="text-green-600 hover:text-green-800 transition whitespace-nowrap" title="Detail">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button wire:click="edit('{{ $anggota->id }}')"
+                                    class="text-yellow-600 hover:text-yellow-800 transition whitespace-nowrap" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="confirmDeleteAnggota('{{ $anggota->id }}', '{{ $anggota->nama_lengkap }}')"
+                                    class="text-red-600 hover:text-red-800 transition whitespace-nowrap" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="py-8 px-4 text-center text-gray-500">
+                            <i class="fas fa-users-slash text-4xl mb-2 block"></i>
+                            <p>Belum ada data anggota</p>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 🔥 Custom Pagination (Tanpa URL Parameter) -->
+    @if($anggotas->hasPages())
+        <div class="px-4 py-3 border-t border-gray-100">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <!-- Info -->
+                <div class="text-sm text-gray-700">
+                    Menampilkan <span class="font-medium">{{ $anggotas->firstItem() }}</span>
+                    sampai <span class="font-medium">{{ $anggotas->lastItem() }}</span>
+                    dari <span class="font-medium">{{ $anggotas->total() }}</span> hasil
+                </div>
+
+                <!-- Pagination Buttons -->
+                <div class="flex items-center gap-2">
+                    {{-- Previous Button --}}
+                    @if ($anggotas->onFirstPage())
+                        <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                            <i class="fas fa-chevron-left"></i>
+                        </span>
+                    @else
+                        <button wire:click="$set('page', {{ $anggotas->currentPage() - 1 }})" wire:loading.attr="disabled"
+                            class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    @endif
+
+                    {{-- Page Numbers --}}
+                    @foreach ($anggotas->getUrlRange(1, $anggotas->lastPage()) as $page => $url)
+                        @if ($page == $anggotas->currentPage())
+                            <span class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium">
+                                {{ $page }}
+                            </span>
+                        @else
+                            <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                {{ $page }}
+                            </button>
                         @endif
-                    </div>
+                    @endforeach
+
+                    {{-- Next Button --}}
+                    @if ($anggotas->hasMorePages())
+                        <button wire:click="$set('page', {{ $anggotas->currentPage() + 1 }})" wire:loading.attr="disabled"
+                            class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    @else
+                        <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                    @endif
                 </div>
             </div>
-        @endif
-    </div>
+        </div>
+    @endif
+</div>
+
 </div>
 
 <script>

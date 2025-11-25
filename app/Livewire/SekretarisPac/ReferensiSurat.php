@@ -17,7 +17,11 @@ class ReferensiSurat extends Component
 
     public $searchName = '';
     public $filterStatus = '';
-    public $page = 1; // Pastikan property ini ada
+    public $page = 1;
+
+    // Properties untuk modal detail
+    public $showModal = false;
+    public $selectedSurat = null;
 
     protected $paginationTheme = 'tailwind';
 
@@ -36,45 +40,62 @@ class ReferensiSurat extends Component
         $this->page = 1;
     }
 
-public function render()
-{
-    // Ambil semua data pengajuan surat terbaru
-    $pengajuans = PengajuanSuratPac::with('user')->latest()->get();
-
-    // Filter search di collection (karena terenkripsi)
-    if ($this->searchName) {
-        $search = strtolower($this->searchName); // agar case-insensitive
-
-        $pengajuans = $pengajuans->filter(function($item) use ($search) {
-            return str_contains(strtolower($item->user->name ?? ''), $search)
-                || str_contains(strtolower($item->no_surat ?? ''), $search)
-                || str_contains(strtolower($item->penerima ?? ''), $search)
-                || str_contains(strtolower($item->keperluan ?? ''), $search)
-                || str_contains(strtolower($item->deskripsi ?? ''), $search);
-        });
+    /**
+     * Tampilkan detail surat
+     */
+    public function showDetail($suratId)
+    {
+        $this->selectedSurat = PengajuanSuratPac::with('user')->findOrFail($suratId);
+        $this->showModal = true;
     }
 
-    // Filter status (sudah aman)
-    if ($this->filterStatus) {
-        $pengajuans = $pengajuans->filter(fn($item) => $item->status === $this->filterStatus);
+    /**
+     * Tutup modal detail
+     */
+    public function closeDetail()
+    {
+        $this->showModal = false;
+        $this->selectedSurat = null;
     }
 
-    // Pagination manual
-    $page = $this->page ?? 1;
-    $perPage = 10;
-    $items = $pengajuans->slice(($page - 1) * $perPage, $perPage)->values();
+    public function render()
+    {
+        // Ambil semua data pengajuan surat terbaru
+        $pengajuans = PengajuanSuratPac::with('user')->latest()->get();
 
-    $paginator = new LengthAwarePaginator(
-        $items,
-        $pengajuans->count(),
-        $perPage,
-        $page,
-        ['path' => request()->url(), 'query' => request()->query()]
-    );
+        // Filter search di collection (karena terenkripsi)
+        if ($this->searchName) {
+            $search = strtolower($this->searchName); // agar case-insensitive
 
-    return view('livewire.sekretaris-pac.referensi-surat.index', [
-        'pengajuans' => $paginator
-    ]);
-}
+            $pengajuans = $pengajuans->filter(function($item) use ($search) {
+                return str_contains(strtolower($item->user->name ?? ''), $search)
+                    || str_contains(strtolower($item->no_surat ?? ''), $search)
+                    || str_contains(strtolower($item->penerima ?? ''), $search)
+                    || str_contains(strtolower($item->keperluan ?? ''), $search)
+                    || str_contains(strtolower($item->deskripsi ?? ''), $search);
+            });
+        }
 
+        // Filter status (sudah aman)
+        if ($this->filterStatus) {
+            $pengajuans = $pengajuans->filter(fn($item) => $item->status === $this->filterStatus);
+        }
+
+        // Pagination manual
+        $page = $this->page ?? 1;
+        $perPage = 10;
+        $items = $pengajuans->slice(($page - 1) * $perPage, $perPage)->values();
+
+        $paginator = new LengthAwarePaginator(
+            $items,
+            $pengajuans->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('livewire.sekretaris-pac.referensi-surat.index', [
+            'pengajuans' => $paginator
+        ]);
+    }
 }

@@ -67,11 +67,19 @@
     </div>
 
     <!-- Buttons -->
-    <div class="flex gap-3 mt-6" wire:key="action-buttons-{{ $detail['id'] }}">
-        @if ($detail['status'] === 'pending')
+    <div class="flex justify-between mt-6" wire:key="action-buttons-{{ $detail['id'] }}">
+    <!-- Kembali / Batal di kiri -->
+    <button wire:click="$set('detailId', null)" type="button"
+        class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
+        <i class="fas fa-arrow-left mr-2"></i>Kembali
+    </button>
+
+    <!-- Tombol Terima & Tolak di kanan -->
+    @if ($detail['status'] === 'pending')
+        <div class="flex gap-3">
             <!-- Terima -->
-            <button wire:click="approve('{{ $detail['id'] }}')" type="button" wire:loading.attr="disabled"
-                wire:target="approve"
+            <button type="button" onclick="confirmApprove('{{ $detail['id'] }}')"
+                wire:loading.attr="disabled" wire:target="approve"
                 class="relative px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-75 disabled:cursor-not-allowed">
 
                 <span wire:loading.remove wire:target="approve" class="flex items-center">
@@ -84,8 +92,8 @@
             </button>
 
             <!-- Tolak -->
-            <button wire:click="reject('{{ $detail['id'] }}')" type="button" wire:loading.attr="disabled"
-                wire:target="reject"
+            <button type="button" onclick="confirmReject('{{ $detail['id'] }}')"
+                wire:loading.attr="disabled" wire:target="reject"
                 class="relative px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-75 disabled:cursor-not-allowed">
 
                 <span wire:loading.remove wire:target="reject" class="flex items-center">
@@ -96,13 +104,54 @@
                     <i class="fas fa-spinner fa-spin mr-2"></i>Mengirim...
                 </span>
             </button>
-        @endif
+        </div>
+    @endif
+</div>
 
-        <!-- Kembali / batal -->
-        <button wire:click="$set('detailId', null)" type="button"
-            class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
-            <i class="fas fa-arrow-left mr-2"></i>Kembali
-        </button>
-    </div>
+<script>
+function confirmApprove(id) {
+    Swal.fire({
+        title: 'Setujui Surat?',
+        text: 'Surat ini akan disetujui dan diproses lebih lanjut.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#22c55e',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-check mr-2"></i>Ya, Setujui!',
+        cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'px-4 py-2 rounded-lg',
+            cancelButton: 'px-4 py-2 rounded-lg'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            @this.call('approve', id);
+        }
+    });
+}
+
+function confirmReject(id) {
+    Swal.fire({
+        title: 'Tolak Surat?',
+        text: 'Surat ini akan ditolak dan tidak diproses.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-times mr-2"></i>Ya, Tolak!',
+        cancelButtonText: '<i class="fas fa-arrow-left mr-2"></i>Batal',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'px-4 py-2 rounded-lg',
+            cancelButton: 'px-4 py-2 rounded-lg'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            @this.call('reject', id);
+        }
+    });
+}
+</script>
 
 </div>
