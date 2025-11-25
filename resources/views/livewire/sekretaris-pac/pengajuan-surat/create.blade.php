@@ -54,8 +54,8 @@
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
                     <textarea wire:model.defer="deskripsi"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-sm"
-                        rows="2" placeholder="Deskripsi tambahan"></textarea>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-sm" rows="2"
+                        placeholder="Deskripsi tambahan"></textarea>
                     @error('deskripsi')
                         <span class="text-red-600 text-xs mt-1">{{ $message }}</span>
                     @enderror
@@ -67,16 +67,29 @@
                     @error('file')
                         <span class="text-red-600 text-xs mt-1">{{ $message }}</span>
                     @enderror
-                    @if($file)
-                        <span class="text-xs text-gray-500 mt-2 block">File terpilih: {{ $file->getClientOriginalName() }}</span>
+                    @if ($file)
+                        <span class="text-xs text-gray-500 mt-2 block">File terpilih:
+                            {{ $file->getClientOriginalName() }}</span>
                     @endif
                 </div>
             </div>
             <div class="flex gap-3 mt-6">
-                <button type="submit"
-                    class="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                    <i class="fas fa-paper-plane mr-2"></i>Ajukan Surat
+                <button type="submit" wire:loading.attr="disabled" wire:target="save"
+                    class="relative px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-75 disabled:cursor-not-allowed">
+
+                    <!-- Teks Normal -->
+                    <span wire:loading.remove wire:target="save" class="flex items-center">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Ajukan Surat
+                    </span>
+
+                    <!-- Loading State -->
+                    <span wire:loading wire:target="save" class="flex items-center">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>
+                        Mengirim...
+                    </span>
                 </button>
+
                 <button type="button" wire:click="back"
                     class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
                     <i class="fas fa-arrow-left mr-2"></i>Batal

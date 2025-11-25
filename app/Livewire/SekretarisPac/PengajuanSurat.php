@@ -11,6 +11,9 @@ use App\Models\PengajuanSuratPac;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Mail\PengajuanSuratBaruMail;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PengajuanTerkirimMail;
 
 #[Layout('components.layouts.sekretaris-pac')]
 #[Title('Pengajuan Surat - PAC')]
@@ -72,35 +75,42 @@ class PengajuanSurat extends Component
         $this->action = 'create';
     }
 
-    public function save()
-    {
-        $this->validate();
+ public function save()
+{
+    $this->validate();
 
-        $data = [
-            'user_id' => Auth::id(),
-            'no_surat' => $this->no_surat,
-            'penerima' => $this->penerima,
-            'tanggal' => $this->tanggal,
-            'keperluan' => $this->keperluan,
-            'deskripsi' => $this->deskripsi,
-            'status' => 'pending',
-        ];
+    $data = [
+        'user_id'   => Auth::id(),
+        'no_surat'  => $this->no_surat,
+        'penerima'  => $this->penerima,
+        'tanggal'   => $this->tanggal,
+        'keperluan' => $this->keperluan,
+        'deskripsi' => $this->deskripsi,
+        'status'    => 'pending',
+    ];
 
-        if ($this->file) {
-            $data['file'] = PengajuanSuratPac::encryptAndStoreFile($this->file);
-        }
-
-        PengajuanSuratPac::create($data);
-
-        $this->dispatch('flash', [
-            'type' => 'success',
-            'message' => 'Pengajuan surat berhasil dikirim!'
-        ]);
-
-        $this->action = 'index';
-        $this->reset(['no_surat', 'penerima', 'tanggal', 'keperluan', 'deskripsi', 'file', 'status']);
+    if ($this->file) {
+        $data['file'] = PengajuanSuratPac::encryptAndStoreFile($this->file);
     }
 
+    $pengajuan = PengajuanSuratPac::create($data)->load('user');
+
+    // 1. Kirim ke Admin (dengan lampiran PDF)
+    Mail::to('zainurroziqin38@gmail.com')
+        ->send(new PengajuanSuratBaruMail($pengajuan));
+
+    // 2. Kirim ke User yang mengajukan (konfirmasi berhasil)
+    Mail::to($pengajuan->user->email)
+        ->send(new PengajuanTerkirimMail($pengajuan));
+
+    $this->dispatch('flash', [
+        'type'    => 'success',
+        'message' => 'Pengajuan berhasil dikirim! Notifikasi telah dikirim ke email Anda.'
+    ]);
+
+    $this->action = 'index';
+    $this->reset(['no_surat', 'penerima', 'tanggal', 'keperluan', 'deskripsi', 'file', 'status']);
+}
     public function edit($id)
     {
         $surat = PengajuanSuratPac::where('user_id', Auth::id())->findOrFail($id);
@@ -224,7 +234,7 @@ class PengajuanSurat extends Component
             ->get();
 
         // Filter manual karena data terenkripsi
-        $filtered = $allData->filter(function($surat) {
+        $filtered = $allData->filter(function ($surat) {
             $matchSearch = true;
             $matchStatus = true;
 
@@ -232,8 +242,8 @@ class PengajuanSurat extends Component
             if ($this->search) {
                 $searchLower = strtolower($this->search);
                 $matchSearch = str_contains(strtolower($surat->no_surat ?? ''), $searchLower) ||
-                               str_contains(strtolower($surat->keperluan ?? ''), $searchLower) ||
-                               str_contains(strtolower($surat->penerima ?? ''), $searchLower);
+                    str_contains(strtolower($surat->keperluan ?? ''), $searchLower) ||
+                    str_contains(strtolower($surat->penerima ?? ''), $searchLower);
             }
 
             // Filter Status
