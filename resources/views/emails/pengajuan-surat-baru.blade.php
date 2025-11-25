@@ -45,7 +45,7 @@
                     <tr>
                         <td style="padding: 30px 30px 20px;">
                             <h2 style="margin: 0 0 16px; color: #1f2937; font-size: 20px; font-weight: 600;">
-                                Halo Admin! 👋
+                                Halo Sekretaris Cabang! 👋
                             </h2>
 
                             <p style="margin: 0 0 24px; color: #4b5563; font-size: 16px; line-height: 1.6;">
@@ -130,7 +130,7 @@
                                 style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
                                 <p style="margin: 0; color: #92400e; font-size: 14px; line-height: 1.6;">
                                     ⚠️ <strong>Tindakan Diperlukan:</strong> Silakan segera tinjau dan proses pengajuan
-                                    surat ini melalui dashboard admin Laci Digital.
+                                    surat ini melalui dashboard sekretaris Laci Digital.
                                 </p>
                             </div>
 

@@ -54,7 +54,7 @@
                                 Pengajuan surat Anda dengan nomor <strong
                                     style="color:#1e293b">{{ $pengajuan->no_surat }}</strong>
                                 telah <span style="color:#10b981;font-weight:700;">berhasil dikirim</span> dan sedang
-                                menunggu persetujuan admin.
+                                menunggu persetujuan sekretaris cabang.
                             </p>
 
                             <!-- Detail Box -->
@@ -110,7 +110,7 @@
                                 <p style="margin:0;color:#1e40af;font-size:15px;line-height:1.7;">
                                     <strong>Informasi:</strong><br>
                                     Anda akan menerima notifikasi email lagi ketika pengajuan ini telah
-                                    <strong>diterima</strong> atau <strong>ditolak</strong> oleh admin.
+                                    <strong>diterima</strong> atau <strong>ditolak</strong> oleh sekretaris cabang.
                                 </p>
                             </div>
 

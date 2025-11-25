@@ -10,6 +10,9 @@ use App\Models\PengajuanSuratPac;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PengajuanStatusMail;
+
 #[Layout('components.layouts.sekretaris-cabang')]
 #[Title('Pengajuan PAC')]
 class PengajuanPac extends Component
@@ -86,11 +89,22 @@ class PengajuanPac extends Component
     private function setStatus($id, $status, $message)
     {
         try {
-            $surat = PengajuanSuratPac::findOrFail($id);
+            // load user agar email tersedia
+            $surat = PengajuanSuratPac::with('user')->findOrFail($id);
             if ($surat->status === 'pending') {
                 $surat->status = $status;
                 $surat->last_status_changed_at = now();
                 $surat->save();
+
+                // kirim notifikasi email ke pengaju (jangan gagalkan proses kalau email error)
+                try {
+                    if ($surat->user && $surat->user->email) {
+                        Mail::to($surat->user->email)->send(new PengajuanStatusMail($surat));
+                    }
+                } catch (\Exception $mailEx) {
+                    // optional: log($mailEx->getMessage());
+                }
+
                 $this->dispatch('flash', ['type' => 'success', 'message' => $message]);
                 if ($this->detailId == $id) $this->detail($id);
             } else {

@@ -67,20 +67,42 @@
     </div>
 
     <!-- Buttons -->
-    <div class="mt-8 flex gap-2">
-        <button wire:click="$set('detailId', null)"
-            class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition">
-            <i class="fas fa-arrow-left mr-1"></i>Kembali
-        </button>
+    <div class="flex gap-3 mt-6" wire:key="action-buttons-{{ $detail['id'] }}">
         @if ($detail['status'] === 'pending')
-            <button onclick="confirmApprove('{{ $detail['id'] }}')"
-                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
-                <i class="fas fa-check mr-1"></i>Terima
+            <!-- Terima -->
+            <button wire:click="approve('{{ $detail['id'] }}')" type="button" wire:loading.attr="disabled"
+                wire:target="approve"
+                class="relative px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-75 disabled:cursor-not-allowed">
+
+                <span wire:loading.remove wire:target="approve" class="flex items-center">
+                    <i class="fas fa-check mr-2"></i>Terima
+                </span>
+
+                <span wire:loading wire:target="approve" class="flex items-center">
+                    <i class="fas fa-spinner fa-spin mr-2"></i>Mengirim...
+                </span>
             </button>
-            <button onclick="confirmReject('{{ $detail['id'] }}')"
-                class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
-                <i class="fas fa-times mr-1"></i>Tolak
+
+            <!-- Tolak -->
+            <button wire:click="reject('{{ $detail['id'] }}')" type="button" wire:loading.attr="disabled"
+                wire:target="reject"
+                class="relative px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-75 disabled:cursor-not-allowed">
+
+                <span wire:loading.remove wire:target="reject" class="flex items-center">
+                    <i class="fas fa-times mr-2"></i>Tolak
+                </span>
+
+                <span wire:loading wire:target="reject" class="flex items-center">
+                    <i class="fas fa-spinner fa-spin mr-2"></i>Mengirim...
+                </span>
             </button>
         @endif
+
+        <!-- Kembali / batal -->
+        <button wire:click="$set('detailId', null)" type="button"
+            class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
+            <i class="fas fa-arrow-left mr-2"></i>Kembali
+        </button>
     </div>
+
 </div>
