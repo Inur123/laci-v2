@@ -10,7 +10,7 @@ use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Hash;
 
 #[Layout('components.layouts.guest')]
-#[Title('Register - LACI')]
+#[Title('Register - Laci Digital')]
 class Register extends Component
 {
     public $name = '';

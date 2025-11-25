@@ -9,7 +9,7 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 
 #[Layout('components.layouts.guest')]
-#[Title('Login - LACI')]
+#[Title('Login - Laci Digital')]
 class Login extends Component
 {
     public $email = '';
