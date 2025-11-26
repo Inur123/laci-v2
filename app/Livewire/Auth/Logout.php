@@ -12,10 +12,13 @@ class Logout extends Component
         $userName = Auth::user()->name;
 
         Auth::logout();
+        request()->session()->invalidate();
         request()->session()->regenerateToken();
 
         session()->flash('message', 'Logout berhasil! Sampai jumpa, ' . $userName . '.');
 
+        // Tetap SPA-style dengan wire:navigate
+        // TAPI pastikan Turnstile script sudah di-fix (lihat artifact turnstile_blade_final)
         return $this->redirect(route('login'), navigate: true);
     }
 

@@ -1,4 +1,3 @@
-<!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/auth/login.blade.php -->
 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
     <!-- Banner -->
     <img src="{{ asset('images/banner-2.png') }}" alt="Banner LACI IPNU IPPNU" class="banner-img">
@@ -75,6 +74,15 @@
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
+
+            <!-- Turnstile Captcha -->
+            <div>
+                <x-turnstile wire:model="captcha" data-theme="light" />
+                @error('captcha')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
             <!-- Submit Button -->
             <div>
                 <button

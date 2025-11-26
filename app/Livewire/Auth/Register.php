@@ -1,9 +1,9 @@
 <?php
 
-
 namespace App\Livewire\Auth;
 
 use App\Models\User;
+use App\Rules\Turnstile;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -19,12 +19,17 @@ class Register extends Component
     public $password_confirmation = '';
     public $showPassword = false;
     public $showPasswordConfirmation = false;
+    public $captcha = '';
 
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:8|confirmed',
-    ];
+    protected function rules()
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed',
+            'captcha' => ['required', new Turnstile()],
+        ];
+    }
 
     protected $messages = [
         'name.required' => 'Nama harus diisi',
@@ -35,6 +40,7 @@ class Register extends Component
         'password.required' => 'Password harus diisi',
         'password.min' => 'Password minimal 8 karakter',
         'password.confirmed' => 'Konfirmasi password tidak cocok',
+        'captcha.required' => 'Mohon verifikasi captcha',
     ];
 
     public function togglePassword()

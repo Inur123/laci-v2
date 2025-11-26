@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\Models\User;
+use App\Rules\Turnstile;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
@@ -16,17 +17,23 @@ class Login extends Component
     public $password = '';
     public $remember = false;
     public $showPassword = false;
+    public $captcha = '';
 
-    protected $rules = [
-        'email' => 'required|email',
-        'password' => 'required|min:6',
-    ];
+    protected function rules()
+    {
+        return [
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+            'captcha' => ['required', new Turnstile()],
+        ];
+    }
 
     protected $messages = [
         'email.required' => 'Email harus diisi',
         'email.email' => 'Format email tidak valid',
         'password.required' => 'Password harus diisi',
         'password.min' => 'Password minimal 6 karakter',
+        'captcha.required' => 'Mohon verifikasi captcha',
     ];
 
     public function togglePassword()
@@ -42,6 +49,10 @@ class Login extends Component
         $user = User::where('email', $this->email)->first();
 
         if ($user && !$user->is_active) {
+            // Reset captcha
+            $this->captcha = '';
+            $this->dispatch('reset-captcha');
+
             // Dispatch flash message event
             $this->dispatch('flash', [
                 'type' => 'error',
@@ -71,7 +82,9 @@ class Login extends Component
             return $this->redirect(route('login'), navigate: true);
         }
 
-        // Email atau password salah
+        // Email atau password salah - reset captcha
+        $this->captcha = '';
+        $this->dispatch('reset-captcha');
         $this->addError('email', 'Email atau password salah.');
     }
 
