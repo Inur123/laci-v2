@@ -24,7 +24,7 @@ class ArsipSurat extends Component
     public $arsipId;
     public $search = '';
     public $filterJenis = '';
-    public $page = 1; // Tambahkan property page
+    public $page = 1;
 
     // Form properties
     public $no_surat;
@@ -35,6 +35,10 @@ class ArsipSurat extends Component
     public $file;
     public $oldFile;
     public $perihal;
+
+    // Modal Detail
+    public $showDetailModal = false;
+    public $selectedSurat = null;
 
     protected $rules = [
         'no_surat' => 'required|string|max:255',
@@ -57,22 +61,6 @@ class ArsipSurat extends Component
         'file.mimes' => 'File harus berformat PDF',
         'file.max' => 'Ukuran file maksimal 5MB',
     ];
-
-    // Hapus method-method ini karena tidak diperlukan
-    // public function gotoPage($page)
-    // {
-    //     $this->setPage($page);
-    // }
-    //
-    // public function previousPage()
-    // {
-    //     $this->setPage($this->getPage() - 1);
-    // }
-    //
-    // public function nextPage()
-    // {
-    //     $this->setPage($this->getPage() + 1);
-    // }
 
     public function resetPage()
     {
@@ -106,7 +94,6 @@ class ArsipSurat extends Component
             'perihal' => $this->perihal,
         ];
 
-        // Enkripsi file jika ada
         if ($this->file) {
             $data['file'] = Surat::encryptAndStoreFile($this->file);
         }
@@ -161,9 +148,7 @@ class ArsipSurat extends Component
             'perihal' => $this->perihal,
         ];
 
-        // Enkripsi file baru jika ada
         if ($this->file) {
-            // Hapus file lama
             if ($this->oldFile && Storage::disk('local')->exists($this->oldFile)) {
                 Storage::disk('local')->delete($this->oldFile);
             }
@@ -182,10 +167,18 @@ class ArsipSurat extends Component
         $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file', 'arsipId', 'oldFile','perihal']);
     }
 
-    public function detail($id)
+    // Tampilkan detail dalam modal
+    public function showDetail($id)
     {
-        $this->arsipId = $id;
-        $this->action = 'detail';
+        $this->selectedSurat = Surat::where('user_id', Auth::id())->findOrFail($id);
+        $this->showDetailModal = true;
+    }
+
+    // Tutup modal detail
+    public function closeDetail()
+    {
+        $this->showDetailModal = false;
+        $this->selectedSurat = null;
     }
 
     public function back()
@@ -199,7 +192,6 @@ class ArsipSurat extends Component
         $surat = Surat::where('user_id', Auth::id())->find($id);
 
         if ($surat) {
-            // Hapus file terenkripsi
             if ($surat->file && Storage::disk('local')->exists($surat->file)) {
                 Storage::disk('local')->delete($surat->file);
             }
@@ -224,7 +216,6 @@ class ArsipSurat extends Component
         $this->resetPage();
     }
 
-    // 🔥 METHOD BARU: Ambil Stats untuk Card
     private function getStats()
     {
         $allSurats = Surat::where('user_id', Auth::id())->get();
@@ -236,6 +227,16 @@ class ArsipSurat extends Component
         ];
     }
 
+    public function export()
+    {
+        $filename = 'Arsip_Surat_PAC_' . now()->format('Y-m-d_His') . '.xlsx';
+
+        return Excel::download(
+            new ArsipSuratExport($this->search, $this->filterJenis),
+            $filename
+        );
+    }
+
     public function render()
     {
         return match ($this->action) {
@@ -243,19 +244,15 @@ class ArsipSurat extends Component
             'edit' => view('livewire.sekretaris-pac.arsip-surat.edit', [
                 'surat' => Surat::where('user_id', Auth::id())->findOrFail($this->arsipId)
             ]),
-            'detail' => view('livewire.sekretaris-pac.arsip-surat.detail', [
-                'surat' => Surat::where('user_id', Auth::id())->findOrFail($this->arsipId)
-            ]),
             default => view('livewire.sekretaris-pac.arsip-surat.index', [
                 'surats' => $this->getFilteredSurats(),
-                'stats' => $this->getStats() // 🔥 Kirim stats ke view
+                'stats' => $this->getStats()
             ]),
         };
     }
 
     private function getFilteredSurats()
     {
-        // 🔒 HANYA AMBIL DATA SURAT MILIK USER YANG LOGIN
         $query = Surat::with('user')
             ->where('user_id', Auth::id())
             ->latest();
@@ -281,7 +278,7 @@ class ArsipSurat extends Component
         });
 
         $perPage = 10;
-        $currentPage = $this->page; // Gunakan property page
+        $currentPage = $this->page;
         $total = $filtered->count();
         $items = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();
 
@@ -293,13 +290,4 @@ class ArsipSurat extends Component
             ['path' => request()->url()]
         );
     }
-    public function export()
-{
-    $filename = 'Arsip_Surat_PAC_' . now()->format('Y-m-d_His') . '.xlsx';
-
-    return Excel::download(
-        new ArsipSuratExport($this->search, $this->filterJenis),
-        $filename
-    );
-}
 }

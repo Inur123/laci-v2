@@ -1,12 +1,89 @@
 {{-- resources/views/livewire/auth/edit-profile.blade.php --}}
-<div class="py-8 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+<div class="space-y-6">
 
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900">Edit Profil Saya</h1>
         <p class="text-gray-600 mt-2">Kelola informasi akun Anda dengan aman</p>
     </div>
 
+    <!-- Alert Verifikasi Email (di atas form) -->
+    @if (!Auth::user()->hasVerifiedEmail())
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex items-start flex-1">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-yellow-400 text-xl"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-semibold text-yellow-800">Email Belum Terverifikasi</h3>
+                        <p class="text-xs text-yellow-700 mt-1">Silakan verifikasi email Anda untuk mengakses semua fitur.</p>
+                    </div>
+                </div>
 
+                <!-- Wrapper Alpine + Livewire Sync -->
+                <div x-data="resendCooldown()" class="flex-shrink-0">
+                    <button type="button" wire:click="resendVerification" wire:loading.attr="disabled"
+                        :disabled="$wire.resendCooldown > 0"
+                        class="inline-flex items-center py-2 px-4 border border-transparent text-xs font-medium rounded-lg text-white transition-all duration-300 disabled:opacity-75 disabled:cursor-not-allowed whitespace-nowrap"
+                        :class="$wire.resendCooldown > 0 ?
+                            'bg-gray-500 cursor-not-allowed' :
+                            'bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500'">
+                        <!-- Normal State -->
+                        <span x-show="$wire.resendCooldown === 0" wire:loading.remove
+                            wire:target="resendVerification">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Kirim Ulang Verifikasi
+                        </span>
+
+                        <!-- Countdown State -->
+                        <span x-show="$wire.resendCooldown > 0"
+                            x-text="`Tunggu ${$wire.resendCooldown}s`"></span>
+
+                        <!-- Loading State -->
+                        <span wire:loading wire:target="resendVerification" class="flex items-center">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                            Mengirim...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Alpine Component untuk sync countdown -->
+                <script>
+                    function resendCooldown() {
+                        return {
+                            init() {
+                                // Sinkronkan dengan Livewire
+                                this.$watch('$wire.resendCooldown', value => {
+                                    if (value > 0) {
+                                        this.startTimer();
+                                    }
+                                });
+
+                                // Jalankan timer jika ada cooldown saat load
+                                if (this.$wire.resendCooldown > 0) {
+                                    this.startTimer();
+                                }
+                            },
+
+                            startTimer() {
+                                if (this.timer) clearInterval(this.timer);
+
+                                this.timer = setInterval(() => {
+                                    if (this.$wire.resendCooldown <= 1) {
+                                        clearInterval(this.timer);
+                                        this.timer = null;
+                                    }
+                                    @this.call('decrementCooldown');
+                                }, 1000);
+                            },
+
+                            timer: null
+                        }
+                    }
+                </script>
+            </div>
+        </div>
+    @endif
 
     <div class="bg-white shadow-xl rounded-xl p-6 lg:p-10">
         <form wire:submit="updateProfile">
@@ -39,70 +116,7 @@
                         <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span>
                     @enderror
 
-                    @if (!Auth::user()->hasVerifiedEmail())
-                        <p class="text-yellow-600 text-xs mt-2">Email belum terverifikasi!</p>
-
-                        <!-- Wrapper Alpine + Livewire Sync -->
-                        <div x-data="resendCooldown()" class="mt-3">
-                            <button type="button" wire:click="resendVerification" wire:loading.attr="disabled"
-                                :disabled="$wire.resendCooldown > 0"
-                                class="group relative w-full flex justify-center py-2.5 px-4 border border-transparent text-xs font-medium rounded-lg text-white transition-all duration-300 disabled:opacity-75 disabled:cursor-not-allowed min-w-[180px]"
-                                :class="$wire.resendCooldown > 0 ?
-                                    'bg-gray-500 cursor-not-allowed' :
-                                    'bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500'">
-                                <!-- Normal State -->
-                                <span x-show="$wire.resendCooldown === 0" wire:loading.remove
-                                    wire:target="resendVerification">
-                                    Kirim Ulang Verifikasi
-                                </span>
-
-                                <!-- Countdown State -->
-                                <span x-show="$wire.resendCooldown > 0"
-                                    x-text="`Tunggu ${$wire.resendCooldown}s`"></span>
-
-                                <!-- Loading State -->
-                                <span wire:loading wire:target="resendVerification" class="flex items-center">
-                                    <i class="fas fa-spinner fa-spin mr-2"></i>
-                                    Mengirim...
-                                </span>
-                            </button>
-                        </div>
-
-                        <!-- Alpine Component untuk sync countdown -->
-                        <script>
-                            function resendCooldown() {
-                                return {
-                                    init() {
-                                        // Sinkronkan dengan Livewire
-                                        this.$watch('$wire.resendCooldown', value => {
-                                            if (value > 0) {
-                                                this.startTimer();
-                                            }
-                                        });
-
-                                        // Jalankan timer jika ada cooldown saat load
-                                        if (this.$wire.resendCooldown > 0) {
-                                            this.startTimer();
-                                        }
-                                    },
-
-                                    startTimer() {
-                                        if (this.timer) clearInterval(this.timer);
-
-                                        this.timer = setInterval(() => {
-                                            if (this.$wire.resendCooldown <= 1) {
-                                                clearInterval(this.timer);
-                                                this.timer = null;
-                                            }
-                                            @this.call('decrementCooldown');
-                                        }, 1000);
-                                    },
-
-                                    timer: null
-                                }
-                            }
-                        </script>
-                    @else
+                    @if (Auth::user()->hasVerifiedEmail())
                         <p class="text-green-600 text-xs mt-2 flex items-center gap-1">
                             <i class="fas fa-check-circle"></i> Email sudah terverifikasi
                         </p>

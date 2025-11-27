@@ -24,7 +24,7 @@ class ArsipSurat extends Component
     public $arsipId;
     public $search = '';
     public $filterJenis = '';
-    public $page = 1; // 🔥 Property untuk custom pagination
+    public $page = 1;
 
     // Form properties
     public $no_surat;
@@ -35,6 +35,10 @@ class ArsipSurat extends Component
     public $file;
     public $oldFile;
     public $perihal;
+
+    // Modal Detail
+    public $showDetailModal = false;
+    public $selectedSurat = null;
 
     protected $rules = [
         'no_surat' => 'required|string|max:255',
@@ -57,7 +61,6 @@ class ArsipSurat extends Component
         'file.max' => 'Ukuran file maksimal 5MB',
     ];
 
-    // 🔥 Reset page saat filter berubah
     public function resetPage()
     {
         $this->page = 1;
@@ -162,10 +165,18 @@ class ArsipSurat extends Component
         $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file', 'arsipId', 'oldFile', 'perihal']);
     }
 
-    public function detail($id)
+    // Tampilkan detail dalam modal
+    public function showDetail($id)
     {
-        $this->arsipId = $id;
-        $this->action = 'detail';
+        $this->selectedSurat = Surat::where('user_id', Auth::id())->findOrFail($id);
+        $this->showDetailModal = true;
+    }
+
+    // Tutup modal detail
+    public function closeDetail()
+    {
+        $this->showDetailModal = false;
+        $this->selectedSurat = null;
     }
 
     public function back()
@@ -193,7 +204,6 @@ class ArsipSurat extends Component
         }
     }
 
-    // 🔥 Auto-reset page saat filter berubah
     public function updatingSearch()
     {
         $this->resetPage();
@@ -204,7 +214,6 @@ class ArsipSurat extends Component
         $this->resetPage();
     }
 
-    // Stats untuk Card
     private function getStats()
     {
         $allSurats = Surat::where('user_id', Auth::id())->get();
@@ -216,14 +225,21 @@ class ArsipSurat extends Component
         ];
     }
 
+    public function export()
+    {
+        $filename = 'Arsip_Surat_Cabang_' . now()->format('Y-m-d_His') . '.xlsx';
+
+        return Excel::download(
+            new ArsipSuratExport($this->search, $this->filterJenis),
+            $filename
+        );
+    }
+
     public function render()
     {
         return match ($this->action) {
             'create' => view('livewire.sekretaris-cabang.arsip-surat.create'),
             'edit' => view('livewire.sekretaris-cabang.arsip-surat.edit', [
-                'surat' => Surat::where('user_id', Auth::id())->findOrFail($this->arsipId)
-            ]),
-            'detail' => view('livewire.sekretaris-cabang.arsip-surat.detail', [
                 'surat' => Surat::where('user_id', Auth::id())->findOrFail($this->arsipId)
             ]),
             default => view('livewire.sekretaris-cabang.arsip-surat.index', [
@@ -235,14 +251,12 @@ class ArsipSurat extends Component
 
     private function getFilteredSurats()
     {
-        // Ambil semua data
         $query = Surat::with('user')
             ->where('user_id', Auth::id())
             ->latest();
 
         $allSurats = $query->get();
 
-        // Filter manual
         $filtered = $allSurats->filter(function ($surat) {
             $matchSearch = true;
             $matchJenis = true;
@@ -261,9 +275,8 @@ class ArsipSurat extends Component
             return $matchSearch && $matchJenis;
         });
 
-        // Manual pagination
         $perPage = 10;
-        $currentPage = $this->page; // 🔥 Gunakan property page
+        $currentPage = $this->page;
         $total = $filtered->count();
         $items = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();
 
@@ -273,15 +286,6 @@ class ArsipSurat extends Component
             $perPage,
             $currentPage,
             ['path' => request()->url()]
-        );
-    }
-    public function export()
-    {
-        $filename = 'Arsip_Surat_Cabang_' . now()->format('Y-m-d_His') . '.xlsx';
-
-        return Excel::download(
-            new ArsipSuratExport($this->search, $this->filterJenis),
-            $filename
         );
     }
 }

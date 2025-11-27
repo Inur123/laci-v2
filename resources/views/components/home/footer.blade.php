@@ -101,7 +101,7 @@
         <div class="border-t border-gray-800 pt-6 sm:pt-8 text-center">
             <p class="text-xs sm:text-sm text-gray-400">
                 &copy; {{ date('Y') }} Laci Digital PC IPNU IPPNU Magetan.
-                <span class="text-gray-500">Versi {{ config('app.version', '1.0') }}</span> - All rights reserved.
+                <span class="text-gray-500">Versi 2.0.0</span> - All rights reserved.
             </p>
         </div>
     </div>

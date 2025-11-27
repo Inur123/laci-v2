@@ -77,7 +77,7 @@
 
             <!-- Turnstile Captcha -->
             <div>
-                <x-turnstile wire:model="captcha" data-theme="light" />
+               <x-turnstile wire:model="captcha" theme="auto" />
                 @error('captcha')
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror

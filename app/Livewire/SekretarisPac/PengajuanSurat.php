@@ -24,7 +24,7 @@ class PengajuanSurat extends Component
     public $action = 'index';
     public $pengajuanId;
     public $search = '';
-    public $filterStatus = ''; // 🔥 Filter status
+    public $filterStatus = '';
     public $page = 1;
     public $no_surat;
     public $penerima;
@@ -34,6 +34,10 @@ class PengajuanSurat extends Component
     public $file;
     public $oldFile;
     public $status = 'pending';
+
+    // Modal untuk detail
+    public $showDetailModal = false;
+    public $selectedSurat = null;
 
     protected $rules = [
         'no_surat' => 'required|string|max:255',
@@ -56,7 +60,6 @@ class PengajuanSurat extends Component
         }
     }
 
-    // 🔥 Stats dengan filter dinamis
     private function getStats()
     {
         $allSurats = PengajuanSuratPac::where('user_id', Auth::id())->get();
@@ -75,42 +78,39 @@ class PengajuanSurat extends Component
         $this->action = 'create';
     }
 
- public function save()
-{
-    $this->validate();
+    public function save()
+    {
+        $this->validate();
 
-    $data = [
-        'user_id'   => Auth::id(),
-        'no_surat'  => $this->no_surat,
-        'penerima'  => $this->penerima,
-        'tanggal'   => $this->tanggal,
-        'keperluan' => $this->keperluan,
-        'deskripsi' => $this->deskripsi,
-        'status'    => 'pending',
-    ];
+        $data = [
+            'user_id'   => Auth::id(),
+            'no_surat'  => $this->no_surat,
+            'penerima'  => $this->penerima,
+            'tanggal'   => $this->tanggal,
+            'keperluan' => $this->keperluan,
+            'deskripsi' => $this->deskripsi,
+            'status'    => 'pending',
+        ];
 
-    if ($this->file) {
-        $data['file'] = PengajuanSuratPac::encryptAndStoreFile($this->file);
+        if ($this->file) {
+            $data['file'] = PengajuanSuratPac::encryptAndStoreFile($this->file);
+        }
+
+        $pengajuan = PengajuanSuratPac::create($data)->load('user');
+
+        // Kirim email
+        Mail::to('zainurroziqin38@gmail.com')->send(new PengajuanSuratBaruMail($pengajuan));
+        Mail::to($pengajuan->user->email)->send(new PengajuanTerkirimMail($pengajuan));
+
+        $this->dispatch('flash', [
+            'type'    => 'success',
+            'message' => 'Pengajuan berhasil dikirim! Notifikasi telah dikirim ke email Anda.'
+        ]);
+
+        $this->action = 'index';
+        $this->reset(['no_surat', 'penerima', 'tanggal', 'keperluan', 'deskripsi', 'file', 'status']);
     }
 
-    $pengajuan = PengajuanSuratPac::create($data)->load('user');
-
-    // 1. Kirim ke Admin (dengan lampiran PDF)
-    Mail::to('zainurroziqin38@gmail.com')
-        ->send(new PengajuanSuratBaruMail($pengajuan));
-
-    // 2. Kirim ke User yang mengajukan (konfirmasi berhasil)
-    Mail::to($pengajuan->user->email)
-        ->send(new PengajuanTerkirimMail($pengajuan));
-
-    $this->dispatch('flash', [
-        'type'    => 'success',
-        'message' => 'Pengajuan berhasil dikirim! Notifikasi telah dikirim ke email Anda.'
-    ]);
-
-    $this->action = 'index';
-    $this->reset(['no_surat', 'penerima', 'tanggal', 'keperluan', 'deskripsi', 'file', 'status']);
-}
     public function edit($id)
     {
         $surat = PengajuanSuratPac::where('user_id', Auth::id())->findOrFail($id);
@@ -168,10 +168,18 @@ class PengajuanSurat extends Component
         $this->reset(['pengajuanId', 'no_surat', 'penerima', 'tanggal', 'keperluan', 'deskripsi', 'file', 'oldFile', 'status']);
     }
 
-    public function detail($id)
+    // Tampilkan detail dalam modal
+    public function showDetail($id)
     {
-        $this->pengajuanId = $id;
-        $this->action = 'detail';
+        $this->selectedSurat = PengajuanSuratPac::where('user_id', Auth::id())->findOrFail($id);
+        $this->showDetailModal = true;
+    }
+
+    // Tutup modal detail
+    public function closeDetail()
+    {
+        $this->showDetailModal = false;
+        $this->selectedSurat = null;
     }
 
     public function back()
@@ -197,7 +205,6 @@ class PengajuanSurat extends Component
         }
     }
 
-    // 🔥 Auto-reset page saat filter berubah
     public function updatingSearch()
     {
         $this->resetPage();
@@ -215,9 +222,6 @@ class PengajuanSurat extends Component
             'edit' => view('livewire.sekretaris-pac.pengajuan-surat.edit', [
                 'surat' => PengajuanSuratPac::where('user_id', Auth::id())->findOrFail($this->pengajuanId)
             ]),
-            'detail' => view('livewire.sekretaris-pac.pengajuan-surat.detail', [
-                'surat' => PengajuanSuratPac::where('user_id', Auth::id())->findOrFail($this->pengajuanId)
-            ]),
             default => view('livewire.sekretaris-pac.pengajuan-surat.index', [
                 'surats' => $this->getFilteredSurats(),
                 'stats' => $this->getStats()
@@ -225,20 +229,16 @@ class PengajuanSurat extends Component
         };
     }
 
-    // 🔥 Custom Pagination dengan Search & Filter Status
     private function getFilteredSurats()
     {
-        // Ambil semua data (sudah auto-decrypt oleh model accessor)
         $allData = PengajuanSuratPac::where('user_id', Auth::id())
             ->latest()
             ->get();
 
-        // Filter manual karena data terenkripsi
         $filtered = $allData->filter(function ($surat) {
             $matchSearch = true;
             $matchStatus = true;
 
-            // Filter Search (no_surat, keperluan, penerima sudah auto-decrypt)
             if ($this->search) {
                 $searchLower = strtolower($this->search);
                 $matchSearch = str_contains(strtolower($surat->no_surat ?? ''), $searchLower) ||
@@ -246,7 +246,6 @@ class PengajuanSurat extends Component
                     str_contains(strtolower($surat->penerima ?? ''), $searchLower);
             }
 
-            // Filter Status
             if ($this->filterStatus) {
                 $matchStatus = $surat->status === $this->filterStatus;
             }
@@ -254,7 +253,6 @@ class PengajuanSurat extends Component
             return $matchSearch && $matchStatus;
         });
 
-        // Manual pagination
         $perPage = 10;
         $currentPage = $this->page;
         $total = $filtered->count();
