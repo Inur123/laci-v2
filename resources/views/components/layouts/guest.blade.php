@@ -16,7 +16,6 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Cloudflare Turnstile - Render manual -->
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 
     @livewireStyles
     <style>

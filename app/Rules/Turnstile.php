@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Log;
 
 class Turnstile implements ValidationRule
 {
-    /**
-     * Run the validation rule.
-     */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (empty($value)) {
@@ -19,21 +16,16 @@ class Turnstile implements ValidationRule
             return;
         }
 
-        try {
-            $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-                'secret' => config('services.turnstile.secret_key'),
-                'response' => $value,
-                'remoteip' => request()->ip(),
-            ]);
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => config('services.recaptcha.secret_key'),
+            'response' => $value,
+            'remoteip' => request()->ip(),
+        ]);
 
-            $result = $response->json();
+        $result = $response->json();
 
-            if (!$response->successful() || !($result['success'] ?? false)) {
-                $fail('Verifikasi captcha gagal. Silakan coba lagi.');
-            }
-        } catch (\Exception $e) {
-            Log::error('Turnstile verification error: ' . $e->getMessage());
-            $fail('Terjadi kesalahan saat verifikasi captcha.');
+        if (!($result['success'] ?? false) || ($result['score'] ?? 0) < 0.5) {
+            $fail('Verifikasi captcha gagal. Silakan coba lagi.');
         }
     }
 }

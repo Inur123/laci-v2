@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Livewire\Auth;
 
 use App\Models\User;
@@ -8,6 +9,7 @@ use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 #[Layout('components.layouts.guest')]
 #[Title('Login - Laci Digital')]
@@ -43,17 +45,27 @@ class Login extends Component
 
     public function login()
     {
-        $this->validate();
+        try {
+            $this->validate();
+        } catch (ValidationException $e) {
+            if ($e->validator->errors()->has('captcha')) {
+                $this->dispatch('flash', [
+                    'type' => 'error',
+                    'message' => $e->validator->errors()->first('captcha')
+                ]);
+                $this->captcha = '';
+                $this->dispatch('reset-captcha');
+                return;
+            }
+            throw $e;
+        }
 
         // Cek apakah user tidak aktif DULU sebelum attempt
         $user = User::where('email', $this->email)->first();
 
         if ($user && !$user->is_active) {
-            // Reset captcha
             $this->captcha = '';
             $this->dispatch('reset-captcha');
-
-            // Dispatch flash message event
             $this->dispatch('flash', [
                 'type' => 'error',
                 'message' => 'Akun Anda belum diaktifkan. Silakan hubungi admin untuk aktivasi akun.'
@@ -67,7 +79,6 @@ class Login extends Component
 
             $user = Auth::user();
 
-            // Cek role
             if ($user->role === 'sekretaris_cabang') {
                 session()->flash('message', 'Login berhasil! Selamat datang, ' . $user->name);
                 return $this->redirect(route('cabang.dashboard'), navigate: true);
@@ -76,13 +87,11 @@ class Login extends Component
                 return $this->redirect(route('pac.dashboard'), navigate: true);
             }
 
-            // Default jika role tidak dikenali
             session()->flash('error', 'Anda tidak memiliki akses ke sistem ini.');
             Auth::logout();
             return $this->redirect(route('login'), navigate: true);
         }
 
-        // Email atau password salah - reset captcha
         $this->captcha = '';
         $this->dispatch('reset-captcha');
         $this->addError('email', 'Email atau password salah.');

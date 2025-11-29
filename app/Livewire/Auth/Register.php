@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Livewire\Auth;
 
 use App\Models\User;
@@ -8,6 +9,7 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 #[Layout('components.layouts.guest')]
 #[Title('Register - Laci Digital')]
@@ -55,9 +57,21 @@ class Register extends Component
 
     public function register()
     {
-        $this->validate();
+        try {
+            $this->validate();
+        } catch (ValidationException $e) {
+            if ($e->validator->errors()->has('captcha')) {
+                $this->dispatch('flash', [
+                    'type' => 'error',
+                    'message' => $e->validator->errors()->first('captcha')
+                ]);
+                $this->captcha = '';
+                $this->dispatch('reset-captcha');
+                return;
+            }
+            throw $e;
+        }
 
-        // Buat user baru tanpa role (atau set default role jika perlu)
         User::create([
             'name' => $this->name,
             'email' => $this->email,
@@ -65,7 +79,6 @@ class Register extends Component
             'is_active' => false,
         ]);
 
-        // Redirect ke login dengan flash message
         session()->flash('message', 'Registrasi berhasil! Silakan login dengan akun Anda.');
 
         return $this->redirect(route('login'), navigate: true);
