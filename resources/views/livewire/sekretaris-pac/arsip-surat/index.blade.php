@@ -59,7 +59,7 @@
             <div>
                 <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
                 <button wire:click="export" wire:loading.attr="disabled"
-                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm disabled:opacity-50">
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm disabled:opacity-50 cursor-pointer">
                     <span wire:loading.remove wire:target="export">
                         <i class="fas fa-file-excel mr-2"></i>Export Excel
                     </span>
@@ -71,7 +71,7 @@
             <div>
                 <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
                 <button wire:click="create"
-                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm cursor-pointer">
                     <i class="fas fa-plus mr-2"></i>Tambah Surat
                 </button>
             </div>
@@ -91,54 +91,70 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-16">No</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">No. Surat</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden sm:table-cell">Tanggal</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Jenis</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Perihal</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden md:table-cell">Pengirim/Penerima</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Aksi</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-16">
+                            No</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">No.
+                            Surat</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden sm:table-cell">
+                            Tanggal</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            Jenis</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            Perihal</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden md:table-cell">
+                            Pengirim/Penerima</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($surats as $index => $surat)
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">{{ $surats->firstItem() + $index }}</td>
-                            <td class="px-4 py-3 text-sm font-semibold text-gray-800 whitespace-nowrap">{{ $surat->no_surat }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700 hidden sm:table-cell whitespace-nowrap">{{ $surat->tanggal->format('d M Y') }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                                {{ $surats->firstItem() + $index }}</td>
+                            <td class="px-4 py-3 text-sm font-semibold text-gray-800 whitespace-nowrap">
+                                {{ $surat->no_surat }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700 hidden sm:table-cell whitespace-nowrap">
+                                {{ $surat->tanggal->format('d M Y') }}</td>
                             <td class="px-4 py-3 text-sm whitespace-nowrap">
                                 @if ($surat->jenis_surat === 'masuk')
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                         <i class="fas fa-inbox mr-1"></i>Masuk
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                         <i class="fas fa-paper-plane mr-1"></i>Keluar
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-4 py-3 text-sm text-gray-700 max-w-xs truncate" title="{{ $surat->perihal }}">{{ $surat->perihal }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700 hidden md:table-cell max-w-xs truncate" title="{{ $surat->pengirim_penerima }}">{{ $surat->pengirim_penerima }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700 max-w-xs truncate" title="{{ $surat->perihal }}">
+                                {{ $surat->perihal }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700 hidden md:table-cell max-w-xs truncate"
+                                title="{{ $surat->pengirim_penerima }}">{{ $surat->pengirim_penerima }}</td>
                             <td class="px-4 py-3 text-sm whitespace-nowrap">
                                 <div class="flex items-center gap-3 text-lg">
                                     <!-- Detail -->
                                     <button wire:click="showDetail('{{ $surat->id }}')"
-                                        class="text-blue-600 hover:text-blue-800 transition-transform hover:scale-110"
+                                        class="text-blue-600 hover:text-blue-800 transition-transform hover:scale-110 cursor-pointer"
                                         title="Lihat Detail">
                                         <i class="fas fa-eye"></i>
                                     </button>
 
                                     <!-- Edit -->
                                     <button wire:click="edit('{{ $surat->id }}')"
-                                        class="text-yellow-600 hover:text-yellow-800 transition-transform hover:scale-110"
+                                        class="text-yellow-600 hover:text-yellow-800 transition-transform hover:scale-110 cursor-pointer"
                                         title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
 
                                     <!-- Hapus -->
-                                    <button
-                                        onclick="confirmDelete('{{ $surat->id }}', '{{ $surat->no_surat }}')"
-                                        class="text-red-600 hover:text-red-800 transition-transform hover:scale-110"
+                                    <button onclick="confirmDelete('{{ $surat->id }}', '{{ $surat->no_surat }}')"
+                                        class="text-red-600 hover:text-red-800 transition-transform hover:scale-110 cursor-pointer"
                                         title="Hapus">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -178,7 +194,7 @@
                         @else
                             <button wire:click="$set('page', {{ $surats->currentPage() - 1 }})"
                                 wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                         @endif
@@ -190,7 +206,7 @@
                                 </span>
                             @else
                                 <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
-                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                     {{ $page }}
                                 </button>
                             @endif
@@ -199,7 +215,7 @@
                         @if ($surats->hasMorePages())
                             <button wire:click="$set('page', {{ $surats->currentPage() + 1 }})"
                                 wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         @else
@@ -220,7 +236,8 @@
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl h-[95vh] sm:h-auto sm:max-h-[90vh] flex flex-col overflow-hidden"
                 wire:click.stop>
                 <!-- Modal Header -->
-                <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-shrink-0 shadow-lg">
+                <div
+                    class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-shrink-0 shadow-lg">
                     <div class="flex items-center gap-3">
                         <div class="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
                             <i class="fas fa-envelope text-white text-lg"></i>
@@ -231,7 +248,7 @@
                         </div>
                     </div>
                     <button wire:click="closeDetail"
-                        class="text-white/80 hover:text-white transition p-2 hover:bg-white/10 rounded-lg">
+                        class="text-white/80 hover:text-white transition p-2 hover:bg-white/10 rounded-lg cursor-pointer">
                         <i class="fas fa-times text-lg sm:text-xl"></i>
                     </button>
                 </div>
@@ -241,11 +258,13 @@
                     <!-- Jenis Surat Badge -->
                     <div class="flex">
                         @if ($selectedSurat->jenis_surat === 'masuk')
-                            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 shadow-lg">
+                            <span
+                                class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 shadow-lg">
                                 <i class="fas fa-inbox mr-2"></i>Surat Masuk
                             </span>
                         @else
-                            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800 shadow-lg">
+                            <span
+                                class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800 shadow-lg">
                                 <i class="fas fa-paper-plane mr-2"></i>Surat Keluar
                             </span>
                         @endif
@@ -261,14 +280,17 @@
                                 </div>
                                 <div class="flex-1">
                                     <p class="text-xs text-blue-600 font-medium mb-1">Tanggal Surat</p>
-                                    <p class="font-semibold text-gray-800">{{ $selectedSurat->tanggal->format('d F Y') }}</p>
-                                    <p class="text-xs text-gray-500 mt-1">{{ $selectedSurat->tanggal->diffForHumans() }}</p>
+                                    <p class="font-semibold text-gray-800">
+                                        {{ $selectedSurat->tanggal->format('d F Y') }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        {{ $selectedSurat->tanggal->diffForHumans() }}</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Pengirim/Penerima -->
-                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
+                        <div
+                            class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
                             <div class="flex items-start gap-3">
                                 <div class="bg-purple-500 p-2 rounded-lg">
                                     <i class="fas fa-user text-white text-sm"></i>
@@ -284,7 +306,8 @@
                     </div>
 
                     <!-- Perihal -->
-                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
+                    <div
+                        class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
                         <div class="flex items-start gap-3">
                             <div class="bg-orange-500 p-2 rounded-lg">
                                 <i class="fas fa-tag text-white text-sm"></i>
@@ -305,7 +328,8 @@
                                 </div>
                                 <div class="flex-1">
                                     <p class="text-xs text-gray-600 font-medium mb-2">Deskripsi</p>
-                                    <p class="text-gray-800 leading-relaxed whitespace-pre-wrap">{{ $selectedSurat->deskripsi }}</p>
+                                    <p class="text-gray-800 leading-relaxed whitespace-pre-wrap">
+                                        {{ $selectedSurat->deskripsi }}</p>
                                 </div>
                             </div>
                         </div>
@@ -313,7 +337,8 @@
 
                     <!-- File -->
                     @if ($selectedSurat->file)
-                        <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-4 border border-indigo-200">
+                        <div
+                            class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-4 border border-indigo-200">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <div class="bg-indigo-500 p-2 rounded-lg">
@@ -340,8 +365,10 @@
                                 <i class="fas fa-clock text-gray-400 text-sm"></i>
                                 <div>
                                     <p class="text-xs text-gray-500">Dibuat</p>
-                                    <p class="text-sm font-medium text-gray-800">{{ $selectedSurat->created_at->format('d F Y, H:i') }}</p>
-                                    <p class="text-xs text-gray-500">{{ $selectedSurat->created_at->diffForHumans() }}</p>
+                                    <p class="text-sm font-medium text-gray-800">
+                                        {{ $selectedSurat->created_at->format('d F Y, H:i') }}</p>
+                                    <p class="text-xs text-gray-500">{{ $selectedSurat->created_at->diffForHumans() }}
+                                    </p>
                                 </div>
                             </div>
                             <div class="border-t border-gray-200"></div>
@@ -349,8 +376,10 @@
                                 <i class="fas fa-history text-gray-400 text-sm"></i>
                                 <div>
                                     <p class="text-xs text-gray-500">Terakhir Diupdate</p>
-                                    <p class="text-sm font-medium text-gray-800">{{ $selectedSurat->updated_at->format('d F Y, H:i') }}</p>
-                                    <p class="text-xs text-gray-500">{{ $selectedSurat->updated_at->diffForHumans() }}</p>
+                                    <p class="text-sm font-medium text-gray-800">
+                                        {{ $selectedSurat->updated_at->format('d F Y, H:i') }}</p>
+                                    <p class="text-xs text-gray-500">{{ $selectedSurat->updated_at->diffForHumans() }}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -358,9 +387,10 @@
                 </div>
 
                 <!-- Modal Footer -->
-                <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex justify-end flex-shrink-0 shadow-lg">
+                <div
+                    class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex justify-end flex-shrink-0 shadow-lg">
                     <button wire:click="closeDetail"
-                        class="w-full sm:w-auto px-6 py-2.5 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition">
+                        class="w-full sm:w-auto px-6 py-2.5 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition cursor-pointer">
                         <i class="fas fa-times mr-2"></i>Tutup
                     </button>
                 </div>
@@ -370,26 +400,26 @@
 </div>
 
 <script>
-function confirmDelete(id, noSurat) {
-    Swal.fire({
-        title: 'Hapus Surat?',
-        html: `Surat <strong>${noSurat}</strong> akan dihapus secara permanen!`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
-        cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
-        reverseButtons: true,
-        customClass: {
-            popup: 'rounded-xl',
-            confirmButton: 'px-6 py-2.5 rounded-lg font-medium shadow-lg',
-            cancelButton: 'px-6 py-2.5 rounded-lg font-medium'
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            @this.call('delete', id);
-        }
-    });
-}
+    function confirmDelete(id, noSurat) {
+        Swal.fire({
+            title: 'Hapus Surat?',
+            html: `Surat <strong>${noSurat}</strong> akan dihapus secara permanen!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
+            cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+            reverseButtons: true,
+            customClass: {
+                popup: 'rounded-xl',
+                confirmButton: 'px-6 py-2.5 rounded-lg font-medium shadow-lg',
+                cancelButton: 'px-6 py-2.5 rounded-lg font-medium'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('delete', id);
+            }
+        });
+    }
 </script>

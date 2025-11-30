@@ -6,9 +6,6 @@
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Edit Data Anggota</h1>
             <p class="text-sm text-gray-600 mt-1">Edit data {{ $anggota->nama_lengkap }}</p>
         </div>
-        <button wire:click="back" class="text-gray-600 hover:text-gray-800 self-start sm:self-center">
-            <i class="fas fa-arrow-left mr-2"></i>Kembali
-        </button>
     </div>
 
     <!-- Form -->
@@ -50,7 +47,7 @@
                     <select wire:model="periode_id"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
                         <option value="">Pilih Periode</option>
-                        @foreach($this->periodeList as $periode)
+                        @foreach ($this->periodeList as $periode)
                             <option value="{{ $periode->id }}">{{ $periode->nama }}</option>
                         @endforeach
                     </select>
@@ -189,11 +186,11 @@
             <!-- Buttons -->
             <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6">
                 <button type="button" wire:click="back"
-                    class="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm">
+                    class="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm cursor-pointer">
                     Batal
                 </button>
                 <button type="submit"
-                    class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm">
+                    class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm cursor-pointer">
                     <i class="fas fa-save mr-2"></i>Update Anggota
                 </button>
             </div>

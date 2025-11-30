@@ -48,71 +48,70 @@
 
 
     <!-- Filter & Search -->
-   <div class="bg-white rounded-lg shadow p-4 mb-6">
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+    <div class="bg-white rounded-lg shadow p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
 
-        <!-- Cari Anggota -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Cari Anggota</label>
-            <input type="text" wire:model.live.debounce.500ms="search"
-                placeholder="Nama lengkap..."
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg
+            <!-- Cari Anggota -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Anggota</label>
+                <input type="text" wire:model.live.debounce.500ms="search" placeholder="Nama lengkap..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
                 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
-        </div>
+            </div>
 
-        <!-- Periode -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Periode</label>
-            <select wire:model.live="filterPeriode"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg
+            <!-- Periode -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Periode</label>
+                <select wire:model.live="filterPeriode"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
                 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
-                <option value="">Semua Periode</option>
-                @foreach ($this->periodeList as $periode)
-                    <option value="{{ $periode->id }}">{{ $periode->nama }}</option>
-                @endforeach
-            </select>
-        </div>
+                    <option value="">Semua Periode</option>
+                    @foreach ($this->periodeList as $periode)
+                        <option value="{{ $periode->id }}">{{ $periode->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
 
-        <!-- Dibuat Oleh -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Dibuat Oleh</label>
-            <select wire:model.live="filterUser"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg
+            <!-- Dibuat Oleh -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Dibuat Oleh</label>
+                <select wire:model.live="filterUser"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
                 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
-                <option value="">Semua User</option>
-                @foreach ($this->userList as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                @endforeach
-            </select>
-        </div>
+                    <option value="">Semua User</option>
+                    @foreach ($this->userList as $user)
+                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                    @endforeach
+                </select>
+            </div>
 
-        <!-- Export Excel -->
-        <div>
-            <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
-            <button wire:click="export" wire:loading.attr="disabled"
-                class="w-full bg-green-600 text-white px-4 py-2 rounded-lg
-                hover:bg-green-700 transition text-sm disabled:opacity-50">
-                <span wire:loading.remove wire:target="export">
-                    <i class="fas fa-file-excel mr-2"></i>Export Excel
-                </span>
-                <span wire:loading wire:target="export">
-                    <i class="fas fa-spinner fa-spin mr-2"></i>Mengunduh...
-                </span>
-            </button>
-        </div>
+            <!-- Export Excel -->
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button wire:click="export" wire:loading.attr="disabled"
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg
+                hover:bg-green-700 transition text-sm disabled:opacity-50 cursor-pointer">
+                    <span wire:loading.remove wire:target="export">
+                        <i class="fas fa-file-excel mr-2"></i>Export Excel
+                    </span>
+                    <span wire:loading wire:target="export">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>Mengunduh...
+                    </span>
+                </button>
+            </div>
 
-        <!-- Tambah Anggota -->
-        <div>
-            <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
-            <button wire:click="create"
-                class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
-                hover:bg-blue-700 transition text-sm">
-                <i class="fas fa-plus mr-2"></i>Tambah Anggota
-            </button>
-        </div>
+            <!-- Tambah Anggota -->
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button wire:click="create"
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
+                hover:bg-blue-700 transition text-sm cursor-pointer">
+                    <i class="fas fa-plus mr-2"></i>Tambah Anggota
+                </button>
+            </div>
 
+        </div>
     </div>
-</div>
 
 
     <!-- Table -->
@@ -182,18 +181,18 @@
                             <td class="py-3 px-4 whitespace-nowrap">
                                 <div class="flex items-center gap-2">
                                     <button wire:click="detail('{{ $anggota->id }}')"
-                                        class="text-green-600 hover:text-green-800 transition whitespace-nowrap"
+                                        class="text-green-600 hover:text-green-800 transition whitespace-nowrap cursor-pointer"
                                         title="Detail">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                     <button wire:click="edit('{{ $anggota->id }}')"
-                                        class="text-yellow-600 hover:text-yellow-800 transition whitespace-nowrap"
+                                        class="text-yellow-600 hover:text-yellow-800 transition whitespace-nowrap cursor-pointer"
                                         title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <button
                                         onclick="confirmDeleteAnggota('{{ $anggota->id }}', '{{ $anggota->nama_lengkap }}')"
-                                        class="text-red-600 hover:text-red-800 transition whitespace-nowrap"
+                                        class="text-red-600 hover:text-red-800 transition whitespace-nowrap cursor-pointer"
                                         title="Hapus">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -233,7 +232,7 @@
                         @else
                             <button wire:click="$set('page', {{ $anggotas->currentPage() - 1 }})"
                                 wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                         @endif
@@ -246,7 +245,7 @@
                                 </span>
                             @else
                                 <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
-                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                     {{ $page }}
                                 </button>
                             @endif
@@ -256,7 +255,7 @@
                         @if ($anggotas->hasMorePages())
                             <button wire:click="$set('page', {{ $anggotas->currentPage() + 1 }})"
                                 wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         @else

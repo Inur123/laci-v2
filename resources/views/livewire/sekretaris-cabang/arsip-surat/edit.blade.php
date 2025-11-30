@@ -6,9 +6,6 @@
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Edit Surat</h1>
             <p class="text-sm text-gray-600 mt-1">Edit data surat {{ $surat->no_surat }}</p>
         </div>
-        <button wire:click="back" class="text-gray-600 hover:text-gray-800 self-start sm:self-center">
-            <i class="fas fa-arrow-left mr-2"></i>Kembali
-        </button>
     </div>
 
     <!-- Form -->
@@ -102,20 +99,26 @@
 
                     @if ($surat->file)
                         <div
-                            class="mb-3 p-3 bg-gray-50 rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                            <div class="flex items-center">
-                                <i class="fas fa-file-pdf text-red-600 mr-2 text-lg"></i>
+                            class="mb-3 p-3 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border border-gray-200">
+
+                            <div class="flex items-center gap-3">
+                                <div class="bg-red-500 p-2 rounded-lg">
+                                    <i class="fas fa-file-pdf text-white text-lg"></i>
+                                </div>
                                 <div>
-                                    <span class="text-xs sm:text-sm text-gray-700 block">File saat ini:
-                                        {{ $surat->original_filename }}</span>
-                                    <span class="text-xs text-gray-500"><i
-                                            class="fas fa-lock mr-1"></i>Terenkripsi</span>
+                                    <span class="text-xs sm:text-sm text-gray-800 font-medium block">
+                                        {{ $surat->original_filename }}
+                                    </span>
+                                    <span class="text-xs text-gray-500">
+                                        <i class="fas fa-lock mr-1"></i>Terenkripsi
+                                    </span>
                                 </div>
                             </div>
-                            <button type="button" wire:click="download('{{ $surat->id }}')"
-                                class="text-blue-600 hover:text-blue-800 text-xs sm:text-sm whitespace-nowrap">
-                                <i class="fas fa-download mr-1"></i>Download
-                            </button>
+
+                            <a href="{{ route('cabang.arsip-surat.view-file', $surat->id) }}" target="_blank"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-xs sm:text-sm font-medium shadow hover:shadow-lg whitespace-nowrap">
+                                <i class="fas fa-download mr-2"></i>Download
+                            </a>
                         </div>
                     @endif
 
@@ -134,11 +137,11 @@
             <!-- Buttons -->
             <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6">
                 <button type="button" wire:click="back"
-                    class="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base">
+                    class="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base cursor-pointer">
                     Batal
                 </button>
                 <button type="submit"
-                    class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm sm:text-base">
+                    class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm sm:text-base cursor-pointer">
                     <i class="fas fa-save mr-2"></i>Update
                 </button>
             </div>

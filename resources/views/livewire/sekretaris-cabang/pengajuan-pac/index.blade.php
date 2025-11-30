@@ -45,10 +45,12 @@
         </div>
     </div>
 
+
     <!-- Export Excel Section -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
-        <form wire:submit.prevent="export" class="flex flex-col sm:flex-row gap-4 items-end">
-            <div class="flex-1">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            <!-- Select User -->
+            <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Filter Export Pengajuan (PAC)</label>
                 <select wire:model="exportUserId"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
@@ -58,64 +60,63 @@
                     @endforeach
                 </select>
             </div>
-            <button type="submit" wire:loading.attr="disabled"
-                class="bg-green-600 text-white px-4 py-2 rounded-lg
-           hover:bg-green-700 transition text-sm
-           flex items-center gap-2
-           disabled:opacity-50 disabled:cursor-not-allowed">
-
-                <span wire:loading.remove wire:target="export">
-                    <i class="fas fa-file-excel"></i>
-                    Export Excel
-                </span>
-
-                <span wire:loading wire:target="export">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    Mengunduh...
-                </span>
-            </button>
-
-        </form>
+            <!-- Button Export -->
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <form wire:submit.prevent="export" class="w-full">
+                    <button type="submit" wire:loading.attr="disabled"
+                        class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+                        <span wire:loading.remove wire:target="export">
+                            <i class="fas fa-file-excel"></i>
+                            Export Excel
+                        </span>
+                        <span wire:loading wire:target="export">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Mengunduh...
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-        <!-- Cari Surat -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Cari Surat</label>
-            <input type="text" wire:model.live.debounce.500ms="search"
-                placeholder="No Surat atau Keperluan..."
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg
+            <!-- Cari Surat -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Surat</label>
+                <input type="text" wire:model.live.debounce.500ms="search" placeholder="No Surat atau Keperluan..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
                 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-        </div>
+            </div>
 
-        <!-- Status -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-            <select wire:model.live="filterStatus"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg
+            <!-- Status -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <select wire:model.live="filterStatus"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
                 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                <option value="">Semua Status</option>
-                <option value="pending">Pending</option>
-                <option value="diterima">Diterima</option>
-                <option value="ditolak">Ditolak</option>
-            </select>
-        </div>
+                    <option value="">Semua Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="diterima">Diterima</option>
+                    <option value="ditolak">Ditolak</option>
+                </select>
+            </div>
 
-        <!-- Tombol Refresh -->
-        <div>
-            <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
-            <button wire:click="$refresh"
-                class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
-                hover:bg-blue-700 transition text-sm">
-                <i class="fas fa-sync-alt mr-2"></i>Refresh
-            </button>
-        </div>
+            <!-- Tombol Refresh -->
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button wire:click="$refresh"
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
+                hover:bg-blue-700 transition text-sm cursor-pointer">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh
+                </button>
+            </div>
 
+        </div>
     </div>
-</div>
 
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -223,7 +224,7 @@
                             <!-- Aksi -->
                             <td class="px-4 py-3 text-sm whitespace-nowrap">
                                 <button wire:click="detail('{{ $surat->id }}')"
-                                    class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition">
+                                    class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition cursor-pointer">
                                     <i class="fas fa-eye mr-1"></i>
                                     <span class="hidden sm:inline">Lihat</span>
                                     <span class="sm:hidden">Detail</span>
@@ -257,7 +258,7 @@
                             @else
                                 <button wire:click="$set('page', {{ $pengajuans->currentPage() - 1 }})"
                                     wire:loading.attr="disabled"
-                                    class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                    class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                     <i class="fas fa-chevron-left"></i>
                                 </button>
                             @endif
@@ -270,7 +271,7 @@
                                 @else
                                     <button wire:click="$set('page', {{ $page }})"
                                         wire:loading.attr="disabled"
-                                        class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                        class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                         {{ $page }}
                                     </button>
                                 @endif
@@ -279,7 +280,7 @@
                             @if ($pengajuans->hasMorePages())
                                 <button wire:click="$set('page', {{ $pengajuans->currentPage() + 1 }})"
                                     wire:loading.attr="disabled"
-                                    class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                    class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                     <i class="fas fa-chevron-right"></i>
                                 </button>
                             @else

@@ -80,7 +80,7 @@
             <div>
                 <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
                 <button wire:click="export" wire:loading.attr="disabled"
-                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm disabled:opacity-50">
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm disabled:opacity-50 cursor-pointer">
                     <span wire:loading.remove wire:target="export">
                         <i class="fas fa-file-excel mr-2"></i>Export Excel
                     </span>
@@ -94,7 +94,7 @@
                 <button wire:click="create"
                     class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
                hover:bg-blue-700 transition text-sm
-               flex items-center justify-center">
+               flex items-center justify-center cursor-pointer">
                     <i class="fas fa-plus mr-2"></i>Ajukan Surat
                 </button>
             </div>
@@ -200,7 +200,7 @@
                                 <div class="flex items-center gap-3 text-lg">
                                     <!-- Detail -->
                                     <button wire:click="showDetail('{{ $surat->id }}')"
-                                        class="text-blue-600 hover:text-blue-800 transition-transform hover:scale-110"
+                                        class="text-blue-600 hover:text-blue-800 transition-transform hover:scale-110 cursor-pointer"
                                         title="Lihat Detail">
                                         <i class="fas fa-eye"></i>
                                     </button>
@@ -208,7 +208,7 @@
                                     <!-- Edit (hanya jika pending) -->
                                     @if ($surat->status === 'pending')
                                         <button wire:click="edit('{{ $surat->id }}')"
-                                            class="text-yellow-600 hover:text-yellow-800 transition-transform hover:scale-110"
+                                            class="text-yellow-600 hover:text-yellow-800 transition-transform hover:scale-110 cursor-pointer"
                                             title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
@@ -217,7 +217,7 @@
                                     <!-- Hapus -->
                                     <button
                                         onclick="confirmDeletePengajuan('{{ $surat->id }}', '{{ $surat->no_surat }}')"
-                                        class="text-red-600 hover:text-red-800 transition-transform hover:scale-110"
+                                        class="text-red-600 hover:text-red-800 transition-transform hover:scale-110 cursor-pointer"
                                         title="Hapus">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -257,7 +257,7 @@
                         @else
                             <button wire:click="$set('page', {{ $surats->currentPage() - 1 }})"
                                 wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                         @endif
@@ -269,7 +269,7 @@
                                 </span>
                             @else
                                 <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
-                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                     {{ $page }}
                                 </button>
                             @endif
@@ -278,7 +278,7 @@
                         @if ($surats->hasMorePages())
                             <button wire:click="$set('page', {{ $surats->currentPage() + 1 }})"
                                 wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         @else
@@ -311,7 +311,7 @@
                         </div>
                     </div>
                     <button wire:click="closeDetail"
-                        class="text-white/80 hover:text-white transition p-2 hover:bg-white/10 rounded-lg">
+                        class="text-white/80 hover:text-white transition p-2 hover:bg-white/10 rounded-lg cursor-pointer">
                         <i class="fas fa-times text-lg sm:text-xl"></i>
                     </button>
                 </div>
@@ -471,7 +471,7 @@
                 <div
                     class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex justify-end flex-shrink-0 shadow-lg">
                     <button wire:click="closeDetail"
-                        class="w-full sm:w-auto px-6 py-2.5 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition">
+                        class="w-full sm:w-auto px-6 py-2.5 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition cursor-pointer">
                         <i class="fas fa-times mr-2"></i>Tutup
                     </button>
                 </div>

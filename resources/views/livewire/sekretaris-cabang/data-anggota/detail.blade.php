@@ -6,9 +6,6 @@
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Detail Anggota</h1>
             <p class="text-sm text-gray-600 mt-1">Informasi lengkap anggota</p>
         </div>
-        <button wire:click="back" class="text-gray-600 hover:text-gray-800 self-start sm:self-center">
-            <i class="fas fa-arrow-left mr-2"></i>Kembali
-        </button>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -18,12 +15,12 @@
                 <!-- Avatar -->
                 <div class="text-center mb-6">
                     <img src="{{ $anggota->avatar_url }}"
-                         class="w-32 h-32 rounded-full mx-auto object-cover border-4 border-gray-100"
-                         alt="{{ $anggota->nama_lengkap }}">
+                        class="w-32 h-32 rounded-full mx-auto object-cover border-4 border-gray-100"
+                        alt="{{ $anggota->nama_lengkap }}">
                     <h3 class="text-xl font-bold text-gray-800 mt-4">{{ $anggota->nama_lengkap }}</h3>
                     <p class="text-sm text-gray-600">{{ $anggota->periode->nama }}</p>
 
-                    @if($anggota->jabatan)
+                    @if ($anggota->jabatan)
                         <div class="mt-3">
                             <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">
                                 {{ $anggota->jabatan }}
@@ -34,14 +31,15 @@
 
                 <!-- Quick Info -->
                 <div class="space-y-3 border-t border-gray-100 pt-4">
-                    @if($anggota->jenis_kelamin)
+                    @if ($anggota->jenis_kelamin)
                         <div class="flex items-center text-sm">
-                            <i class="fas {{ $anggota->jenis_kelamin === 'Laki-laki' ? 'fa-male text-blue-600' : 'fa-female text-pink-600' }} w-6"></i>
+                            <i
+                                class="fas {{ $anggota->jenis_kelamin === 'Laki-laki' ? 'fa-male text-blue-600' : 'fa-female text-pink-600' }} w-6"></i>
                             <span class="text-gray-700">{{ $anggota->jenis_kelamin }}</span>
                         </div>
                     @endif
 
-                    @if($anggota->tanggal_lahir)
+                    @if ($anggota->tanggal_lahir)
                         <div class="flex items-center text-sm">
                             <i class="fas fa-birthday-cake text-purple-600 w-6"></i>
                             <span class="text-gray-700">
@@ -51,14 +49,14 @@
                         </div>
                     @endif
 
-                    @if($anggota->no_hp)
+                    @if ($anggota->no_hp)
                         <div class="flex items-center text-sm">
                             <i class="fas fa-phone text-green-600 w-6"></i>
                             <span class="text-gray-700">{{ $anggota->no_hp }}</span>
                         </div>
                     @endif
 
-                    @if($anggota->email)
+                    @if ($anggota->email)
                         <div class="flex items-center text-sm">
                             <i class="fas fa-envelope text-red-600 w-6"></i>
                             <span class="text-gray-700 break-all">{{ $anggota->email }}</span>
@@ -69,16 +67,16 @@
                 <!-- Actions -->
                 <div class="space-y-2 mt-6 border-t border-gray-100 pt-4">
                     <button wire:click="edit('{{ $anggota->id }}')"
-                        class="w-full bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition text-sm">
+                        class="w-full bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition text-sm cursor-pointer">
                         <i class="fas fa-edit mr-2"></i>Edit Data
                     </button>
 
-                    <button wire:click="delete('{{ $anggota->id }}')"
-                        wire:confirm="Apakah Anda yakin ingin menghapus anggota ini?"
-                        class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm">
-                        <i class="fas fa-trash mr-2"></i>Hapus Anggota
+                    <button wire:click="back"
+                        class="w-full bg-gray-100 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-200 hover:text-gray-800 transition text-sm cursor-pointer flex items-center justify-center">
+                        <i class="fas fa-arrow-left mr-2"></i>Kembali
                     </button>
                 </div>
+
             </div>
         </div>
 
@@ -132,7 +130,7 @@
                     <div>
                         <label class="text-xs font-medium text-gray-500">Tanggal Lahir</label>
                         <p class="text-sm text-gray-800 mt-1">
-                            @if($anggota->tanggal_lahir)
+                            @if ($anggota->tanggal_lahir)
                                 {{ \Carbon\Carbon::parse($anggota->tanggal_lahir)->format('d F Y') }}
                                 <span class="text-xs text-gray-500">({{ $anggota->umur }} tahun)</span>
                             @else
@@ -157,10 +155,9 @@
                     <div>
                         <label class="text-xs font-medium text-gray-500">No. HP / WhatsApp</label>
                         <p class="text-sm text-gray-800 mt-1">
-                            @if($anggota->no_hp)
+                            @if ($anggota->no_hp)
                                 <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $anggota->no_hp) }}"
-                                   target="_blank"
-                                   class="text-green-600 hover:text-green-700">
+                                    target="_blank" class="text-green-600 hover:text-green-700">
                                     <i class="fab fa-whatsapp mr-1"></i>{{ $anggota->no_hp }}
                                 </a>
                             @else
@@ -171,7 +168,7 @@
                     <div>
                         <label class="text-xs font-medium text-gray-500">Email</label>
                         <p class="text-sm text-gray-800 mt-1">
-                            @if($anggota->email)
+                            @if ($anggota->email)
                                 <a href="mailto:{{ $anggota->email }}" class="text-blue-600 hover:text-blue-700">
                                     {{ $anggota->email }}
                                 </a>

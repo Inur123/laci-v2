@@ -17,11 +17,11 @@
             </div>
             <div class="flex gap-3">
                 <button type="submit"
-                    class="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                    class="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition cursor-pointer">
                     <i class="fas fa-save mr-2"></i>Update
                 </button>
                 <button type="button" wire:click="back"
-                    class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
+                    class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                     <i class="fas fa-arrow-left mr-2"></i>Kembali
                 </button>
             </div>

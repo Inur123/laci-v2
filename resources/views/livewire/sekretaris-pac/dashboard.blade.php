@@ -177,7 +177,7 @@
                     Aktivitas Terbaru
                 </h3>
                 <button wire:click="loadMoreActivities"
-                    class="text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center">
+                    class="text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center cursor-pointer">
                     <i class="fas fa-plus mr-1"></i> Muat Lebih
                 </button>
             </div>
@@ -227,7 +227,7 @@
             @if($this->aktivitasTerbaru->count() >= $this->activityLimit)
             <div class="p-4 border-t border-gray-200 text-center">
                 <button wire:click="loadMoreActivities"
-                    class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+                    class="text-sm text-indigo-600 hover:text-indigo-800 font-medium cursor-pointer">
                     Muat lebih banyak...
                 </button>
             </div>

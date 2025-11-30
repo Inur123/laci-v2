@@ -8,42 +8,41 @@
 
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-        <!-- Cari Nama User -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Cari Nama User</label>
-            <input type="text" wire:model.live.debounce.500ms="searchName"
-                placeholder="Nama user..."
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg
+            <!-- Cari Nama User -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Nama User</label>
+                <input type="text" wire:model.live.debounce.500ms="searchName" placeholder="Nama user..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
                 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
-        </div>
+            </div>
 
-        <!-- Status -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-            <select wire:model.live="filterStatus"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg
+            <!-- Status -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <select wire:model.live="filterStatus"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
                 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
-                <option value="">Semua Status</option>
-                <option value="pending">Pending</option>
-                <option value="diterima">Diterima</option>
-                <option value="ditolak">Ditolak</option>
-            </select>
-        </div>
+                    <option value="">Semua Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="diterima">Diterima</option>
+                    <option value="ditolak">Ditolak</option>
+                </select>
+            </div>
 
-        <!-- Tombol Refresh -->
-        <div>
-            <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
-            <button wire:click="$refresh"
-                class="w-full bg-green-600 text-white px-4 py-2 rounded-lg
-                hover:bg-green-700 transition text-sm">
-                <i class="fas fa-sync-alt mr-2"></i>Refresh
-            </button>
-        </div>
+            <!-- Tombol Refresh -->
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button wire:click="$refresh"
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg
+                hover:bg-green-700 transition text-sm cursor-pointer">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh
+                </button>
+            </div>
 
+        </div>
     </div>
-</div>
 
 
     <!-- Table -->
@@ -112,7 +111,7 @@
                             </td>
                             <td class="py-3 px-4 text-center">
                                 <button wire:click="showDetail('{{ $surat->id }}')"
-                                    class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition">
+                                    class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition cursor-pointer">
                                     <i class="fas fa-eye mr-1"></i>Detail
                                 </button>
                             </td>
@@ -147,7 +146,7 @@
                         @else
                             <button wire:click="$set('page', {{ $pengajuans->currentPage() - 1 }})"
                                 wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                         @endif
@@ -158,7 +157,7 @@
                                     class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium">{{ $page }}</span>
                             @else
                                 <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
-                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                     {{ $page }}
                                 </button>
                             @endif
@@ -167,7 +166,7 @@
                         @if ($pengajuans->hasMorePages())
                             <button wire:click="$set('page', {{ $pengajuans->currentPage() + 1 }})"
                                 wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         @else
@@ -201,7 +200,7 @@
                         </div>
                     </div>
                     <button wire:click="closeDetail"
-                        class="text-white/80 hover:text-white transition p-2 hover:bg-white/10 rounded-lg">
+                        class="text-white/80 hover:text-white transition p-2 hover:bg-white/10 rounded-lg cursor-pointer">
                         <i class="fas fa-times text-lg sm:text-xl"></i>
                     </button>
                 </div>
@@ -388,7 +387,7 @@
                 <div
                     class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex justify-end flex-shrink-0 shadow-lg">
                     <button wire:click="closeDetail"
-                        class="w-full sm:w-auto px-6 py-2.5 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition">
+                        class="w-full sm:w-auto px-6 py-2.5 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition cursor-pointer">
                         <i class="fas fa-times mr-2"></i>Tutup
                     </button>
                 </div>

@@ -47,29 +47,28 @@
 
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-        <!-- Cari Periode -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Cari Periode</label>
-            <input type="text" wire:model.live="search"
-                placeholder="Nama periode..."
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg
+            <!-- Cari Periode -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Periode</label>
+                <input type="text" wire:model.live="search" placeholder="Nama periode..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
                 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-        </div>
+            </div>
 
-        <!-- Tombol Tambah Periode -->
-        <div>
-            <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
-            <button wire:click="create"
-                class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
-                hover:bg-blue-700 transition text-sm">
-                <i class="fas fa-plus mr-2"></i>Tambah Periode
-            </button>
-        </div>
+            <!-- Tombol Tambah Periode -->
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button wire:click="create"
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
+                hover:bg-blue-700 transition text-sm cursor-pointer">
+                    <i class="fas fa-plus mr-2"></i>Tambah Periode
+                </button>
+            </div>
 
+        </div>
     </div>
-</div>
 
 
     <!-- Table -->
@@ -78,56 +77,60 @@
             <h3 class="text-base sm:text-lg font-semibold text-gray-800">Daftar Periode</h3>
         </div>
         <div class="overflow-x-auto">
-    <table class="w-full">
-        <thead class="bg-gray-50 border-b border-gray-100">
-            <tr>
-                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-16">No</th>
-                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Nama Periode</th>
-                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Dibuat Oleh</th>
-                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Tanggal Dibuat</th>
-                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-            @forelse($periodes as $index => $periode)
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">{{ $periodes->firstItem() + $index }}</td>
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-16">No</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Nama Periode</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Dibuat Oleh</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Tanggal Dibuat</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @forelse($periodes as $index => $periode)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
+                                {{ $periodes->firstItem() + $index }}</td>
 
-                    <td class="py-3 px-4 whitespace-nowrap">
-                        <span class="text-sm font-medium text-gray-800">{{ $periode->nama }}</span>
-                    </td>
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                <span class="text-sm font-medium text-gray-800">{{ $periode->nama }}</span>
+                            </td>
 
-                    <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">{{ $periode->user->name }}</td>
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">{{ $periode->user->name }}
+                            </td>
 
-                    <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
-                        {{ $periode->created_at->format('d M Y, H:i') }}
-                    </td>
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
+                                {{ $periode->created_at->format('d M Y, H:i') }}
+                            </td>
 
-                    <td class="py-3 px-4 whitespace-nowrap">
-                        <div class="flex items-center gap-2">
-                            <button wire:click="edit('{{ $periode->id }}')"
-                                class="text-yellow-600 hover:text-yellow-800 transition whitespace-nowrap" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button
-                                onclick="confirmDeletePeriode('{{ $periode->id }}', '{{ $periode->nama }}')"
-                                class="text-red-600 hover:text-red-800 transition whitespace-nowrap" title="Hapus">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="5" class="py-8 px-4 text-center text-gray-500">
-                        <i class="fas fa-inbox text-4xl mb-2 block"></i>
-                        <p>Belum ada data periode</p>
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <button wire:click="edit('{{ $periode->id }}')"
+                                        class="text-yellow-600 hover:text-yellow-800 transition whitespace-nowrap cursor-pointer"
+                                        title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button
+                                        onclick="confirmDeletePeriode('{{ $periode->id }}', '{{ $periode->nama }}')"
+                                        class="text-red-600 hover:text-red-800 transition whitespace-nowrap cursor-pointer"
+                                        title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-8 px-4 text-center text-gray-500">
+                                <i class="fas fa-inbox text-4xl mb-2 block"></i>
+                                <p>Belum ada data periode</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
 
         <!-- Custom Pagination (Tanpa URL Parameter) -->
@@ -150,7 +153,7 @@
                         @else
                             <button wire:click="$set('page', {{ $periodes->currentPage() - 1 }})"
                                 wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                         @endif
@@ -163,7 +166,7 @@
                                 </span>
                             @else
                                 <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
-                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                     {{ $page }}
                                 </button>
                             @endif
@@ -173,7 +176,7 @@
                         @if ($periodes->hasMorePages())
                             <button wire:click="$set('page', {{ $periodes->currentPage() + 1 }})"
                                 wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         @else

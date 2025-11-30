@@ -148,7 +148,7 @@
 
             <!-- Kembali Button -->
             <button wire:click="$set('detailId', null)" type="button"
-                class="order-2 sm:order-1 px-6 py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition font-medium">
+                class="order-2 sm:order-1 px-6 py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition font-medium cursor-pointer">
                 <i class="fas fa-arrow-left mr-2"></i>Kembali
             </button>
 
@@ -158,7 +158,7 @@
                     <!-- Tolak Button -->
                     <button type="button" onclick="confirmReject('{{ $detail['id'] }}')" wire:loading.attr="disabled"
                         wire:target="reject"
-                        class="px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium shadow-lg hover:shadow-xl disabled:opacity-75 disabled:cursor-not-allowed">
+                        class="px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium shadow-lg hover:shadow-xl disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer">
                         <span wire:loading.remove wire:target="reject" class="flex items-center justify-center">
                             <i class="fas fa-times mr-2"></i>Tolak
                         </span>
@@ -170,7 +170,7 @@
                     <!-- Terima Button -->
                     <button type="button" onclick="confirmApprove('{{ $detail['id'] }}')" wire:loading.attr="disabled"
                         wire:target="approve"
-                        class="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium shadow-lg hover:shadow-xl disabled:opacity-75 disabled:cursor-not-allowed">
+                        class="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium shadow-lg hover:shadow-xl disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer">
                         <span wire:loading.remove wire:target="approve" class="flex items-center justify-center">
                             <i class="fas fa-check mr-2"></i>Terima
                         </span>

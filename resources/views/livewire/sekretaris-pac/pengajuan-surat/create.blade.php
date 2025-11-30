@@ -5,9 +5,6 @@
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Ajukan Surat Baru</h1>
             <p class="text-sm text-gray-600 mt-1">Isi data pengajuan surat</p>
         </div>
-        <button wire:click="back" class="text-gray-600 hover:text-gray-800 self-start sm:self-center">
-            <i class="fas fa-arrow-left mr-2"></i>Kembali
-        </button>
     </div>
     <div class="bg-white rounded-lg shadow p-6">
         <form wire:submit.prevent="save" class="space-y-6">
@@ -75,7 +72,7 @@
             </div>
             <div class="flex gap-3 mt-6">
                 <button type="submit" wire:loading.attr="disabled" wire:target="save"
-                    class="relative px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-75 disabled:cursor-not-allowed">
+                    class="relative px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer">
 
                     <!-- Teks Normal -->
                     <span wire:loading.remove wire:target="save" class="flex items-center">
@@ -91,7 +88,7 @@
                 </button>
 
                 <button type="button" wire:click="back"
-                    class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
+                    class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                     <i class="fas fa-arrow-left mr-2"></i>Batal
                 </button>
             </div>

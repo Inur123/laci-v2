@@ -59,41 +59,40 @@
 
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-        <!-- Cari User -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Cari User</label>
-            <input type="text" wire:model.live.debounce.500ms="search"
-                placeholder="Nama atau email..."
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg
+            <!-- Cari User -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cari User</label>
+                <input type="text" wire:model.live.debounce.500ms="search" placeholder="Nama atau email..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
                 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-        </div>
+            </div>
 
-        <!-- Status -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-            <select wire:model.live="filterStatus"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg
+            <!-- Status -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <select wire:model.live="filterStatus"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
                 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                <option value="">Semua Status</option>
-                <option value="1">Aktif</option>
-                <option value="0">Nonaktif</option>
-            </select>
-        </div>
+                    <option value="">Semua Status</option>
+                    <option value="1">Aktif</option>
+                    <option value="0">Nonaktif</option>
+                </select>
+            </div>
 
-        <!-- Tombol Refresh -->
-        <div>
-            <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
-            <button wire:click="$refresh"
-                class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
-                hover:bg-blue-700 transition text-sm">
-                <i class="fas fa-sync-alt mr-2"></i>Refresh
-            </button>
-        </div>
+            <!-- Tombol Refresh -->
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button wire:click="$refresh"
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
+                hover:bg-blue-700 transition text-sm cursor-pointer">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh
+                </button>
+            </div>
 
+        </div>
     </div>
-</div>
 
 
     <!-- Table -->
@@ -102,105 +101,113 @@
             <h3 class="text-lg font-semibold text-gray-800">Daftar User PAC</h3>
         </div>
         <div class="overflow-x-auto">
-    <table class="w-full table-auto min-w-[700px]">
-        <thead class="bg-gray-50 border-b border-gray-100">
-            <tr>
-                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-16">No</th>
-                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 min-w-[200px]">Nama</th>
-                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 min-w-[180px]">Email</th>
-                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-24">Status</th>
-                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-28">Email Verified</th>
-                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-32">Terdaftar</th>
-                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-36">Aksi</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-            @forelse($users as $index => $user)
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="py-3 px-4 text-sm text-gray-700">{{ $users->firstItem() + $index }}</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-3">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=3b82f6&color=fff"
-                                 class="w-10 h-10 rounded-full flex-shrink-0" alt="Avatar">
-                            <div class="truncate">
-                                <p class="text-sm font-medium text-gray-800 truncate">{{ $user->name }}</p>
-                                <p class="text-xs text-gray-500 truncate">Sekretaris PAC</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-sm text-gray-700 truncate">{{ $user->email }}</td>
-                    <td class="py-3 px-4">
-    <div class="flex items-center gap-1">
-        @if($user->is_active)
-            <span class="flex items-center px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">
-                <i class="fas fa-circle text-[8px] mr-1"></i>Aktif
-            </span>
-        @else
-            <span class="flex items-center px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium">
-                <i class="fas fa-circle text-[8px] mr-1"></i>Nonaktif
-            </span>
-        @endif
-    </div>
-</td>
+            <table class="w-full table-auto min-w-[700px]">
+                <thead class="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-16">No</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 min-w-[200px]">Nama</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 min-w-[180px]">Email</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-24">Status</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-28">Email Verified</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-32">Terdaftar</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-36">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @forelse($users as $index => $user)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ $users->firstItem() + $index }}</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=3b82f6&color=fff"
+                                        class="w-10 h-10 rounded-full flex-shrink-0" alt="Avatar">
+                                    <div class="truncate">
+                                        <p class="text-sm font-medium text-gray-800 truncate">{{ $user->name }}</p>
+                                        <p class="text-xs text-gray-500 truncate">Sekretaris PAC</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700 truncate">{{ $user->email }}</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-1">
+                                    @if ($user->is_active)
+                                        <span
+                                            class="flex items-center px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">
+                                            <i class="fas fa-circle text-[8px] mr-1"></i>Aktif
+                                        </span>
+                                    @else
+                                        <span
+                                            class="flex items-center px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium">
+                                            <i class="fas fa-circle text-[8px] mr-1"></i>Nonaktif
+                                        </span>
+                                    @endif
+                                </div>
+                            </td>
 
-<td class="py-3 px-4">
-    <div class="flex items-center gap-1">
-        @if($user->email_verified_at)
-            <span class="flex items-center px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">
-                <i class="fas fa-check-circle mr-1"></i>Verified
-            </span>
-        @else
-            <span class="flex items-center px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs font-medium">
-                <i class="fas fa-exclamation-circle mr-1"></i>Unverified
-            </span>
-        @endif
-    </div>
-</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-1">
+                                    @if ($user->email_verified_at)
+                                        <span
+                                            class="flex items-center px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">
+                                            <i class="fas fa-check-circle mr-1"></i>Verified
+                                        </span>
+                                    @else
+                                        <span
+                                            class="flex items-center px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs font-medium">
+                                            <i class="fas fa-exclamation-circle mr-1"></i>Unverified
+                                        </span>
+                                    @endif
+                                </div>
+                            </td>
 
-                  <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
-    {{ $user->created_at->diffForHumans() }}
-</td>
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
+                                {{ $user->created_at->diffForHumans() }}
+                            </td>
 
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-2">
-                            <button wire:click="detail('{{ $user->id }}')"
-                                class="text-blue-600 hover:text-blue-800 transition" title="Detail">
-                                <i class="fas fa-eye"></i>
-                            </button>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-2">
+                                    <button wire:click="detail('{{ $user->id }}')"
+                                        class="text-blue-600 hover:text-blue-800 transition cursor-pointer"
+                                        title="Detail">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
 
-                            <button
-                                onclick="confirmToggleStatus('{{ $user->id }}', '{{ addslashes($user->name) }}', {{ $user->is_active ? 'true' : 'false' }})"
-                                class="text-{{ $user->is_active ? 'red' : 'green' }}-600 hover:text-{{ $user->is_active ? 'red' : 'green' }}-800 transition"
-                                title="{{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
-                                <i class="fas fa-{{ $user->is_active ? 'ban' : 'check-circle' }}"></i>
-                            </button>
+                                    <button
+                                        onclick="confirmToggleStatus('{{ $user->id }}', '{{ addslashes($user->name) }}', {{ $user->is_active ? 'true' : 'false' }})"
+                                        class="text-{{ $user->is_active ? 'green' : 'red' }}-600 hover:text-{{ $user->is_active ? 'green' : 'red' }}-800 transition cursor-pointer"
+                                        title="{{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
 
-                            <button
-                                onclick="confirmResetPassword('{{ $user->id }}', '{{ addslashes($user->name) }}')"
-                                class="text-yellow-600 hover:text-yellow-800 transition" title="Reset Password">
-                                <i class="fas fa-key"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="7" class="py-8 px-4 text-center text-gray-500">
-                        <i class="fas fa-inbox text-4xl mb-2 block"></i>
-                        <p>Tidak ada data user PAC</p>
-                        @if($search || $filterStatus !== '')
-                            <p class="text-sm mt-2">Coba ubah filter pencarian Anda</p>
-                        @endif
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
+                                        <i class="fas fa-{{ $user->is_active ? 'check-circle' : 'ban' }}"></i>
+                                    </button>
+
+
+                                    <button
+                                        onclick="confirmResetPassword('{{ $user->id }}', '{{ addslashes($user->name) }}')"
+                                        class="text-yellow-600 hover:text-yellow-800 transition cursor-pointer"
+                                        title="Reset Password">
+                                        <i class="fas fa-key"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="py-8 px-4 text-center text-gray-500">
+                                <i class="fas fa-inbox text-4xl mb-2 block"></i>
+                                <p>Tidak ada data user PAC</p>
+                                @if ($search || $filterStatus !== '')
+                                    <p class="text-sm mt-2">Coba ubah filter pencarian Anda</p>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
 
         <!-- Custom Pagination -->
-        @if($users->hasPages())
+        @if ($users->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div class="text-sm text-gray-700">
@@ -215,8 +222,9 @@
                                 <i class="fas fa-chevron-left"></i>
                             </span>
                         @else
-                            <button wire:click="$set('page', {{ $users->currentPage() - 1 }})" wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                            <button wire:click="$set('page', {{ $users->currentPage() - 1 }})"
+                                wire:loading.attr="disabled"
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                         @endif
@@ -228,15 +236,16 @@
                                 </span>
                             @else
                                 <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
-                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                     {{ $page }}
                                 </button>
                             @endif
                         @endforeach
 
                         @if ($users->hasMorePages())
-                            <button wire:click="$set('page', {{ $users->currentPage() + 1 }})" wire:loading.attr="disabled"
-                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                            <button wire:click="$set('page', {{ $users->currentPage() + 1 }})"
+                                wire:loading.attr="disabled"
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         @else

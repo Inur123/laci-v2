@@ -2,7 +2,7 @@
 <header class="fixed top-0 left-0 right-0 bg-white shadow-sm z-40 transition-all duration-300"
     :class="sidebarOpen ? 'lg:left-64' : 'lg:left-20'">
     <div class="flex items-center justify-between p-3 md:p-4">
-        <button @click="sidebarOpen = !sidebarOpen" class="text-gray-600 hover:text-gray-900 p-2">
+        <button @click="sidebarOpen = !sidebarOpen" class="text-gray-600 hover:text-gray-900 p-2 cursor-pointer">
             <i class="fas fa-bars text-lg md:text-xl"></i>
         </button>
 

@@ -6,9 +6,6 @@
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Tambah Kegiatan Baru</h1>
             <p class="text-sm text-gray-600 mt-1">Tambahkan kegiatan baru ke kalender</p>
         </div>
-        <button wire:click="back" class="text-gray-600 hover:text-gray-800 self-start sm:self-center">
-            <i class="fas fa-arrow-left mr-2"></i>Kembali
-        </button>
     </div>
 
     <!-- Form -->
@@ -79,22 +76,22 @@
                     </div>
                     <div class="flex flex-wrap gap-2 mt-2">
                         <button type="button" wire:click="$set('warna', '#3788d8')"
-                            class="w-8 h-8 rounded-full bg-[#3788d8] border-2 border-gray-300 hover:border-gray-400 transition"
+                            class="w-8 h-8 rounded-full bg-[#3788d8] border-2 border-gray-300 hover:border-gray-400 transition cursor-pointer"
                             title="Biru"></button>
                         <button type="button" wire:click="$set('warna', '#22c55e')"
-                            class="w-8 h-8 rounded-full bg-[#22c55e] border-2 border-gray-300 hover:border-gray-400 transition"
+                            class="w-8 h-8 rounded-full bg-[#22c55e] border-2 border-gray-300 hover:border-gray-400 transition cursor-pointer"
                             title="Hijau"></button>
                         <button type="button" wire:click="$set('warna', '#ef4444')"
-                            class="w-8 h-8 rounded-full bg-[#ef4444] border-2 border-gray-300 hover:border-gray-400 transition"
+                            class="w-8 h-8 rounded-full bg-[#ef4444] border-2 border-gray-300 hover:border-gray-400 transition cursor-pointer"
                             title="Merah"></button>
                         <button type="button" wire:click="$set('warna', '#f59e0b')"
-                            class="w-8 h-8 rounded-full bg-[#f59e0b] border-2 border-gray-300 hover:border-gray-400 transition"
+                            class="w-8 h-8 rounded-full bg-[#f59e0b] border-2 border-gray-300 hover:border-gray-400 transition cursor-pointer"
                             title="Kuning"></button>
                         <button type="button" wire:click="$set('warna', '#8b5cf6')"
-                            class="w-8 h-8 rounded-full bg-[#8b5cf6] border-2 border-gray-300 hover:border-gray-400 transition"
+                            class="w-8 h-8 rounded-full bg-[#8b5cf6] border-2 border-gray-300 hover:border-gray-400 transition cursor-pointer"
                             title="Ungu"></button>
                         <button type="button" wire:click="$set('warna', '#ec4899')"
-                            class="w-8 h-8 rounded-full bg-[#ec4899] border-2 border-gray-300 hover:border-gray-400 transition"
+                            class="w-8 h-8 rounded-full bg-[#ec4899] border-2 border-gray-300 hover:border-gray-400 transition cursor-pointer"
                             title="Pink"></button>
                     </div>
                     @error('warna')
@@ -143,11 +140,11 @@
             <!-- Buttons -->
             <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6">
                 <button type="button" wire:click="back"
-                    class="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base">
+                    class="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base cursor-pointer">
                     Batal
                 </button>
                 <button type="submit"
-                    class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm sm:text-base">
+                    class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm sm:text-base cursor-pointer">
                     <i class="fas fa-save mr-2"></i>Simpan Kegiatan
                 </button>
             </div>

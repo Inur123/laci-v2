@@ -16,7 +16,8 @@
                     </div>
                     <div class="ml-3">
                         <h3 class="text-sm font-semibold text-yellow-800">Email Belum Terverifikasi</h3>
-                        <p class="text-xs text-yellow-700 mt-1">Silakan verifikasi email Anda untuk mengakses semua fitur.</p>
+                        <p class="text-xs text-yellow-700 mt-1">Silakan verifikasi email Anda untuk mengakses semua
+                            fitur.</p>
                     </div>
                 </div>
 
@@ -24,20 +25,18 @@
                 <div x-data="resendCooldown()" class="flex-shrink-0">
                     <button type="button" wire:click="resendVerification" wire:loading.attr="disabled"
                         :disabled="$wire.resendCooldown > 0"
-                        class="inline-flex items-center py-2 px-4 border border-transparent text-xs font-medium rounded-lg text-white transition-all duration-300 disabled:opacity-75 disabled:cursor-not-allowed whitespace-nowrap"
+                        class="inline-flex items-center py-2 px-4 border border-transparent text-xs font-medium rounded-lg text-white transition-all duration-300 disabled:opacity-75 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
                         :class="$wire.resendCooldown > 0 ?
                             'bg-gray-500 cursor-not-allowed' :
                             'bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500'">
                         <!-- Normal State -->
-                        <span x-show="$wire.resendCooldown === 0" wire:loading.remove
-                            wire:target="resendVerification">
+                        <span x-show="$wire.resendCooldown === 0" wire:loading.remove wire:target="resendVerification">
                             <i class="fas fa-paper-plane mr-2"></i>
                             Kirim Ulang Verifikasi
                         </span>
 
                         <!-- Countdown State -->
-                        <span x-show="$wire.resendCooldown > 0"
-                            x-text="`Tunggu ${$wire.resendCooldown}s`"></span>
+                        <span x-show="$wire.resendCooldown > 0" x-text="`Tunggu ${$wire.resendCooldown}s`"></span>
 
                         <!-- Loading State -->
                         <span wire:loading wire:target="resendVerification" class="flex items-center">
@@ -124,47 +123,89 @@
                 </div>
 
                 <!-- Password Baru -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Password Baru</label>
+                <div x-data="{ show: false }">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Password Baru
+                    </label>
+
                     <div class="relative">
-                        <input :type="$wire.showPassword ? 'text' : 'password'" wire:model.blur="password"
-                            class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        <input :type="show ? 'text' : 'password'" wire:model.blur="password"
+                            class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg
+                   focus:ring-2 focus:ring-green-500"
                             placeholder="Kosongkan jika tidak ingin ganti">
-                        <button type="button" wire:click="togglePassword"
-                            class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-gray-700">
-                            <i class="fas" :class="$wire.showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+
+                        <button type="button" @click="show = !show"
+                            class="absolute inset-y-0 right-0 pr-4 flex items-center
+                   text-gray-500 hover:text-gray-700 cursor-pointer">
+
+                            <template x-if="show">
+                                <i class="fas fa-eye-slash"></i>
+                            </template>
+                            <template x-if="!show">
+                                <i class="fas fa-eye"></i>
+                            </template>
                         </button>
                     </div>
+
                     @error('password')
                         <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span>
                     @enderror
-                    <p class="text-gray-500 text-xs mt-1">Kosongkan jika tidak ingin mengubah password</p>
+
+                    <p class="text-gray-500 text-xs mt-1">
+                        Kosongkan jika tidak ingin mengubah password
+                    </p>
                 </div>
 
+
                 <!-- Konfirmasi Password -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Konfirmasi Password</label>
+                <div x-data="{ show: false }">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Konfirmasi Password
+                    </label>
+
                     <div class="relative">
-                        <input :type="$wire.showPasswordConfirmation ? 'text' : 'password'"
-                            wire:model.blur="password_confirmation"
-                            class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
-                        <button type="button" wire:click="togglePasswordConfirmation"
-                            class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-gray-700">
-                            <i class="fas" :class="$wire.showPasswordConfirmation ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        <input :type="show ? 'text' : 'password'" wire:model.blur="password_confirmation"
+                            class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg
+                   focus:ring-2 focus:ring-green-500">
+
+                        <button type="button" @click="show = !show"
+                            class="absolute inset-y-0 right-0 pr-4 flex items-center
+                   text-gray-500 hover:text-gray-700 cursor-pointer">
+
+                            <template x-if="show">
+                                <i class="fas fa-eye-slash"></i>
+                            </template>
+                            <template x-if="!show">
+                                <i class="fas fa-eye"></i>
+                            </template>
                         </button>
                     </div>
                 </div>
+
 
             </div>
 
             <div class="mt-10">
-                <button type="submit"
-                    class="px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-md transition"
-                    wire:loading.attr="disabled">
-                    <span wire:loading.remove wire:target="updateProfile">Simpan Perubahan</span>
-                    <span wire:loading wire:target="updateProfile">Menyimpan...</span>
+                <button type="submit" wire:loading.attr="disabled"
+                    class="px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-bold
+               rounded-lg shadow-md transition
+               flex items-center justify-center gap-2
+               disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+
+                    <!-- Normal -->
+                    <span wire:loading.remove wire:target="updateProfile">
+                        Simpan Perubahan
+                    </span>
+
+                    <!-- Loading -->
+                    <span wire:loading wire:target="updateProfile">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Menyimpan...
+                    </span>
+
                 </button>
             </div>
+
         </form>
     </div>
 </div>

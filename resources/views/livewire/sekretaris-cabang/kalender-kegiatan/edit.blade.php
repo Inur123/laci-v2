@@ -1,12 +1,16 @@
 <!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/kalender-kegiatan/edit.blade.php -->
 <div>
     <!-- Header -->
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
+    <div class="mb-6 flex flex-row items-center justify-between gap-4">
+        <div class="min-w-0">
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Edit Kegiatan</h1>
-            <p class="text-sm text-gray-600 mt-1">Edit data kegiatan {{ $kegiatan->judul }}</p>
+            <p class="text-sm text-gray-600 mt-1 break-words">
+                Edit data kegiatan {{ $kegiatan->judul }}
+            </p>
         </div>
-        <button wire:click="back" class="text-gray-600 hover:text-gray-800 self-start sm:self-center">
+
+        <button wire:click="back"
+            class="text-white bg-gray-600 hover:bg-gray-700 transition rounded-lg px-3 sm:px-4 py-2 whitespace-nowrap cursor-pointer">
             <i class="fas fa-arrow-left mr-2"></i>Kembali
         </button>
     </div>
@@ -77,17 +81,17 @@
                     </div>
                     <div class="flex flex-wrap gap-2 mt-2">
                         <button type="button" wire:click="$set('warna', '#3788d8')"
-                            class="w-8 h-8 rounded-full bg-[#3788d8] border-2 border-gray-300 hover:border-gray-400 transition"></button>
+                            class="w-8 h-8 rounded-full bg-[#3788d8] border-2 border-gray-300 hover:border-gray-400 transition cursor-pointer"></button>
                         <button type="button" wire:click="$set('warna', '#22c55e')"
-                            class="w-8 h-8 rounded-full bg-[#22c55e] border-2 border-gray-300 hover:border-gray-400 transition"></button>
+                            class="w-8 h-8 rounded-full bg-[#22c55e] border-2 border-gray-300 hover:border-gray-400 transition cursor-pointer"></button>
                         <button type="button" wire:click="$set('warna', '#ef4444')"
-                            class="w-8 h-8 rounded-full bg-[#ef4444] border-2 border-gray-300 hover:border-gray-400 transition"></button>
+                            class="w-8 h-8 rounded-full bg-[#ef4444] border-2 border-gray-300 hover:border-gray-400 transition cursor-pointer"></button>
                         <button type="button" wire:click="$set('warna', '#f59e0b')"
-                            class="w-8 h-8 rounded-full bg-[#f59e0b] border-2 border-gray-300 hover:border-gray-400 transition"></button>
+                            class="w-8 h-8 rounded-full bg-[#f59e0b] border-2 border-gray-300 hover:border-gray-400 transition cursor-pointer"></button>
                         <button type="button" wire:click="$set('warna', '#8b5cf6')"
-                            class="w-8 h-8 rounded-full bg-[#8b5cf6] border-2 border-gray-300 hover:border-gray-400 transition"></button>
+                            class="w-8 h-8 rounded-full bg-[#8b5cf6] border-2 border-gray-300 hover:border-gray-400 transition cursor-pointer"></button>
                         <button type="button" wire:click="$set('warna', '#ec4899')"
-                            class="w-8 h-8 rounded-full bg-[#ec4899] border-2 border-gray-300 hover:border-gray-400 transition"></button>
+                            class="w-8 h-8 rounded-full bg-[#ec4899] border-2 border-gray-300 hover:border-gray-400 transition cursor-pointer"></button>
                     </div>
                     @error('warna')
                         <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
@@ -108,21 +112,22 @@
             </div>
 
             <!-- Preview Card -->
-            @if($judul || $tanggal_mulai)
+            @if ($judul || $tanggal_mulai)
                 <div class="mt-6 p-4 border-2 border-dashed rounded-lg" style="border-color: {{ $warna }};">
                     <p class="text-sm text-gray-600 mb-2">Preview:</p>
-                    <div class="border-l-4 p-4 rounded-r" style="border-color: {{ $warna }}; background-color: {{ $warna }}20;">
+                    <div class="border-l-4 p-4 rounded-r"
+                        style="border-color: {{ $warna }}; background-color: {{ $warna }}20;">
                         <h4 class="font-semibold text-gray-800 mb-1">{{ $judul }}</h4>
-                        @if($tanggal_mulai)
+                        @if ($tanggal_mulai)
                             <p class="text-sm text-gray-600 mb-1">
                                 <i class="fas fa-calendar mr-1"></i>
                                 {{ \Carbon\Carbon::parse($tanggal_mulai)->format('d M Y, H:i') }} WIB
-                                @if($tanggal_selesai)
+                                @if ($tanggal_selesai)
                                     - {{ \Carbon\Carbon::parse($tanggal_selesai)->format('H:i') }} WIB
                                 @endif
                             </p>
                         @endif
-                        @if($lokasi)
+                        @if ($lokasi)
                             <p class="text-sm text-gray-600">
                                 <i class="fas fa-map-marker-alt mr-1"></i>{{ $lokasi }}
                             </p>
@@ -134,11 +139,11 @@
             <!-- Buttons -->
             <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6">
                 <button type="button" wire:click="back"
-                    class="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base">
+                    class="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base cursor-pointer">
                     Batal
                 </button>
                 <button type="submit"
-                    class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm sm:text-base">
+                    class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm sm:text-base cursor-pointer">
                     <i class="fas fa-save mr-2"></i>Update Kegiatan
                 </button>
             </div>

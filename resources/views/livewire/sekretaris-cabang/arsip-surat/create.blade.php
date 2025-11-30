@@ -6,9 +6,6 @@
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Tambah Surat Baru</h1>
             <p class="text-sm text-gray-600 mt-1">Tambahkan surat masuk atau keluar baru</p>
         </div>
-        <button wire:click="back" class="text-gray-600 hover:text-gray-800 self-start sm:self-center">
-            <i class="fas fa-arrow-left mr-2"></i>Kembali
-        </button>
     </div>
 
     <!-- Form -->
@@ -114,11 +111,11 @@
             <!-- Buttons -->
             <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6">
                 <button type="button" wire:click="back"
-                    class="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base">
+                    class="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base cursor-pointer">
                     Batal
                 </button>
                 <button type="submit"
-                    class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm sm:text-base">
+                    class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm sm:text-base cursor-pointer">
                     <i class="fas fa-save mr-2"></i>Simpan
                 </button>
             </div>
