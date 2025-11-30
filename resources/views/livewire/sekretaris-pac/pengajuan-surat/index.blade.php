@@ -57,9 +57,10 @@
         </div>
     </div>
 
+
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari Surat</label>
                 <input type="text" wire:model.live.debounce.500ms="search"
@@ -76,12 +77,28 @@
                     <option value="ditolak">Ditolak</option>
                 </select>
             </div>
-            <div class="flex items-end">
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button wire:click="export" wire:loading.attr="disabled"
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm disabled:opacity-50">
+                    <span wire:loading.remove wire:target="export">
+                        <i class="fas fa-file-excel mr-2"></i>Export Excel
+                    </span>
+                    <span wire:loading wire:target="export">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>Mengunduh...
+                    </span>
+                </button>
+            </div>
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
                 <button wire:click="create"
-                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
+               hover:bg-blue-700 transition text-sm
+               flex items-center justify-center">
                     <i class="fas fa-plus mr-2"></i>Ajukan Surat
                 </button>
             </div>
+
         </div>
     </div>
 

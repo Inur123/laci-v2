@@ -9,6 +9,9 @@ use Livewire\Attributes\Layout;
 use App\Models\PengajuanSuratPac;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\User;
+use App\Exports\SekretarisCabang\PengajuanSuratPacExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PengajuanStatusMail;
@@ -24,6 +27,7 @@ class PengajuanPac extends Component
     public $detailId = null;
     public $detailData = null;
     public $page = 1;
+    public $exportUserId = null;
 
     protected $paginationTheme = 'tailwind';
 
@@ -150,5 +154,28 @@ class PengajuanPac extends Component
             'pending' => $pending,
             'diterima' => $diterima,
         ]);
+    }
+
+    public function export()
+{
+    $userName = null;
+    if ($this->exportUserId) {
+        $user = User::find($this->exportUserId);
+        $userName = $user ? preg_replace('/[^a-zA-Z0-9_-]/', '_', $user->name) : null;
+    }
+    $filename = 'Pengajuan_Surat_PAC_' . ($userName ? $userName . '_' : '') . now()->format('Y-m-d_His') . '.xlsx';
+    return Excel::download(
+        new PengajuanSuratPacExport($this->exportUserId),
+        $filename
+    );
+}
+
+    public function getExportUsersProperty()
+    {
+        return User::where('role', 'sekretaris_pac')
+            ->where('is_active', true)
+            ->whereNotNull('email_verified_at')
+            ->orderBy('name')
+            ->get();
     }
 }

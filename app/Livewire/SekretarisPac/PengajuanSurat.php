@@ -14,6 +14,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use App\Mail\PengajuanSuratBaruMail;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PengajuanTerkirimMail;
+use App\Exports\SekretarisPac\ArsipPengajuanSuratExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 #[Layout('components.layouts.sekretaris-pac')]
 #[Title('Pengajuan Surat - PAC')]
@@ -266,4 +268,12 @@ class PengajuanSurat extends Component
             ['path' => request()->url()]
         );
     }
+    public function export()
+{
+    $filename = 'Arsip_Pengajuan_Surat_PAC_' . now()->format('Y-m-d_His') . '.xlsx';
+    return Excel::download(
+        new ArsipPengajuanSuratExport($this->search, $this->filterStatus),
+        $filename
+    );
+}
 }

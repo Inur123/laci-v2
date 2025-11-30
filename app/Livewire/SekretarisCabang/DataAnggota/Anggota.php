@@ -13,6 +13,8 @@ use App\Models\Anggota as AnggotaModel;
 use App\Models\Periode as PeriodeModel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Exports\SekretarisCabang\DataAnggotaExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 #[Layout('components.layouts.sekretaris-cabang')]
 #[Title('Data Anggota')]
@@ -43,6 +45,7 @@ class Anggota extends Component
     public $hobi;
     public $jabatan;
     public $no_rfid;
+    public $exportUserId = null;
 
     protected $rules = [
         'periode_id' => 'required|exists:periodes,id',
@@ -299,4 +302,26 @@ class Anggota extends Component
             ['path' => request()->url()]
         );
     }
+    public function export()
+{
+    $userName = null;
+    if ($this->exportUserId) {
+        $user = User::find($this->exportUserId);
+        $userName = $user ? preg_replace('/[^a-zA-Z0-9_-]/', '_', $user->name) : null;
+    }
+    $filename = 'Data_Anggota_' . ($userName ? $userName . '_' : '') . now()->format('Y-m-d_His') . '.xlsx';
+    return Excel::download(
+        new DataAnggotaExport($this->exportUserId),
+        $filename
+    );
+}
+#[Computed]
+public function exportUsers()
+{
+    return User::whereHas('anggotas')
+        ->where('is_active', true)
+        ->whereNotNull('email_verified_at')
+        ->orderBy('name')
+        ->get();
+}
 }

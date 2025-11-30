@@ -45,33 +45,77 @@
         </div>
     </div>
 
+    <!-- Export Excel Section -->
+    <div class="bg-white rounded-lg shadow p-4 mb-6">
+        <form wire:submit.prevent="export" class="flex flex-col sm:flex-row gap-4 items-end">
+            <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Filter Export Pengajuan (PAC)</label>
+                <select wire:model="exportUserId"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                    <option value="">Semua Pengajuan</option>
+                    @foreach ($this->exportUsers as $user)
+                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <button type="submit" wire:loading.attr="disabled"
+                class="bg-green-600 text-white px-4 py-2 rounded-lg
+           hover:bg-green-700 transition text-sm
+           flex items-center gap-2
+           disabled:opacity-50 disabled:cursor-not-allowed">
+
+                <span wire:loading.remove wire:target="export">
+                    <i class="fas fa-file-excel"></i>
+                    Export Excel
+                </span>
+
+                <span wire:loading wire:target="export">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Mengunduh...
+                </span>
+            </button>
+
+        </form>
+    </div>
 
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Surat</label>
-                <input type="text" wire:model.live.debounce.500ms="search" placeholder="No Surat atau Keperluan..."
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select wire:model.live="filterStatus"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                    <option value="">Semua Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="diterima">Diterima</option>
-                    <option value="ditolak">Ditolak</option>
-                </select>
-            </div>
-            <div class="flex items-end">
-                <button wire:click="$refresh"
-                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
-                    <i class="fas fa-sync-alt mr-2"></i>Refresh
-                </button>
-            </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <!-- Cari Surat -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Cari Surat</label>
+            <input type="text" wire:model.live.debounce.500ms="search"
+                placeholder="No Surat atau Keperluan..."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg
+                focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
         </div>
+
+        <!-- Status -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <select wire:model.live="filterStatus"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg
+                focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                <option value="">Semua Status</option>
+                <option value="pending">Pending</option>
+                <option value="diterima">Diterima</option>
+                <option value="ditolak">Ditolak</option>
+            </select>
+        </div>
+
+        <!-- Tombol Refresh -->
+        <div>
+            <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+            <button wire:click="$refresh"
+                class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
+                hover:bg-blue-700 transition text-sm">
+                <i class="fas fa-sync-alt mr-2"></i>Refresh
+            </button>
+        </div>
+
     </div>
+</div>
 
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -196,7 +240,6 @@
                     @endforelse
                 </tbody>
             </table>
-            <!-- Tambahkan di bawah tabel pada resources/views/livewire/sekretaris-cabang/pengajuan-pac/index.blade.php -->
             @if ($pengajuans->hasPages())
                 <div class="px-4 py-3 border-t border-gray-100">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -207,7 +250,8 @@
                         </div>
                         <div class="flex items-center gap-2">
                             @if ($pengajuans->onFirstPage())
-                                <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                                <span
+                                    class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                                     <i class="fas fa-chevron-left"></i>
                                 </span>
                             @else

@@ -14,6 +14,8 @@ use App\Models\Anggota as AnggotaModel;
 use App\Models\Periode as PeriodeModel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Exports\SekretarisPac\DataAnggotaExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 #[Layout('components.layouts.sekretaris-pac')]
 #[Title('Data Anggota - PAC')]
@@ -373,4 +375,12 @@ class Anggota extends Component
             ['path' => request()->url()]
         );
     }
+    public function export()
+{
+    $filename = 'Data_Anggota_PAC_' . now()->format('Y-m-d_His') . '.xlsx';
+    return Excel::download(
+        new DataAnggotaExport($this->search, $this->filterPeriode),
+        $filename
+    );
+}
 }
