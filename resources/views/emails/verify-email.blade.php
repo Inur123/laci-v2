@@ -15,8 +15,10 @@
                 <!-- Header -->
                 <tr>
                     <td style="background:#2563eb;padding:36px 30px;text-align:center;">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=96&background=2563eb&color=ffffff&bold=true"
-                             style="width:88px;height:88px;border-radius:50%;border:3px solid #fff;margin-bottom:12px;">
+                      <img src="https://laci.my.id/images/logo-laci-3.png"
+     alt="Laci Digital"
+     style="width:88px;height:88px;border-radius:50%;border:3px solid #fff;margin-bottom:12px;object-fit:contain;background:#ffffff;padding:6px;">
+
                         <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:700;">
                             Verifikasi Email Akun Anda
                         </h1>
