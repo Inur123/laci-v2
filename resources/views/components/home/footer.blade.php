@@ -4,7 +4,7 @@
             <!-- Brand Section -->
             <div data-aos="fade-up" data-aos-delay="100">
                 <div class="flex items-center gap-2 mb-4">
-                    <img src="{{ asset('images/logo-laci-3.png') }}" alt="Logo Laci Digital"
+                    <img src="{{ asset('images/logo-laci-3.webp') }}" alt="Logo Laci Digital"
                         class="w-16 h-16" width="80" height="80" loading="lazy">
                     <h3 class="text-base sm:text-lg font-bold">Laci Digital</h3>
                 </div>

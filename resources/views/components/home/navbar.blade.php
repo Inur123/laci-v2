@@ -2,7 +2,7 @@
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="flex justify-between items-center h-16 sm:h-20">
             <a href="{{ route('home') }}" wire:navigate class="flex items-center gap-2 sm:gap-3">
-                <img src="{{ asset('images/logo-laci-3.png') }}" alt="Logo Laci Digital PC IPNU IPPNU Magetan"
+                <img src="{{ asset('images/logo-laci-3.webp') }}" alt="Logo Laci Digital PC IPNU IPPNU Magetan"
                     class="w-12 h-12 sm:w-15 sm:h-15" width="80" height="80" loading="eager">
                 <div>
                     <h1 class="text-base sm:text-lg font-bold text-gray-800">Laci Digital</h1>

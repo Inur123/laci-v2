@@ -12,7 +12,7 @@
        <div class="flex items-center justify-between p-4 h-[77px] border-b border-gray-200">
             <div class="flex items-center space-x-3">
                 <!-- 🔥 Ganti dengan Image Logo -->
-                <img src="{{ asset('images/logo-laci-3.png') }}" alt="Logo LACI" class="w-20 h-20 object-contain">
+                <img src="{{ asset('images/logo-laci-3.webp') }}" alt="Logo LACI" class="w-20 h-20 object-contain">
                 <span class="text-xl font-bold text-gray-800">LACI Cabang</span>
             </div>
             <button @click="sidebarOpen = false" class="text-gray-600 hover:text-gray-800 p-2">

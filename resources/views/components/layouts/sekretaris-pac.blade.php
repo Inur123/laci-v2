@@ -8,8 +8,8 @@
     <title>{{ $title ?? 'LACI - Sekretaris PAC' }}</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('images/logo-laci-3.png') }}?v={{ time() }}" />
-    <link rel="shortcut icon" type="image/png" href="{{ asset('images/logo-laci-3.png') }}?v={{ time() }}" />
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-laci-3.webp') }}?v={{ time() }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/logo-laci-3.webp') }}?v={{ time() }}" />
 
     @vite(['resources/css/app.css'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />

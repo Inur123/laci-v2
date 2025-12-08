@@ -18,7 +18,7 @@
                     <tr>
                         <td style="background-color: #2563eb; padding: 40px 30px; text-align: center;">
                             {{-- Logo --}}
-                            <img src="https://laci.my.id/images/logo-laci-3.png" alt="Laci Digital"
+                            <img src="https://laci.my.id/images/logo-laci-3.webp" alt="Laci Digital"
                                 style="width:100px;height:100px;border-radius:50%;border:4px solid #ffffff;margin-bottom:16px;object-fit:contain;background:#ffffff;padding:6px;">
 
                             <h1

@@ -52,7 +52,7 @@
             </article>
             <aside class="flex justify-center lg:justify-end">
                 <div class="relative">
-                    <img src="{{ asset('images/logo-laci-3.png') }}" alt="Ilustrasi Platform Laci Digital untuk Manajemen IPNU IPPNU Magetan" class="relative hidden lg:block w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[500px] lg:h-[500px]" width="500" height="500" loading="lazy" data-aos="fade-left" data-aos-duration="800">
+                    <img src="{{ asset('images/logo-laci-3.webp') }}" alt="Ilustrasi Platform Laci Digital untuk Manajemen IPNU IPPNU Magetan" class="relative hidden lg:block w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[500px] lg:h-[500px]" width="500" height="500" loading="lazy" data-aos="fade-left" data-aos-duration="800">
                 </div>
             </aside>
         </div>

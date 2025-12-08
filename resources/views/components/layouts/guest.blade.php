@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'LACI - Authentication' }}</title>
-    <link rel="icon" type="image/png" href="{{ asset('images/logo-laci-3.png') }}?v={{ time() }}" />
-    <link rel="shortcut icon" type="image/png" href="{{ asset('images/logo-laci-3.png') }}?v={{ time() }}" />
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-laci-3.webp') }}?v={{ time() }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/logo-laci-3.webp') }}?v={{ time() }}" />
     @vite(['resources/css/app.css'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
