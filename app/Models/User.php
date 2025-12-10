@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -24,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_active',
         'last_password_reset_at',
         'last_status_changed_by_admin_at',
+        'periode_aktif_id',
     ];
 
     protected $hidden = [
@@ -48,13 +50,32 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Periode::class);
     }
+
+    public function periodeAktif()
+    {
+        return $this->belongsTo(Periode::class, 'periode_aktif_id');
+    }
+
     public function anggotas()
     {
         return $this->hasMany(Anggota::class);
     }
 
+    // Scope untuk filter data berdasarkan periode aktif
+    public function scopeWithPeriodeAktif($query)
+    {
+        $user = Auth::user();
+
+        if ($user && $user->periode_aktif_id) {
+            return $query->where('periode_aktif_id', $user->periode_aktif_id);
+        }
+
+        return $query;
+    }
+
+
     public function sendEmailVerificationNotification()
-{
-    $this->notify(new CustomVerifyEmail());
-}
+    {
+        $this->notify(new CustomVerifyEmail());
+    }
 }

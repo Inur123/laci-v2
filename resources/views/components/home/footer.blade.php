@@ -4,8 +4,8 @@
             <!-- Brand Section -->
             <div data-aos="fade-up" data-aos-delay="100">
                 <div class="flex items-center gap-2 mb-4">
-                    <img src="{{ asset('images/logo-laci-3.webp') }}" alt="Logo Laci Digital"
-                        class="w-16 h-16" width="80" height="80" loading="lazy">
+                    <img src="{{ asset('images/logo-laci-3.webp') }}" alt="Logo Laci Digital" class="w-16 h-16"
+                        width="80" height="80" loading="lazy">
                     <h3 class="text-base sm:text-lg font-bold">Laci Digital</h3>
                 </div>
                 <p class="text-xs sm:text-sm text-gray-400">
@@ -56,15 +56,18 @@
                     <li class="flex items-center gap-2">
                         <i class="fas fa-envelope text-green-400"></i>
                         <a href="mailto:info@lacidigital.com" class="hover:text-green-400 transition-colors">
-                            info@lacidigital.com
+                            pelajarnumagetan@gmail.com
                         </a>
                     </li>
                     <li class="flex items-center gap-2">
                         <i class="fas fa-phone text-green-400"></i>
-                        <a href="tel:+62xxxxxxxxxx" class="hover:text-green-400 transition-colors">
-                            +62 xxx xxxx xxxx
+                        <a href="https://wa.me/6285850512135?text=Halo,%20saya%20ingin%20bertanya%20lebih%20lanjut%20mengenai%20website%20Laci%20PC%20IPNU%20IPPNU%20Magetan."
+                            target="_blank" class="hover:text-green-400 transition-colors">
+                            +6285850512135
                         </a>
                     </li>
+
+
                 </ul>
             </address>
 
@@ -74,23 +77,17 @@
                 <nav class="flex gap-3" aria-label="Social Media Links">
                     <a href="#"
                         class="w-8 h-8 sm:w-10 sm:h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors"
-                        aria-label="Instagram"
-                        target="_blank"
-                        rel="noopener noreferrer">
+                        aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                         <i class="fab fa-instagram text-sm sm:text-base"></i>
                     </a>
                     <a href="#"
                         class="w-8 h-8 sm:w-10 sm:h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors"
-                        aria-label="TikTok"
-                        target="_blank"
-                        rel="noopener noreferrer">
+                        aria-label="TikTok" target="_blank" rel="noopener noreferrer">
                         <i class="fab fa-tiktok text-sm sm:text-base"></i>
                     </a>
                     <a href="#"
                         class="w-8 h-8 sm:w-10 sm:h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors"
-                        aria-label="YouTube"
-                        target="_blank"
-                        rel="noopener noreferrer">
+                        aria-label="YouTube" target="_blank" rel="noopener noreferrer">
                         <i class="fab fa-youtube text-sm sm:text-base"></i>
                     </a>
                 </nav>

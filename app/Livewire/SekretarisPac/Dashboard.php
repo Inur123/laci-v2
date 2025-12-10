@@ -5,8 +5,9 @@ namespace App\Livewire\SekretarisPac;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt; // TAMBAHKAN INI
+use Illuminate\Support\Facades\Crypt;
 use App\Models\Anggota;
 use App\Models\Periode;
 use App\Models\Surat;
@@ -19,10 +20,36 @@ class Dashboard extends Component
 {
     public $activityLimit = 30;
 
+    #[On('periodeChanged')]
+    public function refreshData()
+    {
+        // Method ini akan dipanggil otomatis saat periode berubah
+        // Livewire akan otomatis re-render component
+    }
+
+    #[On('pengajuanPacUpdated')]
+    public function handlePengajuanUpdate()
+    {
+        // Realtime refresh saat ada perubahan pengajuan
+        // Livewire akan otomatis re-render component
+    }
+
     public function mount()
     {
         if (Auth::user()->role !== 'sekretaris_pac') {
             abort(403, 'Akses ditolak');
+        }
+
+        // Auto set periode pertama jika belum ada
+        $user = Auth::user();
+        if (!$user->periode_aktif_id) {
+            $firstPeriode = Periode::where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            if ($firstPeriode) {
+                $user->update(['periode_aktif_id' => $firstPeriode->id]);
+            }
         }
     }
 
@@ -34,27 +61,54 @@ class Dashboard extends Component
     // === STATISTIK ANGGOTA ===
     public function getTotalAnggotaProperty()
     {
-        return Anggota::where('user_id', Auth::id())->count();
+        $user = Auth::user();
+        $query = Anggota::where('user_id', $user->id);
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->count();
     }
 
     public function getAnggotaLakiLakiProperty()
     {
-        return Anggota::where('user_id', Auth::id())
-            ->where('jenis_kelamin', 'Laki-laki')->count();
+        $user = Auth::user();
+        $query = Anggota::where('user_id', $user->id)
+            ->where('jenis_kelamin', 'Laki-laki');
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->count();
     }
 
     public function getAnggotaPerempuanProperty()
     {
-        return Anggota::where('user_id', Auth::id())
-            ->where('jenis_kelamin', 'Perempuan')->count();
+        $user = Auth::user();
+        $query = Anggota::where('user_id', $user->id)
+            ->where('jenis_kelamin', 'Perempuan');
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->count();
     }
 
     public function getAnggotaBulanIniProperty()
     {
-        return Anggota::where('user_id', Auth::id())
+        $user = Auth::user();
+        $query = Anggota::where('user_id', $user->id)
             ->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->count();
+            ->whereYear('created_at', now()->year);
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->count();
     }
 
     // === STATISTIK PERIODE ===
@@ -66,56 +120,107 @@ class Dashboard extends Component
     // === STATISTIK ARSIP SURAT ===
     public function getTotalSuratProperty()
     {
-        return Surat::where('user_id', Auth::id())->count();
+        $user = Auth::user();
+        $query = Surat::where('user_id', $user->id);
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->count();
     }
 
     public function getSuratMasukProperty()
     {
-        return Surat::where('user_id', Auth::id())->where('jenis_surat', 'masuk')->count();
+        $user = Auth::user();
+        $query = Surat::where('user_id', $user->id);
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->get()->where('jenis_surat', 'masuk')->count();
     }
 
     public function getSuratKeluarProperty()
     {
-        return Surat::where('user_id', Auth::id())->where('jenis_surat', 'keluar')->count();
+        $user = Auth::user();
+        $query = Surat::where('user_id', $user->id);
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->get()->where('jenis_surat', 'keluar')->count();
     }
 
     public function getSuratBulanIniProperty()
     {
-        return Surat::where('user_id', Auth::id())
+        $user = Auth::user();
+        $query = Surat::where('user_id', $user->id)
             ->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->count();
+            ->whereYear('created_at', now()->year);
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->count();
     }
 
     // === STATISTIK PENGAJUAN SURAT ===
     public function getTotalPengajuanProperty()
     {
-        return PengajuanSuratPac::where('user_id', Auth::id())->count();
+        $user = Auth::user();
+        $query = PengajuanSuratPac::where('user_id', $user->id);
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->count();
     }
 
     public function getPengajuanPendingProperty()
     {
-        return PengajuanSuratPac::where('user_id', Auth::id())
-            ->get()
-            ->filter(fn($p) => $p->status === 'pending')
-            ->count();
+        $user = Auth::user();
+        $query = PengajuanSuratPac::where('user_id', $user->id);
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->get()->filter(fn($p) => $p->status === 'pending')->count();
     }
 
     public function getPengajuanDiterimaProperty()
     {
-        return PengajuanSuratPac::where('user_id', Auth::id())
-            ->get()
-            ->filter(fn($p) => $p->status === 'diterima')
-            ->count();
+        $user = Auth::user();
+        $query = PengajuanSuratPac::where('user_id', $user->id);
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->get()->filter(fn($p) => $p->status === 'diterima')->count();
     }
     public function getAktivitasTerbaruProperty(): Collection
     {
         $activities = collect();
-        $userId = Auth::id();
+        $user = Auth::user();
+        $userId = $user->id;
         $limitPerCategory = ceil($this->activityLimit / 5);
+
+        // Query untuk filter periode
+        $periodeQuery = function($query) use ($user) {
+            if ($user->periode_aktif_id) {
+                $query->where('periode_id', $user->periode_aktif_id);
+            }
+        };
 
         // 1. ANGGOTA
         $anggotas = Anggota::where('user_id', $userId)
+            ->where($periodeQuery)
             ->with('periode')
             ->latest('updated_at')
             ->limit($limitPerCategory * 2)
@@ -136,6 +241,7 @@ class Dashboard extends Component
 
         // 2. SURAT
        $surats = Surat::where('user_id', $userId)
+    ->where($periodeQuery)
     ->latest('updated_at')
     ->limit($limitPerCategory * 2)
     ->get()
@@ -155,7 +261,7 @@ class Dashboard extends Component
         ];
     });
 
-        // 3. PERIODE
+        // 3. PERIODE (tidak perlu filter periode karena ini aktivitas periode)
         $periodes = Periode::where('user_id', $userId)
             ->latest('updated_at')
             ->limit($limitPerCategory)
@@ -176,6 +282,7 @@ class Dashboard extends Component
 
         // 4. PENGAJUAN SURAT
         $pengajuans = PengajuanSuratPac::where('user_id', $userId)
+    ->where($periodeQuery)
     ->latest('updated_at')
     ->limit($limitPerCategory * 2)
     ->get()

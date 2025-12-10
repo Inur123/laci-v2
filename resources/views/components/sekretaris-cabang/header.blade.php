@@ -7,12 +7,8 @@
         </button>
 
         <div class="flex items-center space-x-2 md:space-x-4">
-
-            <!-- Notifications -->
-            <button class="relative text-gray-600 hover:text-gray-900 p-2">
-                <i class="fas fa-bell text-base md:text-lg"></i>
-                <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
+            <!-- Ganti Periode Component -->
+            @livewire('components.ganti-periode')
 
             <!-- Profile -->
             <div x-data="{ profileOpen: false }" class="relative">

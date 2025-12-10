@@ -7,6 +7,7 @@ use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Periode as PeriodeModel;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -97,6 +98,9 @@ class Periode extends Component
             'type' => 'success',
             'message' => 'Periode berhasil ditambahkan!'
         ]);
+
+        // Dispatch event ke GantiPeriode component
+        $this->dispatch('periodeCreated')->to('components.ganti-periode');
 
         $this->action = 'index';
         $this->reset(['nama']);

@@ -8,6 +8,7 @@ use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -67,6 +68,13 @@ class ArsipSurat extends Component
         $this->page = 1;
     }
 
+    #[On('periodeChanged')]
+    public function refreshData()
+    {
+        // Refresh data saat periode berubah
+        $this->resetPage();
+    }
+
     public function mount()
     {
         if (Auth::user()->role !== 'sekretaris_pac') {
@@ -82,10 +90,20 @@ class ArsipSurat extends Component
 
     public function save()
     {
+        // Validasi: User harus memiliki periode aktif
+        if (!Auth::user()->periode_aktif_id) {
+            $this->dispatch('flash', [
+                'type' => 'error',
+                'message' => 'Anda belum memiliki periode aktif! Silakan pilih periode terlebih dahulu.'
+            ]);
+            return;
+        }
+
         $this->validate();
 
         $data = [
             'user_id' => Auth::id(),
+            'periode_id' => Auth::user()->periode_aktif_id,
             'no_surat' => $this->no_surat,
             'jenis_surat' => $this->jenis_surat,
             'tanggal' => $this->tanggal,
@@ -218,7 +236,15 @@ class ArsipSurat extends Component
 
     private function getStats()
     {
-        $allSurats = Surat::where('user_id', Auth::id())->get();
+        $user = Auth::user();
+        $query = Surat::where('user_id', $user->id);
+
+        // Filter berdasarkan periode aktif
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        $allSurats = $query->get();
 
         return [
             'total' => $allSurats->count(),
@@ -253,11 +279,17 @@ class ArsipSurat extends Component
 
     private function getFilteredSurats()
     {
-        $query = Surat::with('user')
-            ->where('user_id', Auth::id())
-            ->latest();
+        $user = Auth::user();
 
-        $allSurats = $query->get();
+        $query = Surat::with('user')
+            ->where('user_id', $user->id);
+
+        // Filter berdasarkan periode aktif
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        $allSurats = $query->latest()->get();
 
         $filtered = $allSurats->filter(function ($surat) {
             $matchSearch = true;

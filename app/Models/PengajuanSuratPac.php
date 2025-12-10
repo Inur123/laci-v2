@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class PengajuanSuratPac extends Model
 {
@@ -16,6 +17,8 @@ class PengajuanSuratPac extends Model
 
     protected $fillable = [
         'user_id',
+        'periode_id',
+        'periode_id_pac',
         'no_surat',
         'penerima',
         'tanggal',
@@ -155,5 +158,26 @@ class PengajuanSuratPac extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
+
+    // Relasi ke periode PAC (periode saat pengajuan dibuat)
+    public function periodePac()
+    {
+        return $this->belongsTo(Periode::class, 'periode_id_pac');
+    }
+
+    // Scope untuk filter berdasarkan periode user
+    public function scopeByPeriodeUser($query)
+    {
+        $user = Auth::user();
+        if ($user && $user->periode_aktif_id) {
+            return $query->where('periode_id', $user->periode_aktif_id);
+        }
+        return $query;
     }
 }

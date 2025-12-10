@@ -77,6 +77,9 @@ class Login extends Component
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password, 'is_active' => true], $this->remember)) {
             session()->regenerate();
 
+            // Set login time untuk tracking warning per session
+            session(['login_time' => time()]);
+
             $user = Auth::user();
 
             if ($user->role === 'sekretaris_cabang') {

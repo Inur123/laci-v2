@@ -29,9 +29,15 @@ class ArsipSuratExport implements FromCollection, WithHeadings, WithMapping, Wit
      */
     public function collection()
     {
-        $query = Surat::where('user_id', Auth::id())
-            ->latest()
-            ->get();
+        $user = Auth::user();
+        $query = Surat::where('user_id', $user->id);
+
+        // Filter berdasarkan periode aktif
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        $query = $query->latest()->get();
 
         return $query->filter(function($surat) {
             $matchSearch = true;

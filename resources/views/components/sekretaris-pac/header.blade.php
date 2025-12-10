@@ -7,6 +7,9 @@
         </button>
 
         <div class="flex items-center space-x-2 md:space-x-4">
+            <!-- Ganti Periode Component -->
+            @livewire('components.ganti-periode')
+
             <!-- Profile -->
             <div x-data="{ profileOpen: false }" class="relative">
                 <button @click="profileOpen = !profileOpen"

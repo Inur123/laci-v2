@@ -27,6 +27,80 @@
         </div>
     </div>
 
+    <!-- Warning Peringatan Periode - Fixed Bottom, Closeable & Minimizable -->
+    <div x-data="{
+            storageKey: 'warningClosed_{{ auth()->id() }}_{{ session('login_time', time()) }}',
+            showWarning: true,
+            isMinimized: false,
+            init() {
+                // Cek localStorage saat component init
+                const isClosed = localStorage.getItem(this.storageKey);
+                this.showWarning = !isClosed;
+            },
+            closeWarning() {
+                localStorage.setItem(this.storageKey, 'true');
+                this.showWarning = false;
+            }
+         }"
+         x-show="showWarning"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-y-full"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform translate-y-0"
+         x-transition:leave-end="opacity-0 transform translate-y-full"
+         class="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:w-96 z-40 bg-gradient-to-r from-red-50 to-orange-50 border border-red-300 rounded-lg shadow-2xl overflow-hidden">
+
+        <!-- Header - Always visible -->
+        <div class="bg-red-600 p-3 flex items-center justify-between cursor-pointer" @click="isMinimized = !isMinimized">
+            <div class="flex items-center gap-2 text-white">
+                <div class="bg-white/20 rounded-full p-1.5">
+                    <i class="fas fa-exclamation-circle text-sm"></i>
+                </div>
+                <span class="text-sm font-bold">⚠️ PERINGATAN PERIODE</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button @click.stop="isMinimized = !isMinimized"
+                        class="text-white hover:text-red-100 transition-colors p-1">
+                    <i class="fas" :class="isMinimized ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </button>
+                <button @click.stop="closeWarning()"
+                        class="text-white hover:text-red-100 transition-colors p-1">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Content - Collapsible -->
+        <div x-show="!isMinimized"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 max-h-0"
+             x-transition:enter-end="opacity-100 max-h-96"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 max-h-96"
+             x-transition:leave-end="opacity-0 max-h-0"
+             class="p-4 max-h-64 overflow-y-auto">
+            <div class="text-xs text-red-700 space-y-2 leading-relaxed">
+                <p class="font-semibold text-sm">
+                    Penghapusan/perubahan periode mempengaruhi <strong>SEMUA DATA!</strong>
+                </p>
+                <div class="space-y-1">
+                    <p class="font-medium">📋 Data yang terpengaruh:</p>
+                    <p class="pl-3">• Arsip Surat Keluar & Masuk</p>
+                    <p class="pl-3">• Data Anggota</p>
+                    <p class="pl-3">• Pengajuan Surat</p>
+                    <p class="pl-3">• Referensi Surat</p>
+                </div>
+                <div class="bg-red-100 border-l-2 border-red-600 p-2 rounded mt-3">
+                    <p class="font-bold text-red-900">
+                        ⚡ <strong>JANGAN ASAL GANTI PERIODE!</strong>
+                    </p>
+                    <p class="text-red-800 mt-1">Selalu cek periode aktif sebelum input data baru.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 4 Main Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6" wire:poll.30s>
         <!-- Data Anggota -->

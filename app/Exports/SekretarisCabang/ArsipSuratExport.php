@@ -15,14 +15,28 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class ArsipSuratExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
 {
+    protected $userId;
+    protected $periodeId;
+
+    public function __construct($userId, $periodeId = null)
+    {
+        $this->userId = $userId;
+        $this->periodeId = $periodeId;
+    }
+
     /**
-     * Data yang diambil (hanya user login)
+     * Data yang diambil (user PAC tertentu)
      */
     public function collection()
     {
-        return Surat::where('user_id', Auth::id())
-            ->latest()
-            ->get();
+        $query = Surat::where('user_id', $this->userId);
+
+        // Filter berdasarkan periode jika ada
+        if ($this->periodeId) {
+            $query->where('periode_id', $this->periodeId);
+        }
+
+        return $query->latest()->get();
     }
 
     /**

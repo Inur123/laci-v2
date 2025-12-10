@@ -9,6 +9,7 @@ use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 
 #[Layout('components.layouts.sekretaris-cabang')]
@@ -51,6 +52,12 @@ class KalenderKegiatan extends Component
         'tanggal_selesai.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai',
     ];
 
+    #[On('periodeChanged')]
+    public function refreshData()
+    {
+        // Refresh data saat periode berubah
+    }
+
     public function mount()
     {
         if (Auth::user()->role !== 'sekretaris_cabang') {
@@ -65,31 +72,66 @@ class KalenderKegiatan extends Component
     #[Computed]
     public function totalKegiatan()
     {
-        return Kegiatan::count();
+        $user = Auth::user();
+        $query = Kegiatan::query();
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->count();
     }
 
     #[Computed]
     public function kegiatanBulanIni()
     {
-        return Kegiatan::inMonth(now()->year, now()->month)->count();
+        $user = Auth::user();
+        $query = Kegiatan::inMonth(now()->year, now()->month);
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->count();
     }
 
     #[Computed]
     public function kegiatanMendatang()
     {
-        return Kegiatan::upcoming()->count();
+        $user = Auth::user();
+        $query = Kegiatan::upcoming();
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->count();
     }
 
     #[Computed]
     public function kegiatanSelesai()
     {
-        return Kegiatan::past()->count();
+        $user = Auth::user();
+        $query = Kegiatan::past();
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->count();
     }
 
     #[Computed]
     public function upcomingEvents()
     {
-        return Kegiatan::upcoming()->take(5)->get();
+        $user = Auth::user();
+        $query = Kegiatan::upcoming()->take(5);
+
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return $query->get();
     }
 
     public function create()
@@ -101,10 +143,20 @@ class KalenderKegiatan extends Component
 
     public function save()
     {
+        // Validasi: User harus memiliki periode aktif
+        if (!Auth::user()->periode_aktif_id) {
+            $this->dispatch('flash', [
+                'type' => 'error',
+                'message' => 'Anda belum memiliki periode aktif! Silakan pilih periode terlebih dahulu.'
+            ]);
+            return;
+        }
+
         $this->validate();
 
         Kegiatan::create([
             'user_id' => Auth::id(),
+            'periode_id' => Auth::user()->periode_aktif_id,
             'judul' => $this->judul,
             'deskripsi' => $this->deskripsi,
             'lokasi' => $this->lokasi,
@@ -217,6 +269,8 @@ class KalenderKegiatan extends Component
 
     public function render()
     {
+        $user = Auth::user();
+
         return match($this->action) {
             'create' => view('livewire.sekretaris-cabang.kalender-kegiatan.create'),
             'edit' => view('livewire.sekretaris-cabang.kalender-kegiatan.edit', [
@@ -227,6 +281,9 @@ class KalenderKegiatan extends Component
             ]),
             default => view('livewire.sekretaris-cabang.kalender-kegiatan.index', [
                 'kegiatans' => Kegiatan::query()
+                    ->when($user->periode_aktif_id, function($query) use ($user) {
+                        $query->where('periode_id', $user->periode_aktif_id);
+                    })
                     ->when($this->search, function($query) {
                         $query->where('judul', 'like', '%' . $this->search . '%')
                               ->orWhere('lokasi', 'like', '%' . $this->search . '%')
@@ -240,7 +297,12 @@ class KalenderKegiatan extends Component
                     })
                     ->latest('tanggal_mulai')
                     ->paginate(10),
-                'calendarEvents' => Kegiatan::inMonth($this->currentYear, $this->currentMonth)->get()
+                'calendarEvents' => Kegiatan::query()
+                    ->when($user->periode_aktif_id, function($query) use ($user) {
+                        $query->where('periode_id', $user->periode_aktif_id);
+                    })
+                    ->inMonth($this->currentYear, $this->currentMonth)
+                    ->get()
             ]),
         };
     }

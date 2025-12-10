@@ -2,20 +2,23 @@
 
 namespace App\Livewire\SekretarisPac;
 
+use App\Models\User;
 use Livewire\Component;
+use Livewire\Attributes\On;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use App\Models\PengajuanSuratPac;
+use App\Mail\PengajuanTerkirimMail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\PengajuanSuratBaruMail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Mail\PengajuanSuratBaruMail;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\PengajuanTerkirimMail;
 use App\Exports\SekretarisPac\ArsipPengajuanSuratExport;
-use Maatwebsite\Excel\Facades\Excel;
 
 #[Layout('components.layouts.sekretaris-pac')]
 #[Title('Pengajuan Surat - PAC')]
@@ -55,6 +58,20 @@ class PengajuanSurat extends Component
         $this->page = 1;
     }
 
+    #[On('periodeChanged')]
+    public function refreshData()
+    {
+        // Refresh data saat periode berubah
+        $this->resetPage();
+    }
+
+    #[On('pengajuanPacUpdated')]
+    public function handlePengajuanUpdate()
+    {
+        // Realtime refresh saat ada perubahan dari Cabang (approve/reject)
+        $this->resetPage();
+    }
+
     public function mount()
     {
         if (Auth::user()->role !== 'sekretaris_pac') {
@@ -64,7 +81,15 @@ class PengajuanSurat extends Component
 
     private function getStats()
     {
-        $allSurats = PengajuanSuratPac::where('user_id', Auth::id())->get();
+        $user = Auth::user();
+        $query = PengajuanSuratPac::where('user_id', $user->id);
+
+        // Filter berdasarkan periode PAC (periode_id_pac)
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id_pac', $user->periode_aktif_id);
+        }
+
+        $allSurats = $query->get();
 
         return [
             'total' => $allSurats->count(),
@@ -82,10 +107,34 @@ class PengajuanSurat extends Component
 
     public function save()
     {
+        $user = Auth::user();
+        // Validasi: User harus memiliki periode aktif
+        if (!$user->periode_aktif_id) {
+            $this->dispatch('flash', [
+                'type' => 'error',
+                'message' => 'Anda belum memiliki periode aktif! Silakan pilih periode terlebih dahulu.'
+            ]);
+            return;
+        }
+
         $this->validate();
+
+        // Ambil periode aktif Cabang saat ini
+        $cabang = \App\Models\User::where('role', 'sekretaris_cabang')->first();
+        $periodeIdCabang = ($cabang && $cabang->periode_aktif_id) ? $cabang->periode_aktif_id : null;
+
+        // Jika Cabang tidak punya periode aktif, beri warning tapi tetap simpan
+        if (!$periodeIdCabang) {
+            Log::warning('Pengajuan dibuat tanpa periode Cabang aktif', [
+                'pac_user_id' => $user->id,
+                'pac_periode_id' => $user->periode_aktif_id
+            ]);
+        }
 
         $data = [
             'user_id'   => Auth::id(),
+            'periode_id_pac' => $user->periode_aktif_id, // Periode PAC saat mengirim
+            'periode_id' => $periodeIdCabang, // Periode Cabang saat PAC mengirim (bisa null)
             'no_surat'  => $this->no_surat,
             'penerima'  => $this->penerima,
             'tanggal'   => $this->tanggal,
@@ -103,6 +152,9 @@ class PengajuanSurat extends Component
         // Kirim email
         Mail::to('zainurroziqin38@gmail.com')->send(new PengajuanSuratBaruMail($pengajuan));
         Mail::to($pengajuan->user->email)->send(new PengajuanTerkirimMail($pengajuan));
+
+        // Dispatch event untuk realtime update di Cabang
+        $this->dispatch('pengajuanPacUpdated');
 
         $this->dispatch('flash', [
             'type'    => 'success',
@@ -161,6 +213,9 @@ class PengajuanSurat extends Component
 
         $surat->update($data);
 
+        // Dispatch event untuk realtime update di Cabang
+        $this->dispatch('pengajuanPacUpdated');
+
         $this->dispatch('flash', [
             'type' => 'success',
             'message' => 'Pengajuan surat berhasil diupdate!'
@@ -200,6 +255,9 @@ class PengajuanSurat extends Component
             }
             $surat->delete();
 
+            // Dispatch event untuk realtime update di Cabang
+            $this->dispatch('pengajuanPacUpdated');
+
             $this->dispatch('flash', [
                 'type' => 'success',
                 'message' => 'Pengajuan surat berhasil dihapus!'
@@ -233,9 +291,16 @@ class PengajuanSurat extends Component
 
     private function getFilteredSurats()
     {
-        $allData = PengajuanSuratPac::where('user_id', Auth::id())
-            ->latest()
-            ->get();
+        $user = Auth::user();
+
+        $query = PengajuanSuratPac::where('user_id', $user->id);
+
+        // Filter berdasarkan periode PAC (periode_id_pac)
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id_pac', $user->periode_aktif_id);
+        }
+
+        $allData = $query->latest()->get();
 
         $filtered = $allData->filter(function ($surat) {
             $matchSearch = true;

@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use App\Models\PengajuanSuratPac;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -41,6 +42,20 @@ class PengajuanPac extends Component
     }
     public function resetPage()
     {
+        $this->page = 1;
+    }
+
+    #[On('periodeChanged')]
+    public function refreshData()
+    {
+        // Refresh data saat periode berubah
+        $this->page = 1;
+    }
+
+    #[On('pengajuanPacUpdated')]
+    public function handlePengajuanUpdate()
+    {
+        // Realtime refresh saat ada pengajuan baru/update dari PAC
         $this->page = 1;
     }
 
@@ -93,9 +108,14 @@ class PengajuanPac extends Component
     private function setStatus($id, $status, $message)
     {
         try {
+            $cabangUser = Auth::user();
+
             // load user agar email tersedia
             $surat = PengajuanSuratPac::with('user')->findOrFail($id);
             if ($surat->status === 'pending') {
+                // Simpan periode PAC asli (jika belum pernah diubah)
+                // Kita akan update periode_id ke periode Cabang saat diproses
+
                 $surat->status = $status;
                 $surat->last_status_changed_at = now();
                 $surat->save();
@@ -109,6 +129,9 @@ class PengajuanPac extends Component
                     // optional: log($mailEx->getMessage());
                 }
 
+                // Dispatch event untuk realtime update di PAC
+                $this->dispatch('pengajuanPacUpdated');
+
                 $this->dispatch('flash', ['type' => 'success', 'message' => $message]);
                 if ($this->detailId == $id) $this->detail($id);
             } else {
@@ -121,11 +144,31 @@ class PengajuanPac extends Component
 
     public function render()
     {
-        $allStats = PengajuanSuratPac::with('user')->latest()->get();
-        $total = $allStats->count();
-        $pending = $allStats->filter(fn($s) => $s->status === 'pending')->count();
-        $diterima = $allStats->filter(fn($s) => $s->status === 'diterima')->count();
-        $all = $allStats;
+        $user = Auth::user();
+
+        // Ambil semua data dengan user, karena status terenkripsi
+        // kita tidak bisa filter di query level
+        $allData = PengajuanSuratPac::with('user')->latest()->get();
+
+        // Filter berdasarkan periode_id (periode Cabang saat menerima)
+        // Semua status (pending, diterima, ditolak) hanya tampil di periode Cabang tersebut
+
+        $filtered = $allData;
+
+        // Filter berdasarkan periode aktif Cabang
+        if ($user->periode_aktif_id) {
+            $filtered = $filtered->filter(fn($item) => $item->periode_id === $user->periode_aktif_id);
+        }
+
+        // Filter berdasarkan status jika ada
+        if ($this->filterStatus) {
+            $filtered = $filtered->filter(fn($item) => $item->status === $this->filterStatus);
+        }
+
+        $total = $filtered->count();
+        $pending = $filtered->filter(fn($s) => $s->status === 'pending')->count();
+        $diterima = $filtered->filter(fn($s) => $s->status === 'diterima')->count();
+        $all = $filtered;
 
         if ($this->search) {
             $search = strtolower($this->search);

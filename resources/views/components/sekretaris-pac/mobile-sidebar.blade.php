@@ -49,33 +49,19 @@
                 <span class="text-base font-medium">Referensi Surat</span>
             </button>
 
+            <!-- Periode -->
+            <button type="button" @click="Livewire.navigate('{{ route('pac.periode') }}'); sidebarOpen = false"
+                class="w-full text-left flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('pac.periode') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                <i class="fas fa-calendar-check text-lg w-6"></i>
+                <span class="text-base font-medium">Periode</span>
+            </button>
 
-
-            <!-- Manajemen Anggota Dropdown -->
-            <div x-data="{ open: {{ request()->routeIs('pac.data-anggota') || request()->routeIs('pac.periode') ? 'true' : 'false' }} }">
-                <button type="button" @click="open = !open"
-                    class="w-full text-left flex items-center justify-between px-4 py-3 rounded-lg transition {{ request()->routeIs('pac.data-anggota') || request()->routeIs('pac.periode') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
-                    <div class="flex items-center space-x-3">
-                        <i class="fas fa-users text-lg w-6"></i>
-                        <span class="text-base font-medium">Manajemen Anggota</span>
-                    </div>
-                    <i :class="open ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-sm"></i>
-                </button>
-                <div x-show="open" x-transition class="ml-0 mt-2 space-y-1">
-                    <button type="button"
-                        @click="Livewire.navigate('{{ route('pac.data-anggota') }}'); sidebarOpen = false"
-                        class="w-full text-left flex items-center space-x-3 pl-14 pr-4 py-2.5 rounded-lg transition {{ request()->routeIs('pac.data-anggota') ? 'bg-green-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        <i class="fas fa-circle text-xs w-4"></i>
-                        <span class="text-base">Data Anggota</span>
-                    </button>
-                    <button type="button"
-                        @click="Livewire.navigate('{{ route('pac.periode') }}'); sidebarOpen = false"
-                        class="w-full text-left flex items-center space-x-3 pl-14 pr-4 py-2.5 rounded-lg transition {{ request()->routeIs('pac.periode') ? 'bg-green-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        <i class="fas fa-circle text-xs w-4"></i>
-                        <span class="text-base">Periode</span>
-                    </button>
-                </div>
-            </div>
+            <!-- Data Anggota -->
+            <button type="button" @click="Livewire.navigate('{{ route('pac.data-anggota') }}'); sidebarOpen = false"
+                class="w-full text-left flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('pac.data-anggota') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                <i class="fas fa-users text-lg w-6"></i>
+                <span class="text-base font-medium">Data Anggota</span>
+            </button>
         </nav>
     </div>
 </div>

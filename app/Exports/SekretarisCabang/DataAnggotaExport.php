@@ -15,10 +15,12 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 class DataAnggotaExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
 {
     protected $userId;
+    protected $periodeId;
 
-    public function __construct($userId = null)
+    public function __construct($userId = null, $periodeId = null)
     {
         $this->userId = $userId;
+        $this->periodeId = $periodeId;
     }
 
     public function collection()
@@ -27,6 +29,17 @@ class DataAnggotaExport implements FromCollection, WithHeadings, WithMapping, Wi
 
         if ($this->userId) {
             $query->where('user_id', $this->userId);
+
+            // Filter berdasarkan periode jika ada
+            if ($this->periodeId) {
+                $query->where('periode_id', $this->periodeId);
+            }
+        } else {
+            // Jika tidak ada filter user, filter berdasarkan periode aktif cabang
+            $user = \Illuminate\Support\Facades\Auth::user();
+            if ($user && $user->periode_aktif_id) {
+                $query->where('periode_id', $user->periode_aktif_id);
+            }
         }
 
         return $query->get();

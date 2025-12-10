@@ -8,6 +8,7 @@ use Livewire\WithFileUploads;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Anggota as AnggotaModel;
 use App\Models\Periode as PeriodeModel;
@@ -79,6 +80,13 @@ class Anggota extends Component
         'no_hp.max' => 'No. HP maksimal 15 karakter',
     ];
 
+    #[On('periodeChanged')]
+    public function refreshData()
+    {
+        // Refresh data saat periode berubah
+        $this->page = 1;
+    }
+
     public function mount()
     {
         if (Auth::user()->role !== 'sekretaris_cabang') {
@@ -116,7 +124,14 @@ class Anggota extends Component
     #[Computed]
     public function statsAnggota()
     {
+        $user = Auth::user();
         $query = AnggotaModel::query();
+
+        // Filter berdasarkan periode aktif jika tidak ada filter manual
+        if (!$this->filterPeriode && $user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
         if ($this->filterPeriode) $query->where('periode_id', $this->filterPeriode);
         if ($this->filterUser) $query->where('user_id', $this->filterUser);
         $all = $query->get();
@@ -142,10 +157,19 @@ class Anggota extends Component
 
     public function save()
     {
+        // Validasi: User harus memiliki periode aktif
+        if (!Auth::user()->periode_aktif_id) {
+            $this->dispatch('flash', [
+                'type' => 'error',
+                'message' => 'Anda belum memiliki periode aktif! Silakan pilih periode terlebih dahulu.'
+            ]);
+            return;
+        }
+
         $this->validate();
         $data = [
             'user_id' => Auth::id(),
-            'periode_id' => $this->periode_id,
+            'periode_id' => Auth::user()->periode_aktif_id,
             'nama_lengkap' => $this->nama_lengkap,
             'jenis_kelamin' => $this->jenis_kelamin,
             'nik' => $this->nik,
@@ -197,7 +221,6 @@ class Anggota extends Component
         $this->validate();
         $anggota = AnggotaModel::findOrFail($this->anggotaId);
         $data = [
-            'periode_id' => $this->periode_id,
             'nama_lengkap' => $this->nama_lengkap,
             'jenis_kelamin' => $this->jenis_kelamin,
             'nik' => $this->nik,
@@ -268,17 +291,26 @@ class Anggota extends Component
 
     private function getFilteredAnggotas()
     {
-        $query = AnggotaModel::with(['periode', 'user'])
-            ->when($this->filterPeriode, fn($q) => $q->where('periode_id', $this->filterPeriode))
-            ->when($this->filterUser, fn($q) => $q->where('user_id', $this->filterUser))
-            ->latest()
-            ->get();
+        $user = Auth::user();
 
-        $filtered = $query;
+        $query = AnggotaModel::with(['periode', 'user']);
+
+        // Filter berdasarkan periode aktif user (role sekretaris_cabang)
+        if ($user->periode_aktif_id && !$this->filterPeriode) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        // Filter tambahan
+        $query->when($this->filterPeriode, fn($q) => $q->where('periode_id', $this->filterPeriode))
+            ->when($this->filterUser, fn($q) => $q->where('user_id', $this->filterUser));
+
+        $allData = $query->latest()->get();
+
+        $filtered = $allData;
 
         if ($this->search) {
             $searchLower = strtolower($this->search);
-            $filtered = $query->filter(fn($anggota) =>
+            $filtered = $allData->filter(fn($anggota) =>
                 str_contains(strtolower($anggota->nama_lengkap ?? ''), $searchLower) ||
                 str_contains(strtolower($anggota->nik ?? ''), $searchLower) ||
                 str_contains(strtolower($anggota->nia ?? ''), $searchLower) ||

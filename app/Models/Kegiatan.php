@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +16,7 @@ class Kegiatan extends Model
 
     protected $fillable = [
         'user_id',
+        'periode_id',
         'judul',
         'deskripsi',
         'lokasi',
@@ -32,6 +34,21 @@ class Kegiatan extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
+
+    // Scope untuk filter berdasarkan periode user
+    public function scopeByPeriodeUser($query)
+    {
+       $user = Auth::user();
+        if ($user && $user->periode_aktif_id) {
+            return $query->where('periode_id', $user->periode_aktif_id);
+        }
+        return $query;
     }
 
     // Scopes

@@ -16,7 +16,7 @@
                 </h2>
                 <p class="text-sm sm:text-base md:text-lg text-gray-600 mb-6 sm:mb-8 max-w-2xl mx-auto lg:mx-0" itemprop="description">
                     Platform manajemen organisasi terintegrasi untuk <strong>PC IPNU IPPNU Kabupaten Magetan</strong>.
-                    Kelola data anggota, surat menyurat, dan administrasi organisasi dengan mudah, aman, dan terenkripsi.
+                    Kelola data anggota per periode, arsip surat & berkas, pengajuan surat, dan administrasi organisasi dengan mudah, aman, dan terenkripsi penuh.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
                     @guest
@@ -72,6 +72,16 @@
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 <article class="bg-gradient-to-br from-green-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-green-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="100">
                     <div class="w-12 h-12 sm:w-14 sm:h-14 bg-green-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                        <i class="fas fa-calendar-alt text-white text-xl sm:text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Periode Kepengurusan</h3>
+                    <p class="text-sm sm:text-base text-gray-600" itemprop="description">
+                        Manajemen data per periode kepengurusan dengan sistem switch periode aktif, filter otomatis, dan peringatan perubahan periode
+                    </p>
+                </article>
+
+                <article class="bg-gradient-to-br from-teal-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-teal-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="150">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-teal-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
                         <i class="fas fa-users text-white text-xl sm:text-2xl" aria-hidden="true"></i>
                     </div>
                     <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Data Anggota</h3>
@@ -80,13 +90,23 @@
                     </p>
                 </article>
 
-                <article class="bg-gradient-to-br from-blue-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-blue-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="200">
+                <article class="bg-gradient-to-br from-orange-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-orange-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-orange-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                        <i class="fas fa-folder-open text-white text-xl sm:text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Arsip Berkas Digital</h3>
+                    <p class="text-sm sm:text-base text-gray-600" itemprop="description">
+                        Arsip Berkas PAC dan Cabang dengan enkripsi penuh, search, pagination, dan export Excel dengan format tanggal Indonesia
+                    </p>
+                </article>
+
+                <article class="bg-gradient-to-br from-blue-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-blue-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="250">
                     <div class="w-12 h-12 sm:w-14 sm:h-14 bg-blue-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
                         <i class="fas fa-envelope-open-text text-white text-xl sm:text-2xl" aria-hidden="true"></i>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Surat Menyurat</h3>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Arsip Surat Digital</h3>
                     <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        Sistem surat masuk/keluar untuk PC dan PAC dengan upload file, filter jenis surat, dan pencarian nomor surat
+                        Sistem arsip surat masuk/keluar untuk PC dan PAC dengan enkripsi file, filter jenis surat, search, dan pencarian nomor surat
                     </p>
                 </article>
 
@@ -100,33 +120,43 @@
                     </p>
                 </article>
 
-                <article class="bg-gradient-to-br from-yellow-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-yellow-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="400">
+                <article class="bg-gradient-to-br from-yellow-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-yellow-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="350">
                     <div class="w-12 h-12 sm:w-14 sm:h-14 bg-yellow-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
                         <i class="fas fa-user-check text-white text-xl sm:text-2xl" aria-hidden="true"></i>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Manajemen User</h3>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Manajemen User PAC</h3>
                     <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        Kelola user dengan approve/unapprove akses, edit data, dan sistem verifikasi email untuk keamanan akun
+                        Kelola user PAC dengan approve/unapprove akses, edit data user, verifikasi email, dan monitoring status aktivasi akun
                     </p>
                 </article>
 
-                <article class="bg-gradient-to-br from-red-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-red-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="500">
+                <article class="bg-gradient-to-br from-pink-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-pink-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-pink-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                        <i class="fas fa-calendar-check text-white text-xl sm:text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Kalender Kegiatan</h3>
+                    <p class="text-sm sm:text-base text-gray-600" itemprop="description">
+                        Penjadwalan dan monitoring kegiatan tingkat cabang dengan detail waktu, tempat, dan deskripsi lengkap
+                    </p>
+                </article>
+
+                <article class="bg-gradient-to-br from-red-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-red-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="450">
                     <div class="w-12 h-12 sm:w-14 sm:h-14 bg-red-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
                         <i class="fas fa-chart-pie text-white text-xl sm:text-2xl" aria-hidden="true"></i>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Dashboard & Referensi</h3>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Dashboard & Export</h3>
                     <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        Dashboard interaktif dengan statistik surat dan pengajuan, plus referensi surat yang telah dibuat oleh beberapa PAC
+                        Dashboard interaktif dengan statistik real-time, referensi surat PAC, dan export Excel dengan format tanggal Indonesia
                     </p>
                 </article>
 
-                <article class="bg-gradient-to-br from-indigo-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-indigo-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="600">
+                <article class="bg-gradient-to-br from-indigo-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-indigo-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="500">
                     <div class="w-12 h-12 sm:w-14 sm:h-14 bg-indigo-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
                         <i class="fas fa-shield-alt text-white text-xl sm:text-2xl" aria-hidden="true"></i>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Keamanan & Profile</h3>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Keamanan Data</h3>
                     <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        Enkripsi data sensitif, verifikasi email, role-based access, profile management, dan sistem autentikasi lengkap
+                        Enkripsi penuh untuk data sensitif dan file, verifikasi email, role-based access control, dan sistem autentikasi berlapis
                     </p>
                 </article>
             </div>

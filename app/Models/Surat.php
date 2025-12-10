@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class Surat extends Model
 {
@@ -20,6 +21,7 @@ class Surat extends Model
 
     protected $fillable = [
         'user_id',
+        'periode_id',
         'no_surat',
         'jenis_surat',
         'tanggal',
@@ -116,6 +118,21 @@ class Surat extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
+
+    // Scope untuk filter berdasarkan periode user
+   public function scopeByPeriodeUser($query)
+{
+    $user = Auth::user();
+    if ($user && $user->periode_aktif_id) {
+        return $query->where('periode_id', $user->periode_aktif_id);
+    }
+    return $query;
+}
 
     /**
      * Scope untuk filter jenis surat

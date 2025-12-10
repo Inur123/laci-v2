@@ -26,9 +26,15 @@ class DataAnggotaExport implements FromCollection, WithHeadings, WithMapping, Wi
 
     public function collection()
     {
+        $user = Auth::user();
         $query = Anggota::with(['periode', 'user'])
-            ->where('user_id', Auth::id())
+            ->where('user_id', $user->id)
             ->latest();
+
+        // Filter berdasarkan periode aktif jika tidak ada filter manual
+        if (!$this->filterPeriode && $user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
 
         if ($this->filterPeriode) {
             $query->where('periode_id', $this->filterPeriode);

@@ -9,6 +9,7 @@ use Livewire\WithFileUploads;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Anggota as AnggotaModel;
 use App\Models\Periode as PeriodeModel;
@@ -48,7 +49,6 @@ class Anggota extends Component
     public $no_rfid;
 
     protected $rules = [
-        'periode_id' => 'required|exists:periodes,id',
         'nama_lengkap' => 'required|string|max:255',
         'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
         'nik' => 'nullable|string|max:16',
@@ -83,6 +83,13 @@ class Anggota extends Component
     public function resetPage()
     {
         $this->page = 1;
+    }
+
+    #[On('periodeChanged')]
+    public function refreshData()
+    {
+        // Refresh data saat periode berubah
+        $this->resetPage();
     }
 
     public function mount()
@@ -128,7 +135,13 @@ class Anggota extends Component
     #[Computed]
     public function statsAnggota()
     {
+        $user = Auth::user();
         $query = AnggotaModel::where('user_id', Auth::id());
+
+        // Filter berdasarkan periode aktif user
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
 
         if ($this->filterPeriode) {
             $query->where('periode_id', $this->filterPeriode);
@@ -153,16 +166,30 @@ class Anggota extends Component
             'tempat_lahir', 'tanggal_lahir', 'jenis_kelamin', 'alamat_lengkap',
             'no_hp', 'hobi', 'jabatan', 'no_rfid'
         ]);
+
+        // Auto set periode_id ke periode aktif user
+        $this->periode_id = Auth::user()->periode_aktif_id;
+
         $this->action = 'create';
     }
 
     public function save()
     {
+        // Validasi: User harus memiliki periode aktif
+        if (!Auth::user()->periode_aktif_id) {
+            $this->dispatch('flash', [
+                'type' => 'error',
+                'message' => 'Anda belum memiliki periode aktif! Silakan pilih periode terlebih dahulu.'
+            ]);
+            return;
+        }
+
         $this->validate();
 
+        // Gunakan periode aktif user, bukan dari input
         $data = [
             'user_id' => Auth::id(),
-            'periode_id' => $this->periode_id,
+            'periode_id' => Auth::user()->periode_aktif_id,
             'nama_lengkap' => $this->nama_lengkap,
             'jenis_kelamin' => $this->jenis_kelamin,
             'nik' => $this->nik,
@@ -226,7 +253,6 @@ class Anggota extends Component
         $anggota = AnggotaModel::where('user_id', Auth::id())->findOrFail($this->anggotaId);
 
         $data = [
-            'periode_id' => $this->periode_id,
             'nama_lengkap' => $this->nama_lengkap,
             'jenis_kelamin' => $this->jenis_kelamin,
             'nik' => $this->nik,
@@ -331,11 +357,18 @@ class Anggota extends Component
 
     private function getFilteredAnggotas()
     {
-        // Ambil semua data dengan filter
-        $query = AnggotaModel::with(['periode', 'user'])
-            ->where('user_id', Auth::id())
-            ->latest();
+        $user = Auth::user();
 
+        // Ambil semua data dengan filter berdasarkan periode aktif user
+        $query = AnggotaModel::with(['periode', 'user'])
+            ->where('user_id', Auth::id());
+
+        // Filter berdasarkan periode aktif user
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        // Filter tambahan jika ada
         if ($this->filterPeriode) {
             $query->where('periode_id', $this->filterPeriode);
         }
@@ -343,7 +376,7 @@ class Anggota extends Component
             $query->where('user_id', $this->filterUser);
         }
 
-        $allData = $query->get();
+        $allData = $query->latest()->get();
 
         // Filter search manual
         $filtered = $allData->filter(function($anggota) {

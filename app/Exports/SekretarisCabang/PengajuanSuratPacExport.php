@@ -16,24 +16,30 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 class PengajuanSuratPacExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
 {
     protected $userId;
+    protected $periodeId;
 
-    public function __construct($userId = null)
+    public function __construct($userId = null, $periodeId = null)
     {
         $this->userId = $userId;
+        $this->periodeId = $periodeId;
     }
 
     public function collection()
     {
+        // Tampilkan berdasarkan periode_id_pac (periode PAC saat mengirim)
         $query = PengajuanSuratPac::with('user')->latest();
 
         if ($this->userId) {
             $query->where('user_id', $this->userId);
+
+            // Filter berdasarkan periode_id_pac jika ada
+            if ($this->periodeId) {
+                $query->where('periode_id_pac', $this->periodeId);
+            }
         }
 
         return $query->get();
-    }
-
-    public function headings(): array
+    }    public function headings(): array
     {
         return [
             'No Surat',

@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -143,6 +144,16 @@ class Anggota extends Model
     public function periode()
     {
         return $this->belongsTo(Periode::class);
+    }
+
+    // Scope untuk filter berdasarkan periode user login
+    public function scopeByPeriodeUser($query)
+    {
+        $user = Auth::user();
+        if ($user && $user->periode_aktif_id) {
+            return $query->where('periode_id', $user->periode_aktif_id);
+        }
+        return $query;
     }
 
     // Helpers
