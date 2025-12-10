@@ -49,7 +49,6 @@ class Anggota extends Component
     public $exportUserId = null;
 
     protected $rules = [
-        'periode_id' => 'required|exists:periodes,id',
         'nama_lengkap' => 'required|string|max:255',
         'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
         'nik' => 'nullable|string|max:16',
@@ -66,8 +65,6 @@ class Anggota extends Component
     ];
 
     protected $messages = [
-        'periode_id.required' => 'Periode harus dipilih',
-        'periode_id.exists' => 'Periode tidak valid',
         'nama_lengkap.required' => 'Nama lengkap harus diisi',
         'nama_lengkap.max' => 'Nama lengkap maksimal 255 karakter',
         'jenis_kelamin.required' => 'Jenis kelamin harus dipilih',

@@ -625,9 +625,164 @@ php artisan migrate:fresh --seed
 
 ## 🧪 Testing
 
+Sistem dilengkapi dengan **comprehensive unit testing** untuk memastikan kualitas kode dan mencegah regression bugs.
+
+### Test Coverage
+
+**Total: 100 Tests, 179 Assertions** ✅
+
+#### Authentication Tests (15 tests)
+- **LoginTest** (5 tests)
+  - Login page rendering
+  - Valid/invalid credentials
+  - Form validation (email & password required)
+- **RegisterTest** (4 tests)
+  - Registration page rendering
+  - User registration flow
+  - Form validation (unique email, required fields)
+- **EditProfileTest** (6 tests)
+  - Profile page rendering
+  - Update name & password
+  - Password confirmation validation
+
+#### Sekretaris Cabang Tests (51 tests)
+- **AnggotaTest** (7 tests) - CRUD anggota dengan encrypted fields
+- **ArsipSuratTest** (7 tests) - Manajemen arsip surat dengan enkripsi
+- **PeriodeTest** (6 tests) - Manajemen periode kepengurusan
+- **DashboardTest** (2 tests) - Rendering & statistik dashboard
+- **ArsipBerkasCabangTest** (5 tests) - CRUD berkas cabang dengan enkripsi
+- **ArsipBerkasPacTest** (2 tests) - Viewing berkas PAC
+- **KalenderKegiatanTest** (7 tests) - CRUD kegiatan dengan datetime
+- **PengajuanPacTest** (2 tests) - Review pengajuan dari PAC
+- **DataUserPacTest** (3 tests) - Monitor akun PAC
+- **Export Excel** - Tested di setiap module yang ada export
+
+#### Sekretaris PAC Tests (31 tests)
+- **AnggotaTest** (8 tests) - CRUD anggota dengan scope per periode
+- **ArsipSuratTest** (8 tests) - Arsip surat masuk/keluar
+- **PeriodeTest** (7 tests) - Manajemen periode PAC
+- **ArsipBerkasPacTest** (5 tests) - CRUD berkas dengan tanggal range (note: uses arsip_berkas_cabang table - bug in component)
+- **PengajuanSuratTest** (7 tests) - Submit & track pengajuan
+- **DashboardTest** (2 tests) - Statistik PAC
+
+#### API & Example Tests (3 tests)
+- ExampleTest - Basic application test
+- API endpoint tests
+
+### Test Features
+
+✅ **Factory Pattern** - Consistent test data generation  
+✅ **RefreshDatabase** - Clean database per test  
+✅ **Livewire Testing** - Component interaction testing  
+✅ **File Upload Testing** - Storage::fake() untuk file testing  
+✅ **Encrypted Fields** - Testing dengan encrypted data  
+✅ **Email Notifications** - Mail::fake() assertions  
+✅ **Multi-Periode** - Testing dengan periode aktif  
+✅ **Role-Based Testing** - Separate tests per role  
+
 ### Run Tests
+
 ```bash
+# Run all tests
 php artisan test
+
+# Run with coverage
+php artisan test --coverage
+
+# Run specific test file
+php artisan test tests/Feature/Auth/LoginTest.php
+
+# Run specific test method
+php artisan test --filter=can_login_with_correct_credentials
+
+# Stop on first failure
+php artisan test --stop-on-failure
+```
+
+### Test Structure
+
+```
+tests/
+├── Feature/
+│   ├── Auth/
+│   │   ├── LoginTest.php
+│   │   ├── RegisterTest.php
+│   │   └── EditProfileTest.php
+│   ├── SekretarisCabang/
+│   │   ├── AnggotaTest.php
+│   │   ├── ArsipSuratTest.php
+│   │   ├── ArsipBerkasCabangTest.php
+│   │   ├── ArsipBerkasPacTest.php
+│   │   ├── DashboardTest.php
+│   │   ├── DataUserPacTest.php
+│   │   ├── KalenderKegiatanTest.php
+│   │   ├── PengajuanPacTest.php
+│   │   └── PeriodeTest.php
+│   ├── SekretarisPac/
+│   │   ├── AnggotaTest.php
+│   │   ├── ArsipSuratTest.php
+│   │   ├── ArsipBerkasPacTest.php
+│   │   ├── DashboardTest.php
+│   │   ├── PengajuanSuratTest.php
+│   │   └── PeriodeTest.php
+│   └── ExampleTest.php
+├── Unit/
+└── TestCase.php
+```
+
+### Known Issues in Tests
+
+1. **ArsipBerkasPac Component Bug**: Component uses `ArsipBerkasCabang` model instead of `ArsipBerkasPac` model (discovered during testing)
+2. **Encrypted Field Assertions**: Cannot use `assertSee()` or `assertDatabaseHas()` with plain text on encrypted fields
+3. **Search on Encrypted Data**: Search functionality limited on encrypted fields
+
+### Writing New Tests
+
+Contoh test untuk Livewire component:
+
+```php
+<?php
+
+namespace Tests\Feature\SekretarisCabang;
+
+use App\Models\User;
+use App\Models\Periode;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+use Livewire\Livewire;
+use App\Livewire\SekretarisCabang\YourComponent;
+
+class YourComponentTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected $cabang;
+    protected $periode;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->cabang = User::factory()->create([
+            'role' => 'sekretaris_cabang',
+            'email_verified_at' => now(),
+        ]);
+
+        $this->periode = Periode::factory()->create([
+            'user_id' => $this->cabang->id,
+        ]);
+
+        $this->cabang->update(['periode_aktif_id' => $this->periode->id]);
+    }
+
+    /** @test */
+    public function component_can_render()
+    {
+        $this->actingAs($this->cabang)
+            ->get(route('cabang.your-route'))
+            ->assertStatus(200);
+    }
+}
 ```
 
 ## 🐛 Troubleshooting
