@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Livewire\SekretarisPac\DataAnggota;
+namespace App\Livewire\SekretarisCabang;
 
 use Livewire\Component;
-use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
@@ -12,17 +12,17 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Periode as PeriodeModel;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-#[Layout('components.layouts.sekretaris-pac')]
+#[Layout('components.layouts.sekretaris-cabang')]
 #[Title('Periode Kepengurusan')]
 class Periode extends Component
 {
-    use WithPagination;
+    use WithFileUploads;
 
     public $action = 'index';
     public $periodeId;
     public $search = '';
     public $nama;
-    public $page = 1; // 🔥 Property untuk custom pagination
+    public $page = 1; // Custom pagination
 
     protected $rules = [
         'nama' => 'required|string|max:255',
@@ -33,20 +33,24 @@ class Periode extends Component
         'nama.max' => 'Nama periode maksimal 255 karakter',
     ];
 
-    // 🔥 Reset page saat filter berubah
+    public function mount()
+    {
+        if (Auth::user()->role !== 'sekretaris_cabang') {
+            abort(403, 'Akses ditolak');
+        }
+    }
+
+    // Reset page saat search berubah
     public function resetPage()
     {
         $this->page = 1;
     }
 
-    public function mount()
+    public function updatingSearch()
     {
-        if (Auth::user()->role !== 'sekretaris_pac') {
-            abort(403, 'Akses ditolak');
-        }
+        $this->resetPage();
     }
 
-    // Stats hanya milik user login
     #[Computed]
     public function totalPeriode()
     {
@@ -77,10 +81,8 @@ class Periode extends Component
     public function save()
     {
         $exists = PeriodeModel::where('user_id', Auth::id())
-            ->get()
-            ->contains(function($periode) {
-                return strtolower($periode->nama) === strtolower($this->nama);
-            });
+            ->whereRaw('LOWER(nama) = ?', [strtolower($this->nama)])
+            ->exists();
 
         if ($exists) {
             $this->addError('nama', 'Nama periode sudah digunakan');
@@ -109,10 +111,8 @@ class Periode extends Component
     public function edit($id)
     {
         $periode = PeriodeModel::where('user_id', Auth::id())->findOrFail($id);
-
         $this->periodeId = $id;
         $this->nama = $periode->nama;
-
         $this->action = 'edit';
     }
 
@@ -120,10 +120,8 @@ class Periode extends Component
     {
         $exists = PeriodeModel::where('user_id', Auth::id())
             ->where('id', '!=', $this->periodeId)
-            ->get()
-            ->contains(function($periode) {
-                return strtolower($periode->nama) === strtolower($this->nama);
-            });
+            ->whereRaw('LOWER(nama) = ?', [strtolower($this->nama)])
+            ->exists();
 
         if ($exists) {
             $this->addError('nama', 'Nama periode sudah digunakan');
@@ -133,10 +131,7 @@ class Periode extends Component
         $this->validate();
 
         $periode = PeriodeModel::where('user_id', Auth::id())->findOrFail($this->periodeId);
-
-        $periode->update([
-            'nama' => $this->nama,
-        ]);
+        $periode->update(['nama' => $this->nama]);
 
         $this->dispatch('flash', [
             'type' => 'success',
@@ -158,6 +153,16 @@ class Periode extends Component
         $periode = PeriodeModel::where('user_id', Auth::id())->find($id);
 
         if ($periode) {
+            // Cek apakah user yang login sedang menggunakan periode ini sebagai periode aktif
+            if (Auth::user()->periode_aktif_id == $id) {
+                $this->dispatch('flash', [
+                    'type' => 'error',
+                    'message' => 'Periode tidak bisa dihapus karena Anda sedang menggunakannya sebagai periode aktif!'
+                ]);
+                return;
+            }
+
+            // Cek apakah periode masih digunakan oleh anggota
             if ($periode->anggotas()->count() > 0) {
                 $this->dispatch('flash', [
                     'type' => 'error',
@@ -166,8 +171,47 @@ class Periode extends Component
                 return;
             }
 
-            $periode->delete();
+            // Cek apakah periode masih digunakan oleh surat
+            $suratCount = \App\Models\Surat::where('periode_id', $id)->count();
+            if ($suratCount > 0) {
+                $this->dispatch('flash', [
+                    'type' => 'error',
+                    'message' => "Periode tidak bisa dihapus karena masih digunakan oleh {$suratCount} surat!"
+                ]);
+                return;
+            }
 
+            // Cek apakah periode masih digunakan oleh arsip berkas cabang
+            $berkasCabangCount = \App\Models\ArsipBerkasCabang::where('periode_id', $id)->count();
+            if ($berkasCabangCount > 0) {
+                $this->dispatch('flash', [
+                    'type' => 'error',
+                    'message' => "Periode tidak bisa dihapus karena masih digunakan oleh {$berkasCabangCount} berkas cabang!"
+                ]);
+                return;
+            }
+
+            // Cek apakah periode masih digunakan oleh pengajuan surat PAC
+            $pengajuanCount = \App\Models\PengajuanSuratPac::where('periode_id', $id)->count();
+            if ($pengajuanCount > 0) {
+                $this->dispatch('flash', [
+                    'type' => 'error',
+                    'message' => "Periode tidak bisa dihapus karena masih digunakan oleh {$pengajuanCount} pengajuan surat PAC!"
+                ]);
+                return;
+            }
+
+            // Cek apakah periode masih digunakan oleh kegiatan
+            $kegiatanCount = \App\Models\Kegiatan::where('periode_id', $id)->count();
+            if ($kegiatanCount > 0) {
+                $this->dispatch('flash', [
+                    'type' => 'error',
+                    'message' => "Periode tidak bisa dihapus karena masih digunakan oleh {$kegiatanCount} kegiatan!"
+                ]);
+                return;
+            }
+
+            $periode->delete();
             $this->dispatch('flash', [
                 'type' => 'success',
                 'message' => 'Periode berhasil dihapus!'
@@ -175,20 +219,14 @@ class Periode extends Component
         }
     }
 
-    // 🔥 Auto-reset page saat search berubah
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
     public function render()
     {
-        return match($this->action) {
-            'create' => view('livewire.sekretaris-pac.data-anggota.periode.create'),
-            'edit' => view('livewire.sekretaris-pac.data-anggota.periode.edit', [
+        return match ($this->action) {
+            'create' => view('livewire.sekretaris-cabang.periode.create'),
+            'edit' => view('livewire.sekretaris-cabang.periode.edit', [
                 'periode' => PeriodeModel::where('user_id', Auth::id())->findOrFail($this->periodeId)
             ]),
-            default => view('livewire.sekretaris-pac.data-anggota.periode.index', [
+            default => view('livewire.sekretaris-cabang.periode.index', [
                 'periodes' => $this->getFilteredPeriodes()
             ]),
         };
@@ -196,25 +234,22 @@ class Periode extends Component
 
     private function getFilteredPeriodes()
     {
-        // Ambil semua data
         $query = PeriodeModel::with('user')
             ->where('user_id', Auth::id())
-            ->latest();
+            ->latest()
+            ->get();
 
-        $allData = $query->get();
+        $filtered = $query;
 
-        // Filter search manual
-        $filtered = $allData->filter(function($periode) {
-            if (!$this->search) {
-                return true;
-            }
+        if ($this->search) {
+            $searchLower = strtolower($this->search);
+            $filtered = $query->filter(fn($periode) =>
+                str_contains(strtolower($periode->nama), $searchLower)
+            );
+        }
 
-            return str_contains(strtolower($periode->nama), strtolower($this->search));
-        });
-
-        // Manual pagination
         $perPage = 10;
-        $currentPage = $this->page; // 🔥 Gunakan property page
+        $currentPage = $this->page;
         $total = $filtered->count();
         $items = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();
 

@@ -192,7 +192,13 @@
     function confirmDeletePeriode(id, namaPeriode) {
         Swal.fire({
             title: 'Hapus Periode?',
-            html: `Periode <strong>${namaPeriode}</strong> akan dihapus secara permanen!`,
+            html: `Periode <strong>${namaPeriode}</strong> akan dihapus secara permanen!<br><br>
+                   <div class="text-left bg-yellow-50 p-3 rounded-lg border border-yellow-200 mt-2">
+                       <small class="text-yellow-800">
+                           <i class="fas fa-exclamation-triangle mr-1"></i>
+                           <strong>Perhatian:</strong> Periode tidak dapat dihapus jika sedang Anda gunakan sebagai periode aktif.
+                       </small>
+                   </div>`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',
@@ -201,8 +207,9 @@
             cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
             reverseButtons: true,
             customClass: {
-                confirmButton: 'px-4 py-2 rounded-lg',
-                cancelButton: 'px-4 py-2 rounded-lg'
+                popup: 'rounded-xl',
+                confirmButton: 'px-6 py-2.5 rounded-lg font-medium shadow-lg',
+                cancelButton: 'px-6 py-2.5 rounded-lg font-medium'
             }
         }).then((result) => {
             if (result.isConfirmed) {

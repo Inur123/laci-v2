@@ -25,13 +25,33 @@
             <span x-show="sidebarOpen" x-transition.opacity class="text-base font-medium">Dashboard</span>
         </button>
 
-        <!-- Arsip Surat -->
-        <button type="button" @click="Livewire.navigate('{{ route('pac.arsip-surat') }}')"
-            class="w-full text-left flex items-center rounded-lg transition cursor-pointer {{ request()->routeIs('pac.arsip-surat') ? 'bg-green-600 text-white hover:bg-green-700' : 'text-gray-700 hover:bg-gray-100' }}"
-            :class="sidebarOpen ? 'px-4 py-3 space-x-3' : 'justify-center p-3'">
-            <i class="fas fa-archive text-lg" :class="sidebarOpen && 'w-6'"></i>
-            <span x-show="sidebarOpen" x-transition.opacity class="text-base font-medium">Arsip Surat</span>
-        </button>
+        <!-- Arsip Dropdown -->
+        <div x-data="{ arsipOpen: {{ request()->routeIs('pac.arsip-surat*') || request()->routeIs('pac.arsip-berkas*') ? 'true' : 'false' }} }">
+            <button type="button" @click="arsipOpen = !arsipOpen"
+                class="w-full text-left flex items-center rounded-lg transition cursor-pointer {{ request()->routeIs('pac.arsip-surat*') || request()->routeIs('pac.arsip-berkas*') ? 'bg-green-600 text-white hover:bg-green-700' : 'text-gray-700 hover:bg-gray-100' }}"
+                :class="sidebarOpen ? 'px-4 py-3 space-x-3' : 'justify-center p-3'">
+                <i class="fas fa-folder text-lg" :class="sidebarOpen && 'w-6'"></i>
+                <span x-show="sidebarOpen" x-transition.opacity class="text-base font-medium flex-1">Arsip</span>
+                <i x-show="sidebarOpen" :class="arsipOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-sm transition-transform"></i>
+            </button>
+
+            <!-- Sub Menu -->
+            <div x-show="arsipOpen && sidebarOpen" x-transition.opacity class="ml-4 mt-1 space-y-1">
+                <!-- Arsip Surat -->
+                <button type="button" @click="Livewire.navigate('{{ route('pac.arsip-surat') }}')"
+                    class="w-full text-left flex items-center px-4 py-2 rounded-lg transition cursor-pointer {{ request()->routeIs('pac.arsip-surat') ? 'bg-green-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                    <i class="fas fa-file-alt text-sm w-6"></i>
+                    <span class="text-sm">Arsip Surat</span>
+                </button>
+
+                <!-- Arsip Berkas PAC -->
+                <button type="button" @click="Livewire.navigate('{{ route('pac.arsip-berkas-pac') }}')"
+                    class="w-full text-left flex items-center px-4 py-2 rounded-lg transition cursor-pointer {{ request()->routeIs('pac.arsip-berkas-pac') ? 'bg-green-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                    <i class="fas fa-file-archive text-sm w-6"></i>
+                    <span class="text-sm">Berkas PAC</span>
+                </button>
+            </div>
+        </div>
 
         <!-- Pengajuan Surat -->
         <button type="button" @click="Livewire.navigate('{{ route('pac.pengajuan-surat') }}')"

@@ -13,7 +13,7 @@ class RestrictApiAccess
      */
     protected $allowedOrigins = [
         'https://v2.laci.my.id',              // Domain produksi utama
-        'https://www.pelajarnumagetan.my.id', // Domain front-end
+        'https://www.pelajarnumagetan.or.id', // Domain front-end
         'http://localhost:8000',              // Development
         'http://127.0.0.1:8000',
     ];

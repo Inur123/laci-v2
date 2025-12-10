@@ -18,7 +18,7 @@ use App\Livewire\SekretarisCabang\DataUserPac;
 use App\Livewire\SekretarisCabang\PengajuanPac;
 use App\Livewire\SekretarisCabang\KalenderKegiatan;
 use App\Livewire\SekretarisCabang\DataAnggota\Anggota;
-use App\Livewire\SekretarisCabang\DataAnggota\Periode;
+use App\Livewire\SekretarisCabang\Periode;
 use App\Http\Controllers\SekretarisCabang\DetailArsipSurat;
 use App\Http\Controllers\SekretarisCabang\PengajuanPacFileController;
 use App\Http\Controllers\SekretarisCabang\ArsipBerkasPacFileController;
@@ -26,12 +26,14 @@ use App\Http\Controllers\SekretarisCabang\ArsipBerkasCabangFileController;
 
 use App\Livewire\SekretarisPac\Dashboard as PacDashboard;
 use App\Livewire\SekretarisPac\ArsipSurat as PacArsipSurat;
+use App\Livewire\SekretarisPac\ArsipBerkasPac as PacArsipBerkasPac;
 use App\Livewire\SekretarisPac\DataAnggota\Anggota as PacAnggota;
-use App\Livewire\SekretarisPac\DataAnggota\Periode as PacPeriode;
+use App\Livewire\SekretarisPac\Periode as PacPeriode;
 use App\Livewire\SekretarisPac\PengajuanSurat as PacPengajuanSurat;
 use App\Livewire\SekretarisPac\ReferensiSurat as PacReferensiSurat;
 use App\Http\Controllers\SekretarisPac\DetailArsipSuratPac;
 use App\Http\Controllers\SekretarisPac\DetailPengajuanPacFileController;
+use App\Http\Controllers\SekretarisPac\ArsipBerkasPacFileController as PacArsipBerkasPacFileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -133,6 +135,9 @@ Route::middleware(['auth', 'role:sekretaris_pac'])
             Route::get('/arsip-surat', PacArsipSurat::class)->name('arsip-surat');
             Route::get('/arsip-surat/view-file/{id}', [DetailArsipSuratPac::class, 'viewFile'])->name('arsip-surat.view-file');
             Route::get('/arsip-surat/export', [PacArsipSurat::class, 'export'])->name('arsip-surat.export');
+
+            Route::get('/arsip-berkas-pac', PacArsipBerkasPac::class)->name('arsip-berkas-pac');
+            Route::get('/arsip-berkas-pac/download/{id}', [PacArsipBerkasPacFileController::class, 'download'])->name('arsip-berkas-pac.download');
 
             Route::get('/pengajuan-surat', PacPengajuanSurat::class)->name('pengajuan-surat');
             Route::get('/pengajuan-pac/view-file/{id}', [DetailPengajuanPacFileController::class, 'viewFile'])->name('pengajuan-pac.view-file');

@@ -49,7 +49,7 @@
 
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
 
             <!-- Cari Anggota -->
             <div>
@@ -68,19 +68,6 @@
                     <option value="">Semua Periode</option>
                     @foreach ($this->periodeList as $periode)
                         <option value="{{ $periode->id }}">{{ $periode->nama }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- Dibuat Oleh -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Dibuat Oleh</label>
-                <select wire:model.live="filterUser"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
-                focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
-                    <option value="">Semua User</option>
-                    @foreach ($this->userList as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -129,7 +116,6 @@
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Periode</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">JK</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">No. HP</th>
-                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Dibuat Oleh</th>
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
                     </tr>
                 </thead>
@@ -172,13 +158,6 @@
                             <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">{{ $anggota->no_hp ?? '-' }}
                             </td>
                             <td class="py-3 px-4 whitespace-nowrap">
-                                <span
-                                    class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700 inline-flex items-center gap-1">
-                                    <i class="fas fa-user-shield"></i>
-                                    PAC
-                                </span>
-                            </td>
-                            <td class="py-3 px-4 whitespace-nowrap">
                                 <div class="flex items-center gap-2">
                                     <button wire:click="detail('{{ $anggota->id }}')"
                                         class="text-green-600 hover:text-green-800 transition whitespace-nowrap cursor-pointer"
@@ -201,7 +180,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="py-8 px-4 text-center text-gray-500">
+                            <td colspan="7" class="py-8 px-4 text-center text-gray-500">
                                 <i class="fas fa-users-slash text-4xl mb-2 block"></i>
                                 <p>Belum ada data anggota</p>
                             </td>

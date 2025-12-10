@@ -64,11 +64,11 @@
             </div>
             <div class="flex items-center gap-2">
                 <button @click.stop="isMinimized = !isMinimized"
-                        class="text-white hover:text-red-100 transition-colors p-1">
+                        class="text-white hover:text-red-100 transition-colors p-1 cursor-pointer">
                     <i class="fas" :class="isMinimized ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                 </button>
                 <button @click.stop="closeWarning()"
-                        class="text-white hover:text-red-100 transition-colors p-1">
+                        class="text-white hover:text-red-100 transition-colors p-1 cursor-pointer">
                     <i class="fas fa-times"></i>
                 </button>
             </div>

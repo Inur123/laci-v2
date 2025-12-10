@@ -9,15 +9,14 @@
     <!-- Alert Verifikasi Email (di atas form) -->
     @if (!Auth::user()->hasVerifiedEmail())
         <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
-            <div class="flex items-center justify-between gap-4">
-                <div class="flex items-start flex-1">
-                    <div class="flex-shrink-0">
-                        <i class="fas fa-exclamation-triangle text-yellow-400 text-xl"></i>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div class="flex items-start gap-3 flex-1">
+                    <div class="flex-shrink-0 mt-0.5">
+                        <i class="fas fa-exclamation-triangle text-yellow-500 text-lg"></i>
                     </div>
-                    <div class="ml-3">
+                    <div>
                         <h3 class="text-sm font-semibold text-yellow-800">Email Belum Terverifikasi</h3>
-                        <p class="text-xs text-yellow-700 mt-1">Silakan verifikasi email Anda untuk mengakses semua
-                            fitur.</p>
+                        <p class="text-xs text-yellow-700 mt-1">Silakan verifikasi email Anda untuk mengakses semua fitur.</p>
                     </div>
                 </div>
 
@@ -25,7 +24,7 @@
                 <div x-data="resendCooldown()" class="flex-shrink-0">
                     <button type="button" wire:click="resendVerification" wire:loading.attr="disabled"
                         :disabled="$wire.resendCooldown > 0"
-                        class="inline-flex items-center py-2 px-4 border border-transparent text-xs font-medium rounded-lg text-white transition-all duration-300 disabled:opacity-75 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
+                        class="inline-flex items-center py-2.5 px-4 border border-transparent text-xs font-medium rounded-lg text-white transition-all duration-300 disabled:opacity-75 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer w-full md:w-auto justify-center"
                         :class="$wire.resendCooldown > 0 ?
                             'bg-gray-500 cursor-not-allowed' :
                             'bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500'">
@@ -109,17 +108,22 @@
                         Email <span class="text-red-500">*</span>
                     </label>
                     <input type="email" wire:model.blur="email"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 transition"
-                        placeholder="contoh@email.com" required>
-                    @error('email')
-                        <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span>
-                    @enderror
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
+                        placeholder="contoh@email.com" readonly disabled>
 
-                    @if (Auth::user()->hasVerifiedEmail())
-                        <p class="text-green-600 text-xs mt-2 flex items-center gap-1">
-                            <i class="fas fa-check-circle"></i> Email sudah terverifikasi
+                    <div class="mt-2 space-y-1.5">
+                        @if (Auth::user()->hasVerifiedEmail())
+                            <p class="text-green-600 text-xs flex items-center gap-1.5">
+                                <i class="fas fa-check-circle flex-shrink-0"></i>
+                                <span>Email sudah terverifikasi</span>
+                            </p>
+                        @endif
+
+                        <p class="text-gray-500 text-xs flex items-start gap-1.5">
+                            <i class="fas fa-info-circle mt-0.5 flex-shrink-0"></i>
+                            <span>Jika ingin melakukan perubahan email, silakan hubungi Sekretaris Cabang</span>
                         </p>
-                    @endif
+                    </div>
                 </div>
 
                 <!-- Password Baru -->

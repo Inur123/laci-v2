@@ -1,7 +1,7 @@
 <div x-data="{ open: @entangle('showModal') }">
     <!-- Button Trigger -->
     <button @click="open = true"
-            class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition">
+            class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition cursor-pointer">
         <i class="fas fa-calendar-alt text-green-600"></i>
         <span class="hidden md:inline">{{ auth()->user()->periodeAktif->nama ?? 'Pilih Periode' }}</span>
         <i class="fas fa-chevron-down text-xs"></i>
@@ -10,18 +10,17 @@
     <!-- Modal -->
     <div x-show="open"
          x-cloak
-         @click.away="open = false"
-         class="fixed inset-0 z-50 overflow-y-auto"
+         class="fixed inset-0 z-[9999] overflow-y-auto"
          aria-labelledby="modal-title"
          role="dialog"
          aria-modal="true"
          style="display: none;">
 
-        <!-- Backdrop -->
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+        <!-- Backdrop with Blur -->
+        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" @click="open = false"></div>
 
         <!-- Modal Content -->
-        <div class="flex min-h-full items-center justify-center p-4">
+        <div class="flex min-h-full items-center justify-center p-4" @click="open = false">
             <div class="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:max-w-lg sm:w-full"
                  @click.stop>
 
@@ -32,7 +31,7 @@
                             <i class="fas fa-calendar-alt text-green-600 mr-2"></i>
                             Ganti Periode
                         </h3>
-                        <button @click="open = false" class="text-gray-400 hover:text-gray-600 transition">
+                        <button @click="open = false" class="text-gray-400 hover:text-gray-600 transition cursor-pointer">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -74,8 +73,8 @@
                     <div class="space-y-2 max-h-96 overflow-y-auto">
                         @forelse($periodes as $periode)
                             <button
-                                wire:click="gantiPeriode('{{ $periode->id }}')"
-                                class="w-full text-left px-4 py-3 rounded-lg border transition
+                                onclick="confirmGantiPeriode('{{ $periode->id }}', '{{ $periode->nama }}', {{ $periodeAktif == $periode->id ? 'true' : 'false' }})"
+                                class="w-full text-left px-4 py-3 rounded-lg border transition cursor-pointer
                                        {{ $periodeAktif == $periode->id
                                           ? 'border-green-500 bg-green-50 text-green-700 shadow-sm'
                                           : 'border-gray-200 hover:border-green-300 hover:bg-gray-50' }}">
@@ -110,7 +109,7 @@
                 <!-- Footer -->
                 <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                     <button @click="open = false"
-                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition">
+                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition cursor-pointer">
                         Tutup
                     </button>
                 </div>
@@ -118,3 +117,50 @@
         </div>
     </div>
 </div>
+
+<script>
+    function confirmGantiPeriode(id, namaPeriode, isAktif) {
+        // Jika periode sudah aktif, tidak perlu konfirmasi
+        if (isAktif) {
+            Swal.fire({
+                title: 'Periode Sudah Aktif',
+                html: `Periode <strong>${namaPeriode}</strong> sudah menjadi periode aktif saat ini.`,
+                icon: 'info',
+                confirmButtonColor: '#10b981',
+                confirmButtonText: '<i class="fas fa-check mr-2"></i>OK',
+                customClass: {
+                    popup: 'rounded-xl',
+                    confirmButton: 'px-6 py-2.5 rounded-lg font-medium shadow-lg'
+                }
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Ganti Periode?',
+            html: `Anda akan mengganti periode aktif ke <strong>${namaPeriode}</strong>.<br><br>
+                   <div class="text-left bg-yellow-50 p-3 rounded-lg border border-yellow-200 mt-2">
+                       <small class="text-yellow-800">
+                           <i class="fas fa-exclamation-triangle mr-1"></i>
+                           <strong>Perhatian:</strong> Penggantian periode akan mempengaruhi semua data yang ditampilkan.
+                       </small>
+                   </div>`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fas fa-check mr-2"></i>Ya, Ganti Periode!',
+            cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+            reverseButtons: true,
+            customClass: {
+                popup: 'rounded-xl',
+                confirmButton: 'px-6 py-2.5 rounded-lg font-medium shadow-lg',
+                cancelButton: 'px-6 py-2.5 rounded-lg font-medium'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('gantiPeriode', id);
+            }
+        });
+    }
+</script>
