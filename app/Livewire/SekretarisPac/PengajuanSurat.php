@@ -50,7 +50,7 @@ class PengajuanSurat extends Component
         'tanggal' => 'required|date',
         'keperluan' => 'required|string|max:255',
         'deskripsi' => 'nullable|string',
-        'file' => 'nullable|file|mimes:pdf|max:5120',
+        'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:10240',
     ];
 
     public function resetPage()

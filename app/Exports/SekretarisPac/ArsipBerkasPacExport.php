@@ -2,7 +2,7 @@
 
 namespace App\Exports\SekretarisPac;
 
-use App\Models\ArsipBerkasCabang;
+use App\Models\ArsipBerkasPac;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -23,7 +23,7 @@ class ArsipBerkasPacExport implements FromCollection, WithHeadings, WithMapping,
     {
         $periodeAktifId = Auth::user()->periode_aktif_id;
 
-        $berkas = ArsipBerkasCabang::with(['user', 'periode'])
+        $berkas = ArsipBerkasPac::with(['user', 'periode'])
             ->where('user_id', Auth::id())
             ->where('periode_id', $periodeAktifId)
             ->orderBy('created_at', 'desc')

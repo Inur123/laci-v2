@@ -2,14 +2,14 @@
     <!-- Header -->
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Edit Berkas PAC</h1>
-            <p class="text-sm text-gray-600 mt-1">Update informasi berkas PAC</p>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Tambah Berkas SP</h1>
+            <p class="text-sm text-gray-600 mt-1">Tambahkan berkas baru dari PAC</p>
         </div>
     </div>
 
     <!-- Form -->
     <div class="bg-white rounded-lg shadow p-4 sm:p-6">
-        <form wire:submit="update">
+        <form wire:submit="save">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <!-- Nama Berkas -->
                 <div class="md:col-span-2">
@@ -64,20 +64,14 @@
                 <!-- File Upload -->
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Upload File Baru (Opsional - PDF, DOC, DOCX, XLS, XLSX - Max 10MB)
+                        Upload File (PDF, DOC, DOCX, XLS, XLSX - Max 10MB)
                     </label>
-
                     <input type="file" wire:model="file" accept=".pdf,.doc,.docx,.xls,.xlsx"
                         class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                     @error('file')
                         <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
                     @enderror
-                    @if ($oldFile)
-                        <p class="text-xs text-gray-500 mb-2">
-                            <i class="fas fa-info-circle"></i> File saat ini sudah ada. Upload file baru jika ingin
-                            menggantinya.
-                        </p>
-                    @endif
+
                     <div wire:loading wire:target="file" class="mt-2 text-xs sm:text-sm text-blue-600">
                         <i class="fas fa-spinner fa-spin mr-1"></i>Mengupload file...
                     </div>
@@ -92,7 +86,7 @@
                 </button>
                 <button type="submit"
                     class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm sm:text-base cursor-pointer">
-                    <i class="fas fa-save mr-2"></i>Update
+                    <i class="fas fa-save mr-2"></i>Simpan
                 </button>
             </div>
         </form>

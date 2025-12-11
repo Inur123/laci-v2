@@ -12,7 +12,7 @@ use App\Livewire\Auth\EditProfile;
 
 use App\Livewire\SekretarisCabang\Dashboard as CabangDashboard;
 use App\Livewire\SekretarisCabang\ArsipSurat;
-use App\Livewire\SekretarisCabang\ArsipBerkasPac;
+use App\Livewire\SekretarisCabang\ArsipBerkasSp;
 use App\Livewire\SekretarisCabang\ArsipBerkasCabang;
 use App\Livewire\SekretarisCabang\DataUserPac;
 use App\Livewire\SekretarisCabang\PengajuanPac;
@@ -21,7 +21,7 @@ use App\Livewire\SekretarisCabang\DataAnggota\Anggota;
 use App\Livewire\SekretarisCabang\Periode;
 use App\Http\Controllers\SekretarisCabang\DetailArsipSurat;
 use App\Http\Controllers\SekretarisCabang\PengajuanPacFileController;
-use App\Http\Controllers\SekretarisCabang\ArsipBerkasPacFileController;
+use App\Http\Controllers\SekretarisCabang\ArsipBerkasSpFileController;
 use App\Http\Controllers\SekretarisCabang\ArsipBerkasCabangFileController;
 
 use App\Livewire\SekretarisPac\Dashboard as PacDashboard;
@@ -102,10 +102,12 @@ Route::middleware(['auth', 'role:sekretaris_cabang'])
             Route::get('/arsip-surat/view-file/{id}', [DetailArsipSurat::class, 'viewFile'])->name('arsip-surat.view-file');
             Route::get('/arsip-surat/export', [ArsipSurat::class, 'export'])->name('arsip-surat.export');
 
-            Route::get('/arsip-berkas-pac', ArsipBerkasPac::class)->name('arsip-berkas-pac');
-            Route::get('/arsip-berkas-pac/download/{id}', [ArsipBerkasPacFileController::class, 'download'])->name('arsip-berkas-pac.download');
+            Route::get('/arsip-berkas-sp', ArsipBerkasSp::class)->name('arsip-berkas-sp');
+            Route::get('/arsip-berkas-sp/view-file/{id}', [ArsipBerkasSpFileController::class, 'viewFile'])->name('arsip-berkas-sp.view-file');
+            Route::get('/arsip-berkas-sp/download/{id}', [ArsipBerkasSpFileController::class, 'download'])->name('arsip-berkas-sp.download');
 
             Route::get('/arsip-berkas-cabang', ArsipBerkasCabang::class)->name('arsip-berkas-cabang');
+            Route::get('/arsip-berkas-cabang/view-file/{id}', [ArsipBerkasCabangFileController::class, 'viewFile'])->name('arsip-berkas-cabang.view-file');
             Route::get('/arsip-berkas-cabang/download/{id}', [ArsipBerkasCabangFileController::class, 'download'])->name('arsip-berkas-cabang.download');
 
             Route::get('/pengajuan-pac', PengajuanPac::class)->name('pengajuan-pac');
@@ -137,6 +139,7 @@ Route::middleware(['auth', 'role:sekretaris_pac'])
             Route::get('/arsip-surat/export', [PacArsipSurat::class, 'export'])->name('arsip-surat.export');
 
             Route::get('/arsip-berkas-pac', PacArsipBerkasPac::class)->name('arsip-berkas-pac');
+            Route::get('/arsip-berkas-pac/view-file/{id}', [PacArsipBerkasPacFileController::class, 'viewFile'])->name('arsip-berkas-pac.view-file');
             Route::get('/arsip-berkas-pac/download/{id}', [PacArsipBerkasPacFileController::class, 'download'])->name('arsip-berkas-pac.download');
 
             Route::get('/pengajuan-surat', PacPengajuanSurat::class)->name('pengajuan-surat');

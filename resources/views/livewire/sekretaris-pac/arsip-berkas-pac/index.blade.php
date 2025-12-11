@@ -266,18 +266,21 @@
                     @if ($selectedBerkas->file_path)
                         <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-4 border border-indigo-200">
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-3 flex-1">
                                     <div class="bg-indigo-500 p-2 rounded-lg">
                                         <i class="fas fa-file-pdf text-white text-lg"></i>
                                     </div>
                                     <div>
                                         <p class="text-xs text-indigo-600 font-medium">File Berkas</p>
                                         <p class="text-sm text-gray-700 font-medium">Dokumen tersedia</p>
+                                        <p class="text-xs text-gray-500 mt-1">Klik untuk membuka di tab baru</p>
                                     </div>
                                 </div>
-                                <a href="{{ route('cabang.arsip-berkas-cabang.download', $selectedBerkas->id) }}"
-                                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium shadow-lg hover:shadow-xl">
-                                    <i class="fas fa-download mr-2"></i>Unduh
+                                <a href="{{ route('pac.arsip-berkas-pac.view-file', $selectedBerkas->id) }}"
+                                    target="_blank"
+                                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium shadow-lg hover:shadow-xl flex items-center gap-2">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span class="hidden sm:inline">Buka File</span>
                                 </a>
                             </div>
                         </div>

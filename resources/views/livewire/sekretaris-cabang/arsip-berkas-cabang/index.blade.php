@@ -273,14 +273,19 @@
                                     <div class="bg-indigo-500 p-2 rounded-lg">
                                         <i class="fas fa-file-pdf text-white text-lg"></i>
                                     </div>
-                                    <div>
+                                    <div class="flex-1">
                                         <p class="text-xs text-indigo-600 font-medium">File Berkas</p>
-                                        <p class="text-sm text-gray-700 font-medium">Dokumen tersedia</p>
+                                        <p class="text-sm font-semibold text-indigo-900 mt-1">Dokumen Tersedia</p>
+                                        <p class="text-xs text-indigo-700 mt-1">
+                                            <i class="fas fa-info-circle mr-1"></i>Klik untuk membuka di tab baru
+                                        </p>
                                     </div>
                                 </div>
-                                <a href="{{ route('cabang.arsip-berkas-cabang.download', $selectedBerkas->id) }}"
-                                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium shadow-lg hover:shadow-xl">
-                                    <i class="fas fa-download mr-2"></i>Unduh
+                                <a href="{{ route('cabang.arsip-berkas-cabang.view-file', $selectedBerkas->id) }}"
+                                    target="_blank"
+                                    class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition cursor-pointer flex items-center gap-2">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span class="hidden sm:inline">Buka File</span>
                                 </a>
                             </div>
                         </div>

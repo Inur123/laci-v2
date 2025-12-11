@@ -47,11 +47,11 @@
                         <span class="text-sm">Arsip Surat</span>
                     </button>
 
-                    <!-- Arsip Berkas PAC -->
-                    <button type="button" @click="Livewire.navigate('{{ route('cabang.arsip-berkas-pac') }}'); sidebarOpen = false"
-                        class="w-full text-left flex items-center px-4 py-2 rounded-lg transition {{ request()->routeIs('cabang.arsip-berkas-pac') ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                    <!-- Arsip Berkas SP -->
+                    <button type="button" @click="Livewire.navigate('{{ route('cabang.arsip-berkas-sp') }}'); sidebarOpen = false"
+                        class="w-full text-left flex items-center px-4 py-2 rounded-lg transition {{ request()->routeIs('cabang.arsip-berkas-sp') ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
                         <i class="fas fa-file-archive text-sm w-6"></i>
-                        <span class="text-sm">Berkas PAC</span>
+                        <span class="text-sm">Berkas SP</span>
                     </button>
 
                     <!-- Arsip Berkas Cabang -->

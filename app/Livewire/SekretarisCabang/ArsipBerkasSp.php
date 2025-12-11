@@ -2,7 +2,7 @@
 
 namespace App\Livewire\SekretarisCabang;
 
-use App\Models\ArsipBerkasPac as ArsipBerkasPacModel;
+use App\Models\ArsipBerkasSp as ModelArsipBerkasSp;
 use App\Models\Periode;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -12,13 +12,13 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use App\Exports\SekretarisCabang\ArsipBerkasPacExport;
+use App\Exports\SekretarisCabang\ArsipBerkasSpExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 #[Layout('components.layouts.sekretaris-cabang')]
-#[Title('Arsip Berkas PAC')]
-class ArsipBerkasPac extends Component
+#[Title('Arsip Berkas SP')]
+class ArsipBerkasSp extends Component
 {
     use WithPagination, WithFileUploads;
 
@@ -99,14 +99,14 @@ class ArsipBerkasPac extends Component
         ];
 
         if ($this->file) {
-            $data['file_path'] = ArsipBerkasPacModel::encryptAndStoreFile($this->file);
+            $data['file_path'] = ModelArsipBerkasSp::encryptAndStoreFile($this->file);
         }
 
-        ArsipBerkasPacModel::create($data);
+        ModelArsipBerkasSp::create($data);
 
         $this->dispatch('flash', [
             'type' => 'success',
-            'message' => 'Berkas PAC berhasil ditambahkan!'
+            'message' => 'Berkas SP berhasil ditambahkan!'
         ]);
 
         $this->action = 'index';
@@ -115,7 +115,7 @@ class ArsipBerkasPac extends Component
 
     public function edit($id)
     {
-        $berkas = ArsipBerkasPacModel::where('user_id', Auth::id())->findOrFail($id);
+        $berkas = ModelArsipBerkasSp::where('user_id', Auth::id())->findOrFail($id);
 
         $this->arsipId = $id;
         $this->nama = $berkas->nama;
@@ -131,7 +131,7 @@ class ArsipBerkasPac extends Component
     {
         $this->validate();
 
-        $berkas = ArsipBerkasPacModel::where('user_id', Auth::id())->findOrFail($this->arsipId);
+        $berkas = ModelArsipBerkasSp::where('user_id', Auth::id())->findOrFail($this->arsipId);
 
         $data = [
             'nama' => $this->nama,
@@ -144,14 +144,14 @@ class ArsipBerkasPac extends Component
             if ($this->oldFile && Storage::disk('local')->exists($this->oldFile)) {
                 Storage::disk('local')->delete($this->oldFile);
             }
-            $data['file_path'] = ArsipBerkasPacModel::encryptAndStoreFile($this->file);
+            $data['file_path'] = ModelArsipBerkasSp::encryptAndStoreFile($this->file);
         }
 
         $berkas->update($data);
 
         $this->dispatch('flash', [
             'type' => 'success',
-            'message' => 'Berkas PAC berhasil diupdate!'
+            'message' => 'Berkas SP berhasil diupdate!'
         ]);
 
         $this->action = 'index';
@@ -160,7 +160,7 @@ class ArsipBerkasPac extends Component
 
     public function showDetail($id)
     {
-        $this->selectedBerkas = ArsipBerkasPacModel::findOrFail($id);
+        $this->selectedBerkas = ModelArsipBerkasSp::findOrFail($id);
         $this->selectedBerkas->load(['user', 'periode']);
         $this->showDetailModal = true;
     }
@@ -179,7 +179,7 @@ class ArsipBerkasPac extends Component
 
     public function delete($id)
     {
-        $berkas = ArsipBerkasPacModel::where('user_id', Auth::id())->find($id);
+        $berkas = ModelArsipBerkasSp::where('user_id', Auth::id())->find($id);
 
         if ($berkas) {
             if ($berkas->file_path && Storage::disk('local')->exists($berkas->file_path)) {
@@ -203,10 +203,10 @@ class ArsipBerkasPac extends Component
 
     public function export()
     {
-        $filename = 'Arsip_Berkas_PAC_' . now()->format('Y-m-d_His') . '.xlsx';
+        $filename = 'Arsip_Berkas_SP_' . now()->format('Y-m-d_His') . '.xlsx';
 
         return Excel::download(
-            new ArsipBerkasPacExport($this->search),
+            new ArsipBerkasSpExport($this->search),
             $filename
         );
     }
@@ -214,11 +214,11 @@ class ArsipBerkasPac extends Component
     public function render()
     {
         return match ($this->action) {
-            'create' => view('livewire.sekretaris-cabang.arsip-berkas-pac.create'),
-            'edit' => view('livewire.sekretaris-cabang.arsip-berkas-pac.edit', [
-                'berkas' => ArsipBerkasPacModel::where('user_id', Auth::id())->findOrFail($this->arsipId),
+            'create' => view('livewire.sekretaris-cabang.arsip-berkas-sp.create'),
+            'edit' => view('livewire.sekretaris-cabang.arsip-berkas-sp.edit', [
+                'berkas' => ModelArsipBerkasSp::where('user_id', Auth::id())->findOrFail($this->arsipId),
             ]),
-            default => view('livewire.sekretaris-cabang.arsip-berkas-pac.index', [
+            default => view('livewire.sekretaris-cabang.arsip-berkas-sp.index', [
                 'berkasList' => $this->getFilteredBerkas(),
                 'stats' => $this->getStats()
             ]),
@@ -229,7 +229,7 @@ class ArsipBerkasPac extends Component
     {
         $user = Auth::user();
 
-        $query = ArsipBerkasPacModel::with(['user', 'periode']);
+        $query = ModelArsipBerkasSp::with(['user', 'periode']);
 
         if ($user->periode_aktif_id) {
             $query->where('periode_id', $user->periode_aktif_id);
@@ -245,7 +245,7 @@ class ArsipBerkasPac extends Component
             });
         }
 
-        $perPage = 1;
+        $perPage = 10;
         $currentPage = $this->page;
         $total = $allBerkas->count();
         $items = $allBerkas->slice(($currentPage - 1) * $perPage, $perPage)->values();
@@ -262,7 +262,7 @@ class ArsipBerkasPac extends Component
     private function getStats()
     {
         $user = Auth::user();
-        $query = ArsipBerkasPacModel::query();
+        $query = ModelArsipBerkasSp::query();
 
         if ($user->periode_aktif_id) {
             $query->where('periode_id', $user->periode_aktif_id);

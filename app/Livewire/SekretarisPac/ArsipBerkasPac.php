@@ -2,7 +2,7 @@
 
 namespace App\Livewire\SekretarisPac;
 
-use App\Models\ArsipBerkasCabang;
+use App\Models\ArsipBerkasPac as ModelArsipBerkasPac;
 use App\Models\Periode;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -59,39 +59,41 @@ class ArsipBerkasPac extends Component
 
     public function mount()
     {
-        if (!Auth::user()->periode_aktif_id) {
-            session()->flash('error', 'Anda belum memilih periode aktif. Silakan pilih periode terlebih dahulu.');
-            return redirect()->route('pac.periode');
+        if (Auth::user()->role !== 'sekretaris_pac') {
+            abort(403, 'Akses ditolak');
         }
     }
 
-    public function getFilteredBerkas()
+    private function getFilteredBerkas()
     {
-        $periodeAktifId = Auth::user()->periode_aktif_id;
+        $user = Auth::user();
 
-        $berkas = ArsipBerkasCabang::with(['user', 'periode'])
-            ->where('user_id', Auth::id())
-            ->where('periode_id', $periodeAktifId)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = ModelArsipBerkasPac::with(['user', 'periode'])
+            ->where('user_id', $user->id);
+
+        // Filter berdasarkan periode aktif
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        $allBerkas = $query->latest()->get();
 
         if ($this->search) {
-            $berkas = $berkas->filter(function ($item) {
+            $allBerkas = $allBerkas->filter(function ($berkas) {
                 $searchLower = strtolower($this->search);
-                return stripos(strtolower($item->nama), $searchLower) !== false ||
-                    stripos(strtolower($item->catatan ?? ''), $searchLower) !== false;
+                return str_contains(strtolower($berkas->nama), $searchLower) ||
+                       str_contains(strtolower($berkas->catatan ?? ''), $searchLower);
             });
         }
 
         $perPage = 10;
         $currentPage = $this->page;
-        $offset = ($currentPage - 1) * $perPage;
-
-        $paginatedItems = $berkas->slice($offset, $perPage)->values();
+        $total = $allBerkas->count();
+        $items = $allBerkas->slice(($currentPage - 1) * $perPage, $perPage)->values();
 
         return new LengthAwarePaginator(
-            $paginatedItems,
-            $berkas->count(),
+            $items,
+            $total,
             $perPage,
             $currentPage,
             ['path' => request()->url()]
@@ -106,29 +108,43 @@ class ArsipBerkasPac extends Component
 
     public function save()
     {
-        $this->validate();
-
-        $filePath = null;
-        if ($this->file) {
-            $filePath = ArsipBerkasCabang::encryptAndStoreFile($this->file);
+        // Validasi: User harus memiliki periode aktif
+        if (!Auth::user()->periode_aktif_id) {
+            $this->dispatch('flash', [
+                'type' => 'error',
+                'message' => 'Anda belum memiliki periode aktif! Silakan pilih periode terlebih dahulu.'
+            ]);
+            return;
         }
 
-        ArsipBerkasCabang::create([
+        $this->validate();
+
+        $data = [
             'user_id' => Auth::id(),
             'periode_id' => Auth::user()->periode_aktif_id,
             'nama' => $this->nama,
             'tanggal' => $this->tanggal,
             'catatan' => $this->catatan,
-            'file_path' => $filePath,
+        ];
+
+        if ($this->file) {
+            $data['file_path'] = ModelArsipBerkasPac::encryptAndStoreFile($this->file);
+        }
+
+        ModelArsipBerkasPac::create($data);
+
+        $this->dispatch('flash', [
+            'type' => 'success',
+            'message' => 'Berkas PAC berhasil ditambahkan!'
         ]);
 
-        session()->flash('success', 'Berkas PAC berhasil ditambahkan.');
-        return redirect()->route('pac.arsip-berkas-pac');
+        $this->action = 'index';
+        $this->reset(['nama', 'tanggal', 'catatan', 'file']);
     }
 
     public function edit($id)
     {
-        $berkas = ArsipBerkasCabang::where('user_id', Auth::id())->findOrFail($id);
+        $berkas = ModelArsipBerkasPac::where('user_id', Auth::id())->findOrFail($id);
 
         $this->arsipId = $berkas->id;
         $this->nama = $berkas->nama;
@@ -142,43 +158,54 @@ class ArsipBerkasPac extends Component
     {
         $this->validate();
 
-        $berkas = ArsipBerkasCabang::where('user_id', Auth::id())->findOrFail($this->arsipId);
+        $berkas = ModelArsipBerkasPac::where('user_id', Auth::id())->findOrFail($this->arsipId);
 
-        $filePath = $berkas->file_path;
-        if ($this->file) {
-            if ($berkas->file_path) {
-                Storage::disk('local')->delete($berkas->file_path);
-            }
-            $filePath = ArsipBerkasCabang::encryptAndStoreFile($this->file);
-        }
-
-        $berkas->update([
+        $data = [
             'nama' => $this->nama,
             'tanggal' => $this->tanggal,
             'catatan' => $this->catatan,
-            'file_path' => $filePath,
+        ];
+
+        if ($this->file) {
+            if ($this->oldFile && Storage::disk('local')->exists($this->oldFile)) {
+                Storage::disk('local')->delete($this->oldFile);
+            }
+            $data['file_path'] = ModelArsipBerkasPac::encryptAndStoreFile($this->file);
+        }
+
+        $berkas->update($data);
+
+        $this->dispatch('flash', [
+            'type' => 'success',
+            'message' => 'Berkas PAC berhasil diupdate!'
         ]);
 
-        session()->flash('success', 'Berkas PAC berhasil diperbarui.');
-        return redirect()->route('pac.arsip-berkas-pac');
+        $this->action = 'index';
+        $this->reset(['nama', 'tanggal', 'catatan', 'file', 'arsipId', 'oldFile']);
     }
 
     public function delete($id)
     {
-        $berkas = ArsipBerkasCabang::where('user_id', Auth::id())->findOrFail($id);
+        $berkas = ModelArsipBerkasPac::where('user_id', Auth::id())->find($id);
 
-        if ($berkas->file_path) {
-            Storage::disk('local')->delete($berkas->file_path);
+        if ($berkas) {
+            if ($berkas->file_path && Storage::disk('local')->exists($berkas->file_path)) {
+                Storage::disk('local')->delete($berkas->file_path);
+            }
+
+            $nama = $berkas->nama;
+            $berkas->delete();
+
+            $this->dispatch('flash', [
+                'type' => 'success',
+                'message' => "Berkas {$nama} berhasil dihapus!"
+            ]);
         }
-
-        $berkas->delete();
-
-        session()->flash('success', 'Berkas PAC berhasil dihapus.');
     }
 
     public function showDetail($id)
     {
-        $this->selectedBerkas = ArsipBerkasCabang::with(['user', 'periode'])->findOrFail($id);
+        $this->selectedBerkas = ModelArsipBerkasPac::with(['user', 'periode'])->findOrFail($id);
         $this->showDetailModal = true;
     }
 
@@ -196,47 +223,44 @@ class ArsipBerkasPac extends Component
         return Excel::download(new ArsipBerkasPacExport($this->search), $filename);
     }
 
-    public function cancel()
+    public function back()
     {
         $this->action = 'index';
-        $this->reset(['arsipId', 'nama', 'tanggal', 'catatan', 'file', 'oldFile']);
+        $this->reset(['nama', 'tanggal', 'catatan', 'file', 'arsipId', 'oldFile']);
     }
 
-    #[On('berkas-deleted')]
-    public function handleBerkasDeleted()
+    #[On('periodeChanged')]
+    public function refreshData()
     {
         $this->page = 1;
     }
 
+    private function getStats()
+    {
+        $user = Auth::user();
+        $query = ModelArsipBerkasPac::where('user_id', $user->id);
+
+        // Filter berdasarkan periode aktif
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        return [
+            'total' => $query->count(),
+        ];
+    }
+
     public function render()
     {
-        $berkasList = $this->getFilteredBerkas();
-        $periodeAktif = Periode::find(Auth::user()->periode_aktif_id);
-
-        $stats = [
-            'total' => ArsipBerkasCabang::where('user_id', Auth::id())
-                ->where('periode_id', Auth::user()->periode_aktif_id)
-                ->count(),
-        ];
-
-        if ($this->action === 'create') {
-            return view('livewire.sekretaris-pac.arsip-berkas-pac.create', [
-                'periodeAktif' => $periodeAktif,
-            ]);
-        }
-
-        if ($this->action === 'edit') {
-            $berkas = ArsipBerkasCabang::findOrFail($this->arsipId);
-            return view('livewire.sekretaris-pac.arsip-berkas-pac.edit', [
-                'berkas' => $berkas,
-                'periodeAktif' => $periodeAktif,
-            ]);
-        }
-
-        return view('livewire.sekretaris-pac.arsip-berkas-pac.index', [
-            'berkasList' => $berkasList,
-            'periodeAktif' => $periodeAktif,
-            'stats' => $stats,
-        ]);
+        return match ($this->action) {
+            'create' => view('livewire.sekretaris-pac.arsip-berkas-pac.create'),
+            'edit' => view('livewire.sekretaris-pac.arsip-berkas-pac.edit', [
+                'berkas' => ModelArsipBerkasPac::where('user_id', Auth::id())->findOrFail($this->arsipId),
+            ]),
+            default => view('livewire.sekretaris-pac.arsip-berkas-pac.index', [
+                'berkasList' => $this->getFilteredBerkas(),
+                'stats' => $this->getStats()
+            ]),
+        };
     }
 }

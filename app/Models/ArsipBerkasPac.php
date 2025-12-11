@@ -22,8 +22,7 @@ class ArsipBerkasPac extends Model
         'user_id',
         'periode_id',
         'nama',
-        'tanggal_mulai',
-        'tanggal_berakhir',
+        'tanggal',
         'catatan',
         'file_path',
     ];
@@ -34,9 +33,9 @@ class ArsipBerkasPac extends Model
     ];
 
     /**
-     * Accessor untuk tanggal_mulai (auto decrypt dan return Carbon)
+     * Accessor untuk tanggal (auto decrypt dan return Carbon)
      */
-    public function getTanggalMulaiAttribute($value)
+    public function getTanggalAttribute($value)
     {
         try {
             $decrypted = Crypt::decryptString($value);
@@ -47,37 +46,13 @@ class ArsipBerkasPac extends Model
     }
 
     /**
-     * Mutator untuk tanggal_mulai (auto encrypt)
+     * Mutator untuk tanggal (auto encrypt)
      */
-    public function setTanggalMulaiAttribute($value)
+    public function setTanggalAttribute($value)
     {
         if ($value) {
             $date = $value instanceof Carbon ? $value->format('Y-m-d') : $value;
-            $this->attributes['tanggal_mulai'] = Crypt::encryptString($date);
-        }
-    }
-
-    /**
-     * Accessor untuk tanggal_berakhir (auto decrypt dan return Carbon)
-     */
-    public function getTanggalBerakhirAttribute($value)
-    {
-        try {
-            $decrypted = Crypt::decryptString($value);
-            return Carbon::parse($decrypted);
-        } catch (\Exception $e) {
-            return null;
-        }
-    }
-
-    /**
-     * Mutator untuk tanggal_berakhir (auto encrypt)
-     */
-    public function setTanggalBerakhirAttribute($value)
-    {
-        if ($value) {
-            $date = $value instanceof Carbon ? $value->format('Y-m-d') : $value;
-            $this->attributes['tanggal_berakhir'] = Crypt::encryptString($date);
+            $this->attributes['tanggal'] = Crypt::encryptString($date);
         }
     }
 

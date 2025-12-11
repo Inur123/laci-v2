@@ -1,7 +1,7 @@
 <div>
     <!-- Header -->
     <div class="mb-6">
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Arsip Berkas PAC</h1>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Arsip Berkas SP</h1>
         <p class="text-sm text-gray-600 mt-1">Kelola dan lihat arsip berkas dari PAC</p>
     </div>
 
@@ -10,7 +10,7 @@
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Berkas PAC</p>
+                    <p class="text-gray-500 text-sm">Total Berkas SP</p>
                     <h3 class="text-2xl font-bold mt-1 text-gray-800">{{ $stats['total'] }}</h3>
                 </div>
                 <div class="bg-blue-100 text-blue-600 p-3 rounded-full">
@@ -56,7 +56,7 @@
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="p-4 border-b border-gray-100 flex items-center justify-between">
-            <h3 class="text-base sm:text-lg font-semibold text-gray-800">Daftar Arsip Berkas PAC</h3>
+            <h3 class="text-base sm:text-lg font-semibold text-gray-800">Daftar Arsip Berkas SP</h3>
             <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
                 <i class="fas fa-lock mr-1"></i>Data Terenkripsi
             </span>
@@ -83,7 +83,12 @@
                             </td>
                             <td class="px-4 py-3 text-sm text-gray-700 hidden md:table-cell whitespace-nowrap">
                                 @if($berkas->tanggal_mulai && $berkas->tanggal_berakhir)
-                                    {{ $berkas->tanggal_mulai->format('Y') }} - {{ $berkas->tanggal_berakhir->format('Y') }}
+                                    @php
+                                        $tahunMulai = $berkas->tanggal_mulai->format('Y');
+                                        $tahunAkhir = $berkas->tanggal_berakhir->format('Y');
+                                        $durasi = $tahunAkhir - $tahunMulai;
+                                    @endphp
+                                    {{ $tahunMulai }}-{{ $tahunAkhir }} ({{ $durasi }} tahun)
                                 @else
                                     -
                                 @endif
@@ -118,7 +123,7 @@
                         <tr>
                             <td colspan="6" class="px-4 py-12 text-center text-gray-500">
                                 <i class="fas fa-inbox text-4xl mb-3 block"></i>
-                                <p class="text-base">Belum ada data berkas PAC</p>
+                                <p class="text-base">Belum ada data berkas SP</p>
                                 @if ($search)
                                     <p class="text-sm mt-2">Coba ubah kata kunci pencarian Anda</p>
                                 @endif
@@ -193,7 +198,7 @@
                             <i class="fas fa-file-archive text-white text-lg"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg sm:text-xl font-bold text-white">Detail Berkas PAC</h3>
+                            <h3 class="text-lg sm:text-xl font-bold text-white">Detail Berkas SP</h3>
                             <p class="text-blue-100 text-xs sm:text-sm">{{ $selectedBerkas->nama }}</p>
                         </div>
                     </div>
@@ -216,7 +221,12 @@
                                     <p class="text-xs text-blue-600 font-medium mb-1">Periode</p>
                                     <p class="font-semibold text-gray-800">
                                         @if($selectedBerkas->tanggal_mulai && $selectedBerkas->tanggal_berakhir)
-                                            {{ $selectedBerkas->tanggal_mulai->format('Y') }} - {{ $selectedBerkas->tanggal_berakhir->format('Y') }}
+                                            @php
+                                                $tahunMulai = $selectedBerkas->tanggal_mulai->format('Y');
+                                                $tahunAkhir = $selectedBerkas->tanggal_berakhir->format('Y');
+                                                $durasi = $tahunAkhir - $tahunMulai;
+                                            @endphp
+                                            {{ $tahunMulai }}-{{ $tahunAkhir }} ({{ $durasi }} tahun)
                                         @else
                                             -
                                         @endif
@@ -273,14 +283,19 @@
                                     <div class="bg-indigo-500 p-2 rounded-lg">
                                         <i class="fas fa-file-pdf text-white text-lg"></i>
                                     </div>
-                                    <div>
+                                    <div class="flex-1">
                                         <p class="text-xs text-indigo-600 font-medium">File Berkas</p>
-                                        <p class="text-sm text-gray-700 font-medium">Dokumen tersedia</p>
+                                        <p class="text-sm font-semibold text-indigo-900 mt-1">Dokumen Tersedia</p>
+                                        <p class="text-xs text-indigo-700 mt-1">
+                                            <i class="fas fa-info-circle mr-1"></i>Klik untuk membuka di tab baru
+                                        </p>
                                     </div>
                                 </div>
-                                <a href="{{ route('cabang.arsip-berkas-pac.download', $selectedBerkas->id) }}"
-                                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium shadow-lg hover:shadow-xl">
-                                    <i class="fas fa-download mr-2"></i>Unduh
+                                <a href="{{ route('cabang.arsip-berkas-sp.view-file', $selectedBerkas->id) }}"
+                                    target="_blank"
+                                    class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition cursor-pointer flex items-center gap-2">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span class="hidden sm:inline">Buka File</span>
                                 </a>
                             </div>
                         </div>

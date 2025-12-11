@@ -2,7 +2,7 @@
 
 namespace App\Exports\SekretarisCabang;
 
-use App\Models\ArsipBerkasPac;
+use App\Models\ArsipBerkasSp;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ArsipBerkasPacExport implements FromCollection, WithHeadings, WithMapping, WithStyles
+class ArsipBerkasSpExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
     protected $search;
 
@@ -21,7 +21,7 @@ class ArsipBerkasPacExport implements FromCollection, WithHeadings, WithMapping,
 
     public function collection()
     {
-        $query = ArsipBerkasPac::with(['user', 'periode'])
+        $query = ArsipBerkasSp::with(['user', 'periode'])
             ->byPeriodeUser()
             ->latest();
 

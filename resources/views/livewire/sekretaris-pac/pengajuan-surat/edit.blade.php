@@ -58,16 +58,42 @@
                     @enderror
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">File Surat (PDF)</label>
-                    <input type="file" wire:model="file"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-sm">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        File Surat
+                    </label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-green-500 transition">
+                        <input type="file" wire:model="file"
+                            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                            id="fileInput"
+                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                        <p class="text-xs text-gray-500 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Maksimal 10MB. Format: PDF, Word (DOC/DOCX), Excel (XLS/XLSX), PowerPoint (PPT/PPTX). File akan dienkripsi secara otomatis.
+                        </p>
+                    </div>
                     @error('file')
-                        <span class="text-red-600 text-xs mt-1">{{ $message }}</span>
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
-                    @if($file)
-                        <span class="text-xs text-gray-500 mt-2 block">File terpilih: {{ $file->getClientOriginalName() }}</span>
-                    @elseif($oldFile)
-                        <span class="text-xs text-gray-500 mt-2 block">File sebelumnya tersedia.</span>
+
+                    <!-- Upload Progress -->
+                    <div wire:loading wire:target="file" class="mt-3">
+                        <div class="flex items-center text-green-600">
+                            <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            <span class="text-sm">Mengupload file...</span>
+                        </div>
+                    </div>
+
+                    @if($oldFile)
+                        <div class="mt-2 text-xs text-gray-600">
+                            <i class="fas fa-file mr-1"></i>File sebelumnya tersedia
+                        </div>
                     @endif
                 </div>
             </div>

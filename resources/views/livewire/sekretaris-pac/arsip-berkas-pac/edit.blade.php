@@ -74,7 +74,7 @@
 
             <!-- Buttons -->
             <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6">
-                <button type="button" wire:click="cancel"
+                <button type="button" wire:click="back"
                     class="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base cursor-pointer">
                     Batal
                 </button>

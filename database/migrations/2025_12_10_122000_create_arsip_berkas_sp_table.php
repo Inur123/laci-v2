@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('arsip_berkas_pac', function (Blueprint $table) {
+        Schema::create('arsip_berkas_sp', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('periode_id')->constrained('periodes')->onDelete('cascade');
             $table->text('nama');
-            $table->text('tanggal');
+            $table->text('tanggal_mulai');
+            $table->text('tanggal_berakhir');
             $table->text('catatan')->nullable();
             $table->text('file_path')->nullable();
             $table->timestamps();
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('arsip_berkas_pac');
+        Schema::dropIfExists('arsip_berkas_sp');
     }
 };
