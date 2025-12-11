@@ -99,15 +99,15 @@
                 <!-- File Upload -->
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        File Surat (PDF)
+                        File Surat
                     </label>
                     <div
                         class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-green-500 transition">
-                        <input type="file" wire:model="file" accept=".pdf" id="fileInput"
+                        <input type="file" wire:model="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" id="fileInput"
                             class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
                         <p class="text-xs text-gray-500 mt-2">
                             <i class="fas fa-info-circle mr-1"></i>
-                            Maksimal 5MB, format PDF. File akan dienkripsi secara otomatis.
+                            Maksimal 10MB. Format: PDF, Word (DOC/DOCX), Excel (XLS/XLSX), PowerPoint (PPT/PPTX). File akan dienkripsi otomatis.
                         </p>
                     </div>
                     @error('file')

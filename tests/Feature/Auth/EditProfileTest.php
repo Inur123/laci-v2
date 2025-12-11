@@ -16,6 +16,7 @@ class EditProfileTest extends TestCase
     /** @test */
     public function edit_profile_page_can_be_rendered()
     {
+        /** @var User $user */
         $user = User::factory()->create([
             'email_verified_at' => now(),
         ]);

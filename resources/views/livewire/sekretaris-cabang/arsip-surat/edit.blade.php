@@ -94,7 +94,7 @@
                 <!-- File Upload -->
                 <div class="md:col-span-2 w-full">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Upload File PDF Baru (Opsional - Max 5MB)
+                        Upload File Baru (Opsional - Max 10MB)
                     </label>
 
                     @if ($surat->file)
@@ -102,8 +102,8 @@
                             class="mb-3 p-3 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border border-gray-200">
 
                             <div class="flex items-center gap-3">
-                                <div class="bg-red-500 p-2 rounded-lg">
-                                    <i class="fas fa-file-pdf text-white text-lg"></i>
+                                <div class="bg-blue-500 p-2 rounded-lg">
+                                    <i class="fas fa-file-alt text-white text-lg"></i>
                                 </div>
                                 <div>
                                     <span class="text-xs sm:text-sm text-gray-800 font-medium block">
@@ -122,8 +122,12 @@
                         </div>
                     @endif
 
-                    <input type="file" wire:model="file" accept=".pdf"
+                    <input type="file" wire:model="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
                         class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <p class="text-xs text-gray-500 mt-2">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Kosongkan jika tidak ingin mengubah file. Format: PDF, Word, Excel, PowerPoint.
+                    </p>
                     @error('file')
                         <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
                     @enderror

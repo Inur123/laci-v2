@@ -47,7 +47,7 @@ class ArsipSurat extends Component
         'tanggal' => 'required|date',
         'pengirim_penerima' => 'required|string|max:255',
         'deskripsi' => 'nullable|string',
-        'file' => 'nullable|file|mimes:pdf|max:5120',
+        'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:10240',
         'perihal' => 'required|string|max:255',
     ];
 
@@ -59,8 +59,8 @@ class ArsipSurat extends Component
         'tanggal.required' => 'Tanggal harus diisi',
         'tanggal.date' => 'Format tanggal tidak valid',
         'pengirim_penerima.required' => 'Pengirim/Penerima harus diisi',
-        'file.mimes' => 'File harus berformat PDF',
-        'file.max' => 'Ukuran file maksimal 5MB',
+        'file.mimes' => 'File harus berformat PDF, DOC, DOCX, XLS, XLSX, PPT, atau PPTX',
+        'file.max' => 'Ukuran file maksimal 10MB',
     ];
 
     public function resetPage()
@@ -151,7 +151,7 @@ class ArsipSurat extends Component
             'tanggal' => 'required|date',
             'pengirim_penerima' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
-            'file' => 'nullable|file|mimes:pdf|max:5120',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:10240',
             'perihal' => 'required|string|max:255',
         ]);
 

@@ -98,14 +98,14 @@
                 <!-- File Upload -->
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        File Surat (PDF)
+                        File Surat (Opsional - Max 10MB)
                     </label>
 
                     <!-- Current File Info -->
                     @if ($oldFile)
                         <div class="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                             <div class="flex items-center text-green-700">
-                                <i class="fas fa-file-pdf text-2xl mr-3"></i>
+                                <i class="fas fa-file-alt text-2xl mr-3"></i>
                                 <div class="flex-1">
                                     <p class="text-sm font-medium">File saat ini tersedia</p>
                                     <p class="text-xs text-green-600">File terenkripsi dengan aman</p>
@@ -116,11 +116,11 @@
 
                     <div
                         class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-green-500 transition">
-                        <input type="file" wire:model="file" accept=".pdf"
+                        <input type="file" wire:model="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
                             class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
                         <p class="text-xs text-gray-500 mt-2">
                             <i class="fas fa-info-circle mr-1"></i>
-                            Kosongkan jika tidak ingin mengubah file. Maksimal 5MB, format PDF.
+                            Kosongkan jika tidak ingin mengubah file. Maksimal 10MB. Format: PDF, Word, Excel, PowerPoint.
                         </p>
                     </div>
                     @error('file')

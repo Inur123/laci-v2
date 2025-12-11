@@ -57,7 +57,7 @@ class ArsipBerkasPacTest extends TestCase
             ->set('file', UploadedFile::fake()->create('document.pdf', 1000))
             ->call('save');
 
-        $this->assertDatabaseCount('arsip_berkas_cabang', 1);
+        $this->assertDatabaseCount('arsip_berkas_pac', 1);
     }
 
     /** @test */
@@ -79,7 +79,7 @@ class ArsipBerkasPacTest extends TestCase
     {
         Storage::fake('local');
 
-        $berkas = \App\Models\ArsipBerkasCabang::create([
+        $berkas = ArsipBerkasPac::create([
             'user_id' => $this->pac->id,
             'periode_id' => $this->periode->id,
             'nama' => 'Berkas Test',
@@ -91,13 +91,13 @@ class ArsipBerkasPacTest extends TestCase
             ->test(ArsipBerkasPacComponent::class)
             ->call('delete', $berkas->id);
 
-        $this->assertDatabaseCount('arsip_berkas_cabang', 0);
+        $this->assertDatabaseCount('arsip_berkas_pac', 0);
     }
 
     /** @test */
     public function can_search_arsip_berkas()
     {
-        \App\Models\ArsipBerkasCabang::create([
+        ArsipBerkasPac::create([
             'user_id' => $this->pac->id,
             'periode_id' => $this->periode->id,
             'nama' => 'Berkas Searchable',
@@ -123,7 +123,7 @@ class ArsipBerkasPacTest extends TestCase
             'user_id' => $otherPac->id,
         ]);
 
-        \App\Models\ArsipBerkasCabang::create([
+        ArsipBerkasPac::create([
             'user_id' => $otherPac->id,
             'periode_id' => $otherPeriode->id,
             'nama' => 'Other PAC Berkas',

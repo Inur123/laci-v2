@@ -4,15 +4,15 @@ namespace Tests\Feature\SekretarisCabang;
 
 use App\Models\User;
 use App\Models\Periode;
-use App\Models\ArsipBerkasPac;
+use App\Models\ArsipBerkasSp;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use Livewire\Livewire;
-use App\Livewire\SekretarisCabang\ArsipBerkasPac as ArsipBerkasPacComponent;
+use App\Livewire\SekretarisCabang\ArsipBerkasSp as ArsipBerkasSpComponent;
 
-class ArsipBerkasPacTest extends TestCase
+class ArsipBerkasSpTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -42,38 +42,38 @@ class ArsipBerkasPacTest extends TestCase
     }
 
     /** @test */
-    public function arsip_berkas_pac_page_can_be_rendered()
+    public function arsip_berkas_sp_page_can_be_rendered()
     {
         $response = $this->actingAs($this->cabang)
-            ->get(route('cabang.arsip-berkas-pac'));
+            ->get(route('cabang.arsip-berkas-sp'));
 
         $response->assertStatus(200);
     }
 
     /** @test */
-    public function can_view_pac_berkas()
+    public function can_view_sp_berkas()
     {
-        $berkas = ArsipBerkasPac::create([
-            'user_id' => $this->pac->id,
+        $berkas = ArsipBerkasSp::create([
+            'user_id' => $this->cabang->id,
             'periode_id' => $this->periode->id,
-            'nama' => 'Berkas PAC Test',
+            'nama' => 'Berkas SP Test',
             'tanggal_mulai' => '2025-12-10',
             'tanggal_berakhir' => '2025-12-15',
             'file_path' => 'test.pdf',
         ]);
 
         Livewire::actingAs($this->cabang)
-            ->test(ArsipBerkasPacComponent::class)
+            ->test(ArsipBerkasSpComponent::class)
             ->assertStatus(200);
 
-        $this->assertDatabaseCount('arsip_berkas_pac', 1);
+        $this->assertDatabaseCount('arsip_berkas_sp', 1);
     }
 
     /** @test */
     public function can_search_berkas()
     {
-        ArsipBerkasPac::create([
-            'user_id' => $this->pac->id,
+        ArsipBerkasSp::create([
+            'user_id' => $this->cabang->id,
             'periode_id' => $this->periode->id,
             'nama' => 'Berkas Searchable',
             'tanggal_mulai' => '2025-12-10',
@@ -82,7 +82,7 @@ class ArsipBerkasPacTest extends TestCase
         ]);
 
         Livewire::actingAs($this->cabang)
-            ->test(ArsipBerkasPacComponent::class)
+            ->test(ArsipBerkasSpComponent::class)
             ->set('search', 'Searchable')
             ->assertSet('search', 'Searchable');
     }

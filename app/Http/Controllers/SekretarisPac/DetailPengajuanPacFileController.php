@@ -17,15 +17,34 @@ class DetailPengajuanPacFileController extends Controller
         }
 
         $decrypted = $pengajuan->decrypted_file;
-        $filename = $pengajuan->original_filename ?? 'file.pdf';
 
-        $mime = 'application/pdf';
-        if (str_ends_with($filename, '.jpg') || str_ends_with($filename, '.jpeg')) $mime = 'image/jpeg';
-        if (str_ends_with($filename, '.png')) $mime = 'image/png';
+        // Deteksi tipe file dari magic bytes
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->buffer($decrypted);
+
+        // Map MIME type ke extension
+        $extensionMap = [
+            'application/pdf' => 'pdf',
+            'application/msword' => 'doc',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+            'application/vnd.ms-excel' => 'xls',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
+            'application/vnd.ms-powerpoint' => 'ppt',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation' => 'pptx',
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+        ];
+
+        $extension = $extensionMap[$mimeType] ?? 'pdf';
+        $filename = 'Pengajuan_' . str_replace(['/', '\\'], '_', $pengajuan->no_surat) . '.' . $extension;
+
+        // Jika PDF atau gambar, tampilkan inline di browser
+        // Jika file lain (Word, Excel, PPT), otomatis download
+        $disposition = (in_array($mimeType, ['application/pdf', 'image/jpeg', 'image/png'])) ? 'inline' : 'attachment';
 
         return response($decrypted, 200, [
-            'Content-Type' => $mime,
-            'Content-Disposition' => 'inline; filename="' . $filename . '"'
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => $disposition . '; filename="' . $filename . '"'
         ]);
     }
 
@@ -39,14 +58,29 @@ class DetailPengajuanPacFileController extends Controller
         }
 
         $decrypted = $pengajuan->decrypted_file;
-        $filename = $pengajuan->original_filename ?? 'file.pdf';
 
-        $mime = 'application/pdf';
-        if (str_ends_with($filename, '.jpg') || str_ends_with($filename, '.jpeg')) $mime = 'image/jpeg';
-        if (str_ends_with($filename, '.png')) $mime = 'image/png';
+        // Deteksi tipe file dari magic bytes
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->buffer($decrypted);
+
+        // Map MIME type ke extension
+        $extensionMap = [
+            'application/pdf' => 'pdf',
+            'application/msword' => 'doc',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+            'application/vnd.ms-excel' => 'xls',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
+            'application/vnd.ms-powerpoint' => 'ppt',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation' => 'pptx',
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+        ];
+
+        $extension = $extensionMap[$mimeType] ?? 'pdf';
+        $filename = 'Pengajuan_' . str_replace(['/', '\\'], '_', $pengajuan->no_surat) . '.' . $extension;
 
         return response($decrypted, 200, [
-            'Content-Type' => $mime,
+            'Content-Type' => $mimeType,
             'Content-Disposition' => 'attachment; filename="' . $filename . '"'
         ]);
     }

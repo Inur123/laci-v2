@@ -32,15 +32,29 @@ class ArsipBerkasCabangFileController extends Controller
             // Dekripsi
             $decryptedContent = Crypt::decryptString($encryptedContent);
 
-            // Tentukan extension dari nama file asli
-            $extension = 'pdf'; // default
+            // Deteksi tipe file dari magic bytes
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mimeType = $finfo->buffer($decryptedContent);
+
+            // Map MIME type ke extension
+            $extensionMap = [
+                'application/pdf' => 'pdf',
+                'application/msword' => 'doc',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+                'application/vnd.ms-excel' => 'xls',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
+                'application/vnd.ms-powerpoint' => 'ppt',
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation' => 'pptx',
+            ];
+
+            $extension = $extensionMap[$mimeType] ?? 'pdf';
 
             // Generate nama file untuk download
-            $filename = 'Berkas_' . str_replace(['/', '\\'], '_', $berkas->nomor_surat) . '_' . now()->format('YmdHis') . '.' . $extension;
+            $filename = 'Berkas_' . str_replace(['/', '\\'], '_', $berkas->nama) . '_' . now()->format('YmdHis') . '.' . $extension;
 
             // Return file untuk didownload
             return response($decryptedContent)
-                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Type', $mimeType)
                 ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         } catch (\Exception $e) {
@@ -69,14 +83,32 @@ class ArsipBerkasCabangFileController extends Controller
             // Dekripsi
             $decryptedContent = Crypt::decryptString($encryptedContent);
 
-            // Tentukan MIME type berdasarkan extension
-            $filename = 'Berkas_' . str_replace(['/', '\\'], '_', $berkas->nama) . '.pdf';
-            $mime = 'application/pdf';
+            // Deteksi tipe file dari magic bytes
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mimeType = $finfo->buffer($decryptedContent);
 
-            // Tampilkan file langsung di browser
+            // Map MIME type ke extension
+            $extensionMap = [
+                'application/pdf' => 'pdf',
+                'application/msword' => 'doc',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+                'application/vnd.ms-excel' => 'xls',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
+                'application/vnd.ms-powerpoint' => 'ppt',
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation' => 'pptx',
+            ];
+
+            $extension = $extensionMap[$mimeType] ?? 'pdf';
+            $filename = 'Berkas_' . str_replace(['/', '\\'], '_', $berkas->nama) . '.' . $extension;
+
+            // Jika PDF, tampilkan inline di browser
+            // Jika file lain (Word, Excel, PPT), otomatis download karena browser tidak bisa tampilkan
+            $disposition = ($mimeType === 'application/pdf') ? 'inline' : 'attachment';
+
+            // Tampilkan file di browser (PDF inline, lainnya download)
             return response($decryptedContent, 200, [
-                'Content-Type' => $mime,
-                'Content-Disposition' => 'inline; filename="' . $filename . '"'
+                'Content-Type' => $mimeType,
+                'Content-Disposition' => $disposition . '; filename="' . $filename . '"'
             ]);
 
         } catch (\Exception $e) {
