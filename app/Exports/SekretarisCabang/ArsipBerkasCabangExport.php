@@ -21,20 +21,27 @@ class ArsipBerkasCabangExport implements FromCollection, WithHeadings, WithMappi
 
     public function collection()
     {
-        $query = ArsipBerkasCabang::with(['user', 'periode'])
-            ->byPeriodeUser()
-            ->latest();
+        $user = Auth::user();
+
+        $query = ArsipBerkasCabang::with(['user', 'periode']);
+
+        // Filter berdasarkan periode aktif
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        $allData = $query->latest()->get();
 
         if ($this->search) {
-            // Karena data terenkripsi, kita harus load semua dulu
-            $allData = $query->get();
+            // Karena data terenkripsi, kita harus load semua dulu dan filter
             return $allData->filter(function ($item) {
-                return stripos($item->nama, $this->search) !== false ||
-                       stripos($item->catatan ?? '', $this->search) !== false;
+                $searchLower = strtolower($this->search);
+                return str_contains(strtolower($item->nama), $searchLower) ||
+                       str_contains(strtolower($item->catatan ?? ''), $searchLower);
             });
         }
 
-        return $query->get();
+        return $allData;
     }
 
     public function headings(): array

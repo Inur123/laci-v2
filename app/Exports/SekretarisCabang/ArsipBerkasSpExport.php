@@ -21,20 +21,27 @@ class ArsipBerkasSpExport implements FromCollection, WithHeadings, WithMapping, 
 
     public function collection()
     {
-        $query = ArsipBerkasSp::with(['user', 'periode'])
-            ->byPeriodeUser()
-            ->latest();
+        $user = Auth::user();
+
+        $query = ArsipBerkasSp::with(['user', 'periode']);
+
+        // Filter berdasarkan periode aktif
+        if ($user->periode_aktif_id) {
+            $query->where('periode_id', $user->periode_aktif_id);
+        }
+
+        $allData = $query->latest()->get();
 
         if ($this->search) {
-            // Karena data terenkripsi, kita harus load semua dulu
-            $allData = $query->get();
+            // Karena data terenkripsi, kita harus load semua dulu dan filter
             return $allData->filter(function ($item) {
-                return stripos($item->nama, $this->search) !== false ||
-                       stripos($item->catatan ?? '', $this->search) !== false;
+                $searchLower = strtolower($this->search);
+                return str_contains(strtolower($item->nama), $searchLower) ||
+                       str_contains(strtolower($item->catatan ?? ''), $searchLower);
             });
         }
 
-        return $query->get();
+        return $allData;
     }
 
     public function headings(): array
@@ -55,10 +62,19 @@ class ArsipBerkasSpExport implements FromCollection, WithHeadings, WithMapping, 
         static $no = 0;
         $no++;
 
+        // Hitung periode dari tanggal
+        $periodeText = '-';
+        if ($berkas->tanggal_mulai && $berkas->tanggal_berakhir) {
+            $tahunMulai = $berkas->tanggal_mulai->format('Y');
+            $tahunAkhir = $berkas->tanggal_berakhir->format('Y');
+            $durasi = $tahunAkhir - $tahunMulai;
+            $periodeText = "{$tahunMulai}-{$tahunAkhir} ({$durasi} tahun)";
+        }
+
         return [
             $no,
             $berkas->nama,
-            $berkas->periode->nama ?? '-',
+            $periodeText,
             $berkas->tanggal_mulai?->locale('id')->translatedFormat('d F Y') ?? '-',
             $berkas->tanggal_berakhir?->locale('id')->translatedFormat('d F Y') ?? '-',
             $berkas->catatan ?? '-',
