@@ -1,0 +1,275 @@
+<!-- filepath: resources/views/livewire/sekretaris-pac/data-anggota/index.blade.php -->
+<div>
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Data Anggota</h1>
+        <p class="text-sm text-gray-600 mt-1">Kelola data anggota organisasi</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-xs sm:text-sm">Total Anggota</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->statsAnggota['total'] }}</h3>
+                </div>
+                <div class="bg-green-100 text-green-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-users text-xl sm:text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-xs sm:text-sm">Laki-laki</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->statsAnggota['laki'] }}</h3>
+                </div>
+                <div class="bg-green-100 text-green-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-male text-xl sm:text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-xs sm:text-sm">Perempuan</p>
+                    <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800">{{ $this->statsAnggota['perempuan'] }}
+                    </h3>
+                </div>
+                <div class="bg-pink-100 text-pink-600 p-2 sm:p-3 rounded-full">
+                    <i class="fas fa-female text-xl sm:text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Filter & Search -->
+    <div class="bg-white rounded-lg shadow p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+
+            <!-- Cari Anggota -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Anggota</label>
+                <input type="text" wire:model.live.debounce.500ms="search" placeholder="Nama lengkap..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
+                focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
+            </div>
+
+            <!-- Periode -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Periode</label>
+                <select wire:model.live="filterPeriode"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg
+                focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
+                    <option value="">Semua Periode</option>
+                    @foreach ($this->periodeList as $periode)
+                        <option value="{{ $periode->id }}">{{ $periode->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Export Excel -->
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button wire:click="export" wire:loading.attr="disabled"
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg
+                hover:bg-green-700 transition text-sm disabled:opacity-50 cursor-pointer">
+                    <span wire:loading.remove wire:target="export">
+                        <i class="fas fa-file-excel mr-2"></i>Export Excel
+                    </span>
+                    <span wire:loading wire:target="export">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>Mengunduh...
+                    </span>
+                </button>
+            </div>
+
+            <!-- Tambah Anggota -->
+            <div>
+                <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button wire:click="create"
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
+                hover:bg-blue-700 transition text-sm cursor-pointer">
+                    <i class="fas fa-plus mr-2"></i>Tambah Anggota
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Table -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="p-4 border-b border-gray-100">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-800">Daftar Anggota</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-16">No</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Nama Lengkap</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">NIK/NIA</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Periode</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">JK</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">No. HP</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @forelse($anggotas as $index => $anggota)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
+                                {{ $anggotas->firstItem() + $index }}</td>
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                <div class="flex items-center gap-3">
+                                    <img src="{{ $anggota->avatar_url }}" class="w-10 h-10 rounded-full object-cover"
+                                        alt="{{ $anggota->nama_lengkap }}">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-800">{{ $anggota->nama_lengkap }}</p>
+                                        @if ($anggota->email)
+                                            <p class="text-xs text-gray-500">{{ $anggota->email }}</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
+                                @if ($anggota->nik)
+                                    <span class="text-xs">NIK: {{ $anggota->nik }}</span><br>
+                                @endif
+                                @if ($anggota->nia)
+                                    <span class="text-xs text-green-600">NIA: {{ $anggota->nia }}</span>
+                                @endif
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">{{ $anggota->periode->nama }}
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
+                                @if ($anggota->jenis_kelamin === 'Laki-laki')
+                                    <span class="text-green-600"><i class="fas fa-male"></i></span>
+                                @elseif($anggota->jenis_kelamin === 'Perempuan')
+                                    <span class="text-pink-600"><i class="fas fa-female"></i></span>
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">{{ $anggota->no_hp ?? '-' }}
+                            </td>
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <button wire:click="detail('{{ $anggota->id }}')"
+                                        class="text-green-600 hover:text-green-800 transition whitespace-nowrap cursor-pointer"
+                                        title="Detail">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button wire:click="edit('{{ $anggota->id }}')"
+                                        class="text-yellow-600 hover:text-yellow-800 transition whitespace-nowrap cursor-pointer"
+                                        title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button
+                                        onclick="confirmDeleteAnggota('{{ $anggota->id }}', '{{ $anggota->nama_lengkap }}')"
+                                        class="text-red-600 hover:text-red-800 transition whitespace-nowrap cursor-pointer"
+                                        title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="py-8 px-4 text-center text-gray-500">
+                                <i class="fas fa-users-slash text-4xl mb-2 block"></i>
+                                <p>Belum ada data anggota</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 🔥 Custom Pagination (Tanpa URL Parameter) -->
+        @if ($anggotas->hasPages())
+            <div class="px-4 py-3 border-t border-gray-100">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <!-- Info -->
+                    <div class="text-sm text-gray-700">
+                        Menampilkan <span class="font-medium">{{ $anggotas->firstItem() }}</span>
+                        sampai <span class="font-medium">{{ $anggotas->lastItem() }}</span>
+                        dari <span class="font-medium">{{ $anggotas->total() }}</span> hasil
+                    </div>
+
+                    <!-- Pagination Buttons -->
+                    <div class="flex items-center gap-2">
+                        {{-- Previous Button --}}
+                        @if ($anggotas->onFirstPage())
+                            <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                                <i class="fas fa-chevron-left"></i>
+                            </span>
+                        @else
+                            <button wire:click="$set('page', {{ $anggotas->currentPage() - 1 }})"
+                                wire:loading.attr="disabled"
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        @endif
+
+                        {{-- Page Numbers --}}
+                        @foreach ($anggotas->getUrlRange(1, $anggotas->lastPage()) as $page => $url)
+                            @if ($page == $anggotas->currentPage())
+                                <span class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium">
+                                    {{ $page }}
+                                </span>
+                            @else
+                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
+                                    class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                    {{ $page }}
+                                </button>
+                            @endif
+                        @endforeach
+
+                        {{-- Next Button --}}
+                        @if ($anggotas->hasMorePages())
+                            <button wire:click="$set('page', {{ $anggotas->currentPage() + 1 }})"
+                                wire:loading.attr="disabled"
+                                class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        @else
+                            <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                                <i class="fas fa-chevron-right"></i>
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div>
+
+</div>
+
+<script>
+    function confirmDeleteAnggota(id, namaLengkap) {
+        Swal.fire({
+            title: 'Hapus Anggota?',
+            html: `Anggota <strong>${namaLengkap}</strong> akan dihapus secara permanen!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
+            cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'px-4 py-2 rounded-lg',
+                cancelButton: 'px-4 py-2 rounded-lg'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('delete', id);
+            }
+        });
+    }
+</script>

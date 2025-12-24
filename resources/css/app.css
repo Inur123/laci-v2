@@ -1,0 +1,522 @@
+@import "tailwindcss";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+
+    /* Dashboard Color Variables - EXACT MATCH */
+    --color-green-500: #22c55e;
+    --color-green-600: #16a34a;
+    --color-green-700: #15803d;
+    --color-green-100: #dcfce7;
+    --color-green-200: #bbf7d0;
+    --color-green-300: #86efac;
+    --color-green-50: #f0fdf4;
+
+    --color-emerald-800: #065f46;
+
+    --color-blue-500: #3b82f6;
+    --color-blue-600: #2563eb;
+    --color-blue-700: #1d4ed8;
+    --color-blue-100: #dbeafe;
+    --color-blue-50: #eff6ff;
+
+    --color-yellow-500: #eab308;
+    --color-yellow-600: #ca8a04;
+    --color-yellow-700: #a16207;
+    --color-yellow-300: #fde047;
+    --color-yellow-100: #fef3c7;
+    --color-yellow-50: #fefce8;
+
+    --color-purple-500: #a855f7;
+    --color-purple-600: #9333ea;
+    --color-purple-700: #7e22ce;
+    --color-purple-100: #f3e8ff;
+    --color-purple-50: #faf5ff;
+
+    --color-indigo-600: #4f46e5;
+    --color-indigo-100: #e0e7ff;
+    --color-indigo-50: #eef2ff;
+
+    --color-pink-600: #db2777;
+    --color-pink-100: #fce7f3;
+    --color-pink-50: #fdf2f8;
+
+    --color-red-300: #fca5a5;
+    --color-red-600: #dc2626;
+    --color-red-100: #fee2e2;
+
+    --color-gray-300: #d1d5db;
+    --color-gray-100: #f3f4f6;
+    --color-gray-50: #f9fafb;
+}
+
+/* ===== EXACT COLOR MATCHING - GREEN ===== */
+.bg-green-500 {
+    background-color: #22c55e !important;
+}
+
+.bg-green-600 {
+    background-color: #16a34a !important;
+}
+
+.bg-green-700 {
+    background-color: #15803d !important;
+}
+
+.text-green-600 {
+    color: #16a34a !important;
+}
+
+.text-green-700 {
+    color: #15803d !important;
+}
+
+.text-green-100 {
+    color: #dcfce7 !important;
+}
+
+.text-green-200 {
+    color: #bbf7d0 !important;
+}
+
+.text-green-300 {
+    color: #86efac !important;
+}
+
+.bg-green-100 {
+    background-color: #dcfce7 !important;
+}
+
+.bg-green-50 {
+    background-color: #f0fdf4 !important;
+}
+
+.hover\:bg-green-100:hover {
+    background-color: #dcfce7 !important;
+}
+
+/* ===== EXACT COLOR MATCHING - BLUE ===== */
+.bg-blue-500 {
+    background-color: #3b82f6 !important;
+}
+
+.bg-blue-600 {
+    background-color: #2563eb !important;
+}
+
+.bg-blue-700 {
+    background-color: #1d4ed8 !important;
+}
+
+.text-blue-600 {
+    color: #2563eb !important;
+}
+
+.text-blue-100 {
+    color: #dbeafe !important;
+}
+
+.bg-blue-100 {
+    background-color: #dbeafe !important;
+}
+
+.bg-blue-50 {
+    background-color: #eff6ff !important;
+}
+
+.hover\:bg-blue-100:hover {
+    background-color: #dbeafe !important;
+}
+
+.hover\:text-blue-100:hover {
+    color: #dbeafe !important;
+}
+
+.hover\:text-blue-700:hover {
+    color: #1d4ed8 !important;
+}
+
+/* ===== EXACT COLOR MATCHING - YELLOW ===== */
+.bg-yellow-500 {
+    background-color: #eab308 !important;
+}
+
+.bg-yellow-600 {
+    background-color: #ca8a04 !important;
+}
+
+.bg-yellow-700 {
+    background-color: #a16207 !important;
+}
+
+.text-yellow-600 {
+    color: #ca8a04 !important;
+}
+
+.text-yellow-300 {
+    color: #fde047 !important;
+}
+
+.bg-yellow-100 {
+    background-color: #fef3c7 !important;
+}
+
+.bg-yellow-50 {
+    background-color: #fefce8 !important;
+}
+
+.hover\:bg-yellow-100:hover {
+    background-color: #fef3c7 !important;
+}
+
+.hover\:text-yellow-100:hover {
+    color: #fef3c7 !important;
+}
+
+/* ===== EXACT COLOR MATCHING - PURPLE ===== */
+.bg-purple-500 {
+    background-color: #a855f7 !important;
+}
+
+.bg-purple-600 {
+    background-color: #9333ea !important;
+}
+
+.bg-purple-700 {
+    background-color: #7e22ce !important;
+}
+
+.text-purple-600 {
+    color: #9333ea !important;
+}
+
+.text-purple-100 {
+    color: #f3e8ff !important;
+}
+
+.bg-purple-100 {
+    background-color: #f3e8ff !important;
+}
+
+.bg-purple-50 {
+    background-color: #faf5ff !important;
+}
+
+.hover\:bg-purple-100:hover {
+    background-color: #f3e8ff !important;
+}
+
+.hover\:text-purple-100:hover {
+    color: #f3e8ff !important;
+}
+
+/* ===== EXACT COLOR MATCHING - INDIGO ===== */
+.bg-indigo-600 {
+    background-color: #4f46e5 !important;
+}
+
+.text-indigo-600 {
+    color: #4f46e5 !important;
+}
+
+.bg-indigo-100 {
+    background-color: #e0e7ff !important;
+}
+
+.bg-indigo-50 {
+    background-color: #eef2ff !important;
+}
+
+.hover\:bg-indigo-100:hover {
+    background-color: #e0e7ff !important;
+}
+
+/* ===== EXACT COLOR MATCHING - PINK ===== */
+.bg-pink-600 {
+    background-color: #db2777 !important;
+}
+
+.text-pink-600 {
+    color: #db2777 !important;
+}
+
+.bg-pink-100 {
+    background-color: #fce7f3 !important;
+}
+
+.bg-pink-50 {
+    background-color: #fdf2f8 !important;
+}
+
+.hover\:bg-pink-100:hover {
+    background-color: #fce7f3 !important;
+}
+
+/* ===== EXACT COLOR MATCHING - RED ===== */
+.text-red-300 {
+    color: #fca5a5 !important;
+}
+
+.text-red-600 {
+    color: #dc2626 !important;
+}
+
+.bg-red-100 {
+    background-color: #fee2e2 !important;
+}
+
+/* ===== EXACT COLOR MATCHING - GRAY ===== */
+.text-gray-300 {
+    color: #d1d5db !important;
+}
+
+.bg-gray-100 {
+    background-color: #f3f4f6 !important;
+}
+
+.bg-gray-50 {
+    background-color: #f9fafb !important;
+}
+
+/* ===== EXACT COLOR MATCHING - EMERALD ===== */
+.to-emerald-800 {
+    --tw-gradient-to: #065f46 !important;
+}
+
+/* ===== GRADIENT CONSISTENCY - EXACT COLORS ===== */
+.bg-gradient-to-r.from-green-600.via-green-700.to-emerald-800 {
+    background: linear-gradient(to right, #16a34a 0%, #15803d 50%, #065f46 100%) !important;
+}
+
+.bg-gradient-to-br.from-blue-500.to-blue-700 {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+}
+
+.bg-gradient-to-br.from-green-500.to-green-700 {
+    background: linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important;
+}
+
+.bg-gradient-to-br.from-yellow-500.to-yellow-700 {
+    background: linear-gradient(135deg, #eab308 0%, #a16207 100%) !important;
+}
+
+.bg-gradient-to-br.from-purple-500.to-purple-700 {
+    background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%) !important;
+}
+
+.bg-gradient-to-r.from-gray-50.to-white {
+    background: linear-gradient(to right, #f9fafb 0%, #ffffff 100%) !important;
+}
+
+.bg-gradient-to-r.from-blue-500.to-blue-600 {
+    background: linear-gradient(to right, #3b82f6 0%, #2563eb 100%) !important;
+}
+
+.bg-gradient-to-r.from-green-500.to-green-600 {
+    background: linear-gradient(to right, #22c55e 0%, #16a34a 100%) !important;
+}
+
+.bg-gradient-to-br.from-green-50.to-green-100 {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%) !important;
+}
+
+.bg-gradient-to-br.from-blue-50.to-blue-100 {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+}
+
+.bg-gradient-to-br.from-purple-50.to-purple-100 {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%) !important;
+}
+
+.bg-gradient-to-br.from-yellow-50.to-yellow-100 {
+    background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%) !important;
+}
+
+/* ===== BACKGROUND OPACITY WITH EXACT COLORS ===== */
+.bg-blue-900\/30 {
+    background-color: rgba(30, 58, 138, 0.3) !important;
+}
+
+.bg-green-900\/30 {
+    background-color: rgba(20, 83, 45, 0.3) !important;
+}
+
+.bg-yellow-900\/30 {
+    background-color: rgba(113, 63, 18, 0.3) !important;
+}
+
+.bg-purple-900\/30 {
+    background-color: rgba(88, 28, 135, 0.3) !important;
+}
+
+/* ===== HOVER STATES WITH EXACT COLORS ===== */
+.hover\:from-green-600:hover {
+    --tw-gradient-from: #16a34a !important;
+}
+
+.hover\:to-green-700:hover {
+    --tw-gradient-to: #15803d !important;
+}
+
+/* ===== SAFARI SPECIFIC FIXES ===== */
+@media not all and (min-resolution: 0.001dpcm) {
+    @supports (-webkit-appearance: none) {
+        .bg-gradient-to-r.from-green-600.via-green-700.to-emerald-800 {
+            background: -webkit-linear-gradient(to right, #16a34a 0%, #15803d 50%, #065f46 100%) !important;
+        }
+
+        .bg-gradient-to-br.from-blue-500.to-blue-700 {
+            background: -webkit-linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+        }
+
+        .bg-gradient-to-br.from-green-500.to-green-700 {
+            background: -webkit-linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important;
+        }
+
+        .bg-gradient-to-br.from-yellow-500.to-yellow-700 {
+            background: -webkit-linear-gradient(135deg, #eab308 0%, #a16207 100%) !important;
+        }
+
+        .bg-gradient-to-br.from-purple-500.to-purple-700 {
+            background: -webkit-linear-gradient(135deg, #a855f7 0%, #7e22ce 100%) !important;
+        }
+    }
+}
+
+/* ===== IOS/IPHONE SPECIFIC FIXES ===== */
+@supports (-webkit-touch-callout: none) {
+    .bg-gradient-to-r,
+    .bg-gradient-to-br {
+        -webkit-background-clip: border-box;
+        background-clip: border-box;
+    }
+
+    /* Force exact colors on iOS */
+    .bg-green-600 {
+        background-color: #16a34a !important;
+    }
+
+    .bg-blue-600 {
+        background-color: #2563eb !important;
+    }
+
+    .bg-yellow-600 {
+        background-color: #ca8a04 !important;
+    }
+
+    .bg-purple-600 {
+        background-color: #9333ea !important;
+    }
+
+    .bg-indigo-600 {
+        background-color: #4f46e5 !important;
+    }
+
+    .bg-pink-600 {
+        background-color: #db2777 !important;
+    }
+}
+
+/* ===== MOBILE COLOR CONSISTENCY ===== */
+@media (max-width: 768px) {
+    .bg-green-600 {
+        background-color: #16a34a !important;
+    }
+
+    .bg-blue-600 {
+        background-color: #2563eb !important;
+    }
+
+    .bg-yellow-600 {
+        background-color: #ca8a04 !important;
+    }
+
+    .bg-purple-600 {
+        background-color: #9333ea !important;
+    }
+
+    .bg-gradient-to-r.from-green-600.via-green-700.to-emerald-800 {
+        background: linear-gradient(to right, #16a34a 0%, #15803d 50%, #065f46 100%) !important;
+    }
+
+    .bg-gradient-to-br.from-blue-500.to-blue-700 {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    }
+}
+
+/* ===== FALLBACK FOR OLDER BROWSERS ===== */
+@supports not (background: linear-gradient(to right, red, blue)) {
+    .bg-gradient-to-r.from-green-600.via-green-700.to-emerald-800 {
+        background: #16a34a !important;
+    }
+
+    .bg-gradient-to-br.from-blue-500.to-blue-700 {
+        background: #3b82f6 !important;
+    }
+
+    .bg-gradient-to-br.from-green-500.to-green-700 {
+        background: #22c55e !important;
+    }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    .bg-green-600,
+    .bg-blue-600,
+    .bg-yellow-600,
+    .bg-purple-600,
+    .bg-indigo-600 {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .text-green-600,
+    .text-blue-600,
+    .text-yellow-600,
+    .text-purple-600 {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+/* ===== CUSTOM SCROLLBAR ===== */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+}
