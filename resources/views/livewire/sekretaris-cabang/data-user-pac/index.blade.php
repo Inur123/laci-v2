@@ -60,13 +60,12 @@
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
             <!-- Cari User -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari User</label>
                 <input type="text" wire:model.live.debounce.500ms="search" placeholder="Nama atau email..."
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg
-                focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
             </div>
 
             <!-- Status -->
@@ -74,7 +73,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
                 <select wire:model.live="filterStatus"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg
-                focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
                     <option value="">Semua Status</option>
                     <option value="1">Aktif</option>
                     <option value="0">Nonaktif</option>
@@ -86,20 +85,19 @@
                 <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
                 <button wire:click="$refresh"
                     class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
-                hover:bg-blue-700 transition text-sm cursor-pointer">
+                           hover:bg-blue-700 transition text-sm cursor-pointer">
                     <i class="fas fa-sync-alt mr-2"></i>Refresh
                 </button>
             </div>
-
         </div>
     </div>
-
 
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="p-4 border-b border-gray-100">
             <h3 class="text-lg font-semibold text-gray-800">Daftar User PAC</h3>
         </div>
+
         <div class="overflow-x-auto">
             <table class="w-full table-auto min-w-[700px]">
                 <thead class="bg-gray-50 border-b border-gray-100">
@@ -113,10 +111,12 @@
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 w-36">Aksi</th>
                     </tr>
                 </thead>
+
                 <tbody class="divide-y divide-gray-100">
                     @forelse($users as $index => $user)
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="py-3 px-4 text-sm text-gray-700">{{ $users->firstItem() + $index }}</td>
+
                             <td class="py-3 px-4">
                                 <div class="flex items-center gap-3">
                                     <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=3b82f6&color=fff"
@@ -127,37 +127,31 @@
                                     </div>
                                 </div>
                             </td>
+
                             <td class="py-3 px-4 text-sm text-gray-700 truncate">{{ $user->email }}</td>
+
                             <td class="py-3 px-4">
-                                <div class="flex items-center gap-1">
-                                    @if ($user->is_active)
-                                        <span
-                                            class="flex items-center px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">
-                                            <i class="fas fa-circle text-[8px] mr-1"></i>Aktif
-                                        </span>
-                                    @else
-                                        <span
-                                            class="flex items-center px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium">
-                                            <i class="fas fa-circle text-[8px] mr-1"></i>Nonaktif
-                                        </span>
-                                    @endif
-                                </div>
+                                @if ($user->is_active)
+                                    <span class="flex items-center px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">
+                                        <i class="fas fa-circle text-[8px] mr-1"></i>Aktif
+                                    </span>
+                                @else
+                                    <span class="flex items-center px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium">
+                                        <i class="fas fa-circle text-[8px] mr-1"></i>Nonaktif
+                                    </span>
+                                @endif
                             </td>
 
                             <td class="py-3 px-4">
-                                <div class="flex items-center gap-1">
-                                    @if ($user->email_verified_at)
-                                        <span
-                                            class="flex items-center px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">
-                                            <i class="fas fa-check-circle mr-1"></i>Verified
-                                        </span>
-                                    @else
-                                        <span
-                                            class="flex items-center px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs font-medium">
-                                            <i class="fas fa-exclamation-circle mr-1"></i>Unverified
-                                        </span>
-                                    @endif
-                                </div>
+                                @if ($user->email_verified_at)
+                                    <span class="flex items-center px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">
+                                        <i class="fas fa-check-circle mr-1"></i>Verified
+                                    </span>
+                                @else
+                                    <span class="flex items-center px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs font-medium">
+                                        <i class="fas fa-exclamation-circle mr-1"></i>Unverified
+                                    </span>
+                                @endif
                             </td>
 
                             <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
@@ -179,15 +173,13 @@
                                         <i class="fas fa-{{ $user->is_active ? 'check-circle' : 'ban' }}"></i>
                                     </button>
 
-                                    <button
-                                        onclick="confirmResetPassword('{{ $user->id }}', '{{ addslashes($user->name) }}')"
+                                    <button onclick="confirmResetPassword('{{ $user->id }}', '{{ addslashes($user->name) }}')"
                                         class="text-yellow-600 hover:text-yellow-800 transition cursor-pointer"
                                         title="Reset Password">
                                         <i class="fas fa-key"></i>
                                     </button>
 
-                                    <button
-                                        onclick="confirmDeleteUser('{{ $user->id }}', '{{ addslashes($user->name) }}')"
+                                    <button onclick="confirmDeleteUser('{{ $user->id }}', '{{ addslashes($user->name) }}')"
                                         class="text-red-600 hover:text-red-800 transition cursor-pointer"
                                         title="Hapus User">
                                         <i class="fas fa-trash"></i>
@@ -210,8 +202,7 @@
             </table>
         </div>
 
-
-        <!-- Custom Pagination -->
+        <!-- Pagination (WINDOWED) -->
         @if ($users->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -222,6 +213,7 @@
                     </div>
 
                     <div class="flex items-center gap-2">
+                        {{-- Prev --}}
                         @if ($users->onFirstPage())
                             <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                                 <i class="fas fa-chevron-left"></i>
@@ -234,19 +226,62 @@
                             </button>
                         @endif
 
-                        @foreach ($users->getUrlRange(1, $users->lastPage()) as $page => $url)
-                            @if ($page == $users->currentPage())
+                        {{-- Windowed numbers: 1 ... 3 4 5 ... last --}}
+                        @php
+                            $current = $users->currentPage();
+                            $last = $users->lastPage();
+
+                            $start = max(1, $current - 2);
+                            $end = min($last, $current + 2);
+
+                            if (($end - $start) < 4) {
+                                if ($start == 1) {
+                                    $end = min($last, $start + 4);
+                                } elseif ($end == $last) {
+                                    $start = max(1, $end - 4);
+                                }
+                            }
+                        @endphp
+
+                        {{-- first page + dots --}}
+                        @if ($start > 1)
+                            <button wire:click="$set('page', 1)" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                1
+                            </button>
+
+                            @if ($start > 2)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+                        @endif
+
+                        {{-- page window --}}
+                        @for ($p = $start; $p <= $end; $p++)
+                            @if ($p == $current)
                                 <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">
-                                    {{ $page }}
+                                    {{ $p }}
                                 </span>
                             @else
-                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
+                                <button wire:click="$set('page', {{ $p }})" wire:loading.attr="disabled"
                                     class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-                                    {{ $page }}
+                                    {{ $p }}
                                 </button>
                             @endif
-                        @endforeach
+                        @endfor
 
+                        {{-- dots + last page --}}
+                        @if ($end < $last)
+                            @if ($end < $last - 1)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+
+                            <button wire:click="$set('page', {{ $last }})" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                {{ $last }}
+                            </button>
+                        @endif
+
+                        {{-- Next --}}
                         @if ($users->hasMorePages())
                             <button wire:click="$set('page', {{ $users->currentPage() + 1 }})"
                                 wire:loading.attr="disabled"
@@ -284,14 +319,9 @@
             confirmButtonText: `<i class="fas fa-${isActive ? 'ban' : 'check-circle'} mr-2"></i>Ya, ${isActive ? 'Nonaktifkan' : 'Aktifkan'}!`,
             cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
             reverseButtons: true,
-            customClass: {
-                confirmButton: 'px-4 py-2 rounded-lg',
-                cancelButton: 'px-4 py-2 rounded-lg'
-            }
+            customClass: { confirmButton: 'px-4 py-2 rounded-lg', cancelButton: 'px-4 py-2 rounded-lg' }
         }).then((result) => {
-            if (result.isConfirmed) {
-                @this.call('toggleStatus', id);
-            }
+            if (result.isConfirmed) @this.call('toggleStatus', id);
         });
     }
 
@@ -306,14 +336,9 @@
             confirmButtonText: '<i class="fas fa-key mr-2"></i>Ya, Reset!',
             cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
             reverseButtons: true,
-            customClass: {
-                confirmButton: 'px-4 py-2 rounded-lg',
-                cancelButton: 'px-4 py-2 rounded-lg'
-            }
+            customClass: { confirmButton: 'px-4 py-2 rounded-lg', cancelButton: 'px-4 py-2 rounded-lg' }
         }).then((result) => {
-            if (result.isConfirmed) {
-                @this.call('resetPassword', id);
-            }
+            if (result.isConfirmed) @this.call('resetPassword', id);
         });
     }
 
@@ -328,14 +353,9 @@
             confirmButtonText: '<i class="fas fa-trash mr-2"></i>Ya, Hapus!',
             cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
             reverseButtons: true,
-            customClass: {
-                confirmButton: 'px-4 py-2 rounded-lg',
-                cancelButton: 'px-4 py-2 rounded-lg'
-            }
+            customClass: { confirmButton: 'px-4 py-2 rounded-lg', cancelButton: 'px-4 py-2 rounded-lg' }
         }).then((result) => {
-            if (result.isConfirmed) {
-                @this.call('delete', id);
-            }
+            if (result.isConfirmed) @this.call('delete', id);
         });
     }
 </script>

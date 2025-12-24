@@ -80,7 +80,6 @@ class Anggota extends Component
     #[On('periodeChanged')]
     public function refreshData()
     {
-        // Refresh data saat periode berubah
         $this->page = 1;
     }
 
@@ -91,15 +90,23 @@ class Anggota extends Component
         }
     }
 
-    // Reset page saat filter/search berubah
     public function resetPage()
     {
         $this->page = 1;
     }
 
-    public function updatingSearch() { $this->resetPage(); }
-    public function updatingFilterPeriode() { $this->resetPage(); }
-    public function updatingFilterUser() { $this->resetPage(); }
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+    public function updatingFilterPeriode()
+    {
+        $this->resetPage();
+    }
+    public function updatingFilterUser()
+    {
+        $this->resetPage();
+    }
 
     #[Computed]
     public function periodeList()
@@ -124,7 +131,6 @@ class Anggota extends Component
         $user = Auth::user();
         $query = AnggotaModel::query();
 
-        // Filter berdasarkan periode aktif jika tidak ada filter manual
         if (!$this->filterPeriode && $user->periode_aktif_id) {
             $query->where('periode_id', $user->periode_aktif_id);
         }
@@ -145,16 +151,26 @@ class Anggota extends Component
     public function create()
     {
         $this->reset([
-            'periode_id', 'nik', 'nia', 'email', 'foto', 'nama_lengkap',
-            'tempat_lahir', 'tanggal_lahir', 'jenis_kelamin', 'alamat_lengkap',
-            'no_hp', 'hobi', 'jabatan', 'no_rfid'
+            'periode_id',
+            'nik',
+            'nia',
+            'email',
+            'foto',
+            'nama_lengkap',
+            'tempat_lahir',
+            'tanggal_lahir',
+            'jenis_kelamin',
+            'alamat_lengkap',
+            'no_hp',
+            'hobi',
+            'jabatan',
+            'no_rfid'
         ]);
         $this->action = 'create';
     }
 
     public function save()
     {
-        // Validasi: User harus memiliki periode aktif
         if (!Auth::user()->periode_aktif_id) {
             $this->dispatch('flash', [
                 'type' => 'error',
@@ -292,12 +308,10 @@ class Anggota extends Component
 
         $query = AnggotaModel::with(['periode', 'user']);
 
-        // Filter berdasarkan periode aktif user (role sekretaris_cabang)
         if ($user->periode_aktif_id && !$this->filterPeriode) {
             $query->where('periode_id', $user->periode_aktif_id);
         }
 
-        // Filter tambahan
         $query->when($this->filterPeriode, fn($q) => $q->where('periode_id', $this->filterPeriode))
             ->when($this->filterUser, fn($q) => $q->where('user_id', $this->filterUser));
 
@@ -307,14 +321,15 @@ class Anggota extends Component
 
         if ($this->search) {
             $searchLower = strtolower($this->search);
-            $filtered = $allData->filter(fn($anggota) =>
+            $filtered = $allData->filter(
+                fn($anggota) =>
                 str_contains(strtolower($anggota->nama_lengkap ?? ''), $searchLower) ||
-                str_contains(strtolower($anggota->nik ?? ''), $searchLower) ||
-                str_contains(strtolower($anggota->nia ?? ''), $searchLower) ||
-                str_contains(strtolower($anggota->email ?? ''), $searchLower) ||
-                str_contains(strtolower($anggota->no_hp ?? ''), $searchLower) ||
-                str_contains(strtolower($anggota->tempat_lahir ?? ''), $searchLower) ||
-                str_contains(strtolower($anggota->jabatan ?? ''), $searchLower)
+                    str_contains(strtolower($anggota->nik ?? ''), $searchLower) ||
+                    str_contains(strtolower($anggota->nia ?? ''), $searchLower) ||
+                    str_contains(strtolower($anggota->email ?? ''), $searchLower) ||
+                    str_contains(strtolower($anggota->no_hp ?? ''), $searchLower) ||
+                    str_contains(strtolower($anggota->tempat_lahir ?? ''), $searchLower) ||
+                    str_contains(strtolower($anggota->jabatan ?? ''), $searchLower)
             );
         }
 
@@ -331,26 +346,33 @@ class Anggota extends Component
             ['path' => request()->url()]
         );
     }
+
     public function export()
-{
-    $userName = null;
-    if ($this->exportUserId) {
-        $user = User::find($this->exportUserId);
-        $userName = $user ? preg_replace('/[^a-zA-Z0-9_-]/', '_', $user->name) : null;
+    {
+        $userName = null;
+
+        if ($this->exportUserId) {
+            $user = User::find($this->exportUserId);
+            $userName = $user ? preg_replace('/[^a-zA-Z0-9_-]/', '_', $user->name) : null;
+        }
+
+        $periodeId = $this->filterPeriode ?: null;
+
+        $filename = 'Data_Anggota_' . ($userName ? $userName . '_' : 'Semua_') . now()->format('Y-m-d_His') . '.xlsx';
+
+        return Excel::download(
+            new DataAnggotaExport($this->exportUserId, $periodeId),
+            $filename
+        );
     }
-    $filename = 'Data_Anggota_' . ($userName ? $userName . '_' : '') . now()->format('Y-m-d_His') . '.xlsx';
-    return Excel::download(
-        new DataAnggotaExport($this->exportUserId),
-        $filename
-    );
-}
-#[Computed]
-public function exportUsers()
-{
-    return User::whereHas('anggotas')
-        ->where('is_active', true)
-        ->whereNotNull('email_verified_at')
-        ->orderBy('name')
-        ->get();
-}
+
+    #[Computed]
+    public function exportUsers()
+    {
+        return User::whereHas('anggotas')
+            ->where('is_active', true)
+            ->whereNotNull('email_verified_at')
+            ->orderBy('name')
+            ->get();
+    }
 }

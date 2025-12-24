@@ -177,7 +177,7 @@
         </div>
 
         <!-- Pagination -->
-        @if ($surats->hasPages())
+         @if ($surats->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div class="text-sm text-gray-700">
@@ -187,6 +187,7 @@
                     </div>
 
                     <div class="flex items-center gap-2">
+                        {{-- Prev --}}
                         @if ($surats->onFirstPage())
                             <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                                 <i class="fas fa-chevron-left"></i>
@@ -199,19 +200,59 @@
                             </button>
                         @endif
 
-                        @foreach ($surats->getUrlRange(1, $surats->lastPage()) as $page => $url)
-                            @if ($page == $surats->currentPage())
+                        @php
+                            $current = $surats->currentPage();
+                            $last = $surats->lastPage();
+
+                            $start = max(1, $current - 2);
+                            $end = min($last, $current + 2);
+
+                            if (($end - $start) < 4) {
+                                if ($start == 1) {
+                                    $end = min($last, $start + 4);
+                                } elseif ($end == $last) {
+                                    $start = max(1, $end - 4);
+                                }
+                            }
+                        @endphp
+
+                        {{-- First + dots --}}
+                        @if ($start > 1)
+                            <button wire:click="$set('page', 1)" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                1
+                            </button>
+                            @if ($start > 2)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+                        @endif
+
+                        {{-- Window pages --}}
+                        @for ($p = $start; $p <= $end; $p++)
+                            @if ($p == $current)
                                 <span class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium">
-                                    {{ $page }}
+                                    {{ $p }}
                                 </span>
                             @else
-                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
+                                <button wire:click="$set('page', {{ $p }})" wire:loading.attr="disabled"
                                     class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-                                    {{ $page }}
+                                    {{ $p }}
                                 </button>
                             @endif
-                        @endforeach
+                        @endfor
 
+                        {{-- Dots + last --}}
+                        @if ($end < $last)
+                            @if ($end < $last - 1)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+                            <button wire:click="$set('page', {{ $last }})" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                {{ $last }}
+                            </button>
+                        @endif
+
+                        {{-- Next --}}
                         @if ($surats->hasMorePages())
                             <button wire:click="$set('page', {{ $surats->currentPage() + 1 }})"
                                 wire:loading.attr="disabled"

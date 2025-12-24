@@ -53,6 +53,7 @@
                     placeholder="Nomor surat, pengirim/penerima..."
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
             </div>
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Surat</label>
                 <select wire:model.live="filterJenis"
@@ -62,27 +63,19 @@
                     <option value="keluar">Surat Keluar</option>
                 </select>
             </div>
+
             <div>
                 <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
-
                 <button wire:click="export" wire:loading.attr="disabled"
-                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg
-               hover:bg-green-700 transition text-sm
-               flex items-center justify-center gap-2
-               disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
-
-                    <!-- Normal -->
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
                     <span wire:loading.remove wire:target="export">
                         <i class="fas fa-file-excel"></i>
                         Export Excel
                     </span>
-
-                    <!-- Loading -->
                     <span wire:loading wire:target="export">
                         <i class="fas fa-spinner fa-spin"></i>
                         Mengunduh...
                     </span>
-
                 </button>
             </div>
 
@@ -109,73 +102,64 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th
-                            class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-16">
-                            No</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">No.
-                            Surat</th>
-                        <th
-                            class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden sm:table-cell">
-                            Tanggal</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                            Jenis</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                            Perihal</th>
-                        <th
-                            class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden md:table-cell">
-                            Pengirim/Penerima</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                            Aksi</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-16">No</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">No. Surat</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden sm:table-cell">Tanggal</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Jenis</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Perihal</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden md:table-cell">Pengirim/Penerima</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
+
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($surats as $index => $surat)
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
-                                {{ $surats->firstItem() + $index }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">{{ $surats->firstItem() + $index }}</td>
+
                             <td class="px-4 py-3 text-sm font-semibold text-gray-800 whitespace-nowrap">
                                 {{ Str::title(Str::limit($surat->no_surat, 25)) }}
                             </td>
+
                             <td class="px-4 py-3 text-sm text-gray-700 hidden sm:table-cell whitespace-nowrap">
                                 {{ $surat->tanggal->format('d M Y') }}
                             </td>
+
                             <td class="px-4 py-3 text-sm whitespace-nowrap">
                                 @if ($surat->jenis_surat === 'masuk')
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                         <i class="fas fa-inbox mr-1"></i>Masuk
                                     </span>
                                 @else
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                         <i class="fas fa-paper-plane mr-1"></i>Keluar
                                     </span>
                                 @endif
                             </td>
+
                             <td class="px-4 py-3 text-sm text-gray-700 max-w-xs truncate" title="{{ $surat->perihal }}">
                                 {{ Str::title(Str::limit($surat->perihal, 30)) }}
                             </td>
+
                             <td class="px-4 py-3 text-sm text-gray-700 hidden md:table-cell max-w-xs truncate"
                                 title="{{ $surat->pengirim_penerima }}">
                                 {{ Str::title(Str::limit($surat->pengirim_penerima, 30)) }}
                             </td>
+
                             <td class="px-4 py-3 text-sm whitespace-nowrap">
                                 <div class="flex items-center gap-3 text-lg">
-                                    <!-- Detail -->
                                     <button wire:click="showDetail('{{ $surat->id }}')"
                                         class="text-blue-600 hover:text-blue-800 transition-transform hover:scale-110 cursor-pointer"
                                         title="Lihat Detail">
                                         <i class="fas fa-eye"></i>
                                     </button>
 
-                                    <!-- Edit -->
                                     <button wire:click="edit('{{ $surat->id }}')"
                                         class="text-yellow-600 hover:text-yellow-800 transition-transform hover:scale-110 cursor-pointer"
                                         title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
 
-                                    <!-- Hapus -->
                                     <button onclick="confirmDelete('{{ $surat->id }}', '{{ $surat->no_surat }}')"
                                         class="text-red-600 hover:text-red-800 transition-transform hover:scale-110 cursor-pointer"
                                         title="Hapus">
@@ -210,6 +194,7 @@
                     </div>
 
                     <div class="flex items-center gap-2">
+                        {{-- Prev --}}
                         @if ($surats->onFirstPage())
                             <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                                 <i class="fas fa-chevron-left"></i>
@@ -222,19 +207,62 @@
                             </button>
                         @endif
 
-                        @foreach ($surats->getUrlRange(1, $surats->lastPage()) as $page => $url)
-                            @if ($page == $surats->currentPage())
+                        {{-- Windowed page numbers: 1 ... 3 4 5 6 7 ... last --}}
+                        @php
+                            $current = $surats->currentPage();
+                            $last = $surats->lastPage();
+
+                            $start = max(1, $current - 2);
+                            $end = min($last, $current + 2);
+
+                            if (($end - $start) < 4) {
+                                if ($start == 1) {
+                                    $end = min($last, $start + 4);
+                                } elseif ($end == $last) {
+                                    $start = max(1, $end - 4);
+                                }
+                            }
+                        @endphp
+
+                        {{-- first page + dots --}}
+                        @if ($start > 1)
+                            <button wire:click="$set('page', 1)" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                1
+                            </button>
+
+                            @if ($start > 2)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+                        @endif
+
+                        {{-- page window --}}
+                        @for ($p = $start; $p <= $end; $p++)
+                            @if ($p == $current)
                                 <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">
-                                    {{ $page }}
+                                    {{ $p }}
                                 </span>
                             @else
-                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
+                                <button wire:click="$set('page', {{ $p }})" wire:loading.attr="disabled"
                                     class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-                                    {{ $page }}
+                                    {{ $p }}
                                 </button>
                             @endif
-                        @endforeach
+                        @endfor
 
+                        {{-- dots + last page --}}
+                        @if ($end < $last)
+                            @if ($end < $last - 1)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+
+                            <button wire:click="$set('page', {{ $last }})" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                {{ $last }}
+                            </button>
+                        @endif
+
+                        {{-- Next --}}
                         @if ($surats->hasMorePages())
                             <button wire:click="$set('page', {{ $surats->currentPage() + 1 }})"
                                 wire:loading.attr="disabled"
@@ -281,13 +309,11 @@
                     <!-- Jenis Surat Badge -->
                     <div class="flex">
                         @if ($selectedSurat->jenis_surat === 'masuk')
-                            <span
-                                class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 shadow-lg">
+                            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 shadow-lg">
                                 <i class="fas fa-inbox mr-2"></i>Surat Masuk
                             </span>
                         @else
-                            <span
-                                class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800 shadow-lg">
+                            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800 shadow-lg">
                                 <i class="fas fa-paper-plane mr-2"></i>Surat Keluar
                             </span>
                         @endif
@@ -303,17 +329,14 @@
                                 </div>
                                 <div class="flex-1">
                                     <p class="text-xs text-blue-600 font-medium mb-1">Tanggal Surat</p>
-                                    <p class="font-semibold text-gray-800">
-                                        {{ $selectedSurat->tanggal->format('d F Y') }}</p>
-                                    <p class="text-xs text-gray-500 mt-1">
-                                        {{ $selectedSurat->tanggal->diffForHumans() }}</p>
+                                    <p class="font-semibold text-gray-800">{{ $selectedSurat->tanggal->format('d F Y') }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ $selectedSurat->tanggal->diffForHumans() }}</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Pengirim/Penerima -->
-                        <div
-                            class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
                             <div class="flex items-start gap-3">
                                 <div class="bg-purple-500 p-2 rounded-lg">
                                     <i class="fas fa-user text-white text-sm"></i>
@@ -329,8 +352,7 @@
                     </div>
 
                     <!-- Perihal -->
-                    <div
-                        class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
+                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
                         <div class="flex items-start gap-3">
                             <div class="bg-orange-500 p-2 rounded-lg">
                                 <i class="fas fa-tag text-white text-sm"></i>
@@ -351,8 +373,7 @@
                                 </div>
                                 <div class="flex-1">
                                     <p class="text-xs text-gray-600 font-medium mb-2">Deskripsi</p>
-                                    <p class="text-gray-800 leading-relaxed whitespace-pre-wrap">
-                                        {{ $selectedSurat->deskripsi }}</p>
+                                    <p class="text-gray-800 leading-relaxed whitespace-pre-wrap">{{ $selectedSurat->deskripsi }}</p>
                                 </div>
                             </div>
                         </div>
@@ -360,8 +381,7 @@
 
                     <!-- File -->
                     @if ($selectedSurat->file)
-                        <div
-                            class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-4 border border-indigo-200">
+                        <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-4 border border-indigo-200">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <div class="bg-indigo-500 p-2 rounded-lg">
@@ -372,8 +392,7 @@
                                         <p class="text-sm text-gray-700 font-medium">Dokumen tersedia</p>
                                     </div>
                                 </div>
-                                <a href="{{ route('cabang.arsip-surat.view-file', $selectedSurat->id) }}"
-                                    target="_blank"
+                                <a href="{{ route('cabang.arsip-surat.view-file', $selectedSurat->id) }}" target="_blank"
                                     class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium shadow-lg hover:shadow-xl">
                                     <i class="fas fa-external-link-alt mr-2"></i>Buka
                                 </a>
@@ -388,10 +407,8 @@
                                 <i class="fas fa-clock text-gray-400 text-sm"></i>
                                 <div>
                                     <p class="text-xs text-gray-500">Dibuat</p>
-                                    <p class="text-sm font-medium text-gray-800">
-                                        {{ $selectedSurat->created_at->format('d F Y, H:i') }}</p>
-                                    <p class="text-xs text-gray-500">{{ $selectedSurat->created_at->diffForHumans() }}
-                                    </p>
+                                    <p class="text-sm font-medium text-gray-800">{{ $selectedSurat->created_at->format('d F Y, H:i') }}</p>
+                                    <p class="text-xs text-gray-500">{{ $selectedSurat->created_at->diffForHumans() }}</p>
                                 </div>
                             </div>
                             <div class="border-t border-gray-200"></div>
@@ -399,10 +416,8 @@
                                 <i class="fas fa-history text-gray-400 text-sm"></i>
                                 <div>
                                     <p class="text-xs text-gray-500">Terakhir Diupdate</p>
-                                    <p class="text-sm font-medium text-gray-800">
-                                        {{ $selectedSurat->updated_at->format('d F Y, H:i') }}</p>
-                                    <p class="text-xs text-gray-500">{{ $selectedSurat->updated_at->diffForHumans() }}
-                                    </p>
+                                    <p class="text-sm font-medium text-gray-800">{{ $selectedSurat->updated_at->format('d F Y, H:i') }}</p>
+                                    <p class="text-xs text-gray-500">{{ $selectedSurat->updated_at->diffForHumans() }}</p>
                                 </div>
                             </div>
                         </div>
@@ -410,8 +425,7 @@
                 </div>
 
                 <!-- Modal Footer -->
-                <div
-                    class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex justify-end flex-shrink-0 shadow-lg">
+                <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex justify-end flex-shrink-0 shadow-lg">
                     <button wire:click="closeDetail"
                         class="w-full sm:w-auto px-6 py-2.5 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition cursor-pointer">
                         <i class="fas fa-times mr-2"></i>Tutup

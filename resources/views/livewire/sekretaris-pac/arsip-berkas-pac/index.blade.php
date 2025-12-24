@@ -25,8 +25,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari Berkas</label>
-                <input type="text" wire:model.live.debounce.500ms="search"
-                    placeholder="Nama berkas, catatan..."
+                <input type="text" wire:model.live.debounce.500ms="search" placeholder="Nama berkas, catatan..."
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
             </div>
             <div>
@@ -66,16 +65,23 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-16">No</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Nama Berkas</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden sm:table-cell">Tanggal</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Aksi</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-16">
+                            No</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            Nama Berkas</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden sm:table-cell">
+                            Tanggal</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($berkasList as $index => $berkas)
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">{{ $berkasList->firstItem() + $index }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                                {{ $berkasList->firstItem() + $index }}</td>
                             <td class="px-4 py-3 text-sm font-semibold text-gray-800">
                                 {{ Str::title(Str::limit($berkas->nama, 40)) }}
                             </td>
@@ -128,6 +134,7 @@
                     </div>
 
                     <div class="flex items-center gap-2">
+                        {{-- Prev --}}
                         @if ($berkasList->onFirstPage())
                             <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                                 <i class="fas fa-chevron-left"></i>
@@ -140,17 +147,58 @@
                             </button>
                         @endif
 
-                        @foreach ($berkasList->getUrlRange(1, $berkasList->lastPage()) as $page => $url)
-                            @if ($page == $berkasList->currentPage())
-                                <span class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium">{{ $page }}</span>
+                        @php
+                            $current = $berkasList->currentPage();
+                            $last = $berkasList->lastPage();
+
+                            $start = max(1, $current - 2);
+                            $end = min($last, $current + 2);
+
+                            if ($end - $start < 4) {
+                                if ($start == 1) {
+                                    $end = min($last, $start + 4);
+                                } elseif ($end == $last) {
+                                    $start = max(1, $end - 4);
+                                }
+                            }
+                        @endphp
+
+                        {{-- First + dots --}}
+                        @if ($start > 1)
+                            <button wire:click="$set('page', 1)" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                1
+                            </button>
+                            @if ($start > 2)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+                        @endif
+
+                        {{-- Window pages --}}
+                        @for ($p = $start; $p <= $end; $p++)
+                            @if ($p == $current)
+                                <span
+                                    class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium">{{ $p }}</span>
                             @else
-                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
+                                <button wire:click="$set('page', {{ $p }})" wire:loading.attr="disabled"
                                     class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-                                    {{ $page }}
+                                    {{ $p }}
                                 </button>
                             @endif
-                        @endforeach
+                        @endfor
 
+                        {{-- Dots + last --}}
+                        @if ($end < $last)
+                            @if ($end < $last - 1)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+                            <button wire:click="$set('page', {{ $last }})" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                {{ $last }}
+                            </button>
+                        @endif
+
+                        {{-- Next --}}
                         @if ($berkasList->hasMorePages())
                             <button wire:click="$set('page', {{ $berkasList->currentPage() + 1 }})"
                                 wire:loading.attr="disabled"
@@ -175,7 +223,8 @@
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-full sm:max-w-2xl md:max-w-3xl h-[95vh] sm:h-auto sm:max-h-[90vh] flex flex-col overflow-hidden"
                 wire:click.stop>
                 <!-- Modal Header -->
-                <div class="sticky top-0 bg-gradient-to-r from-purple-600 to-purple-700 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-shrink-0 shadow-lg">
+                <div
+                    class="sticky top-0 bg-gradient-to-r from-purple-600 to-purple-700 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-shrink-0 shadow-lg">
                     <div class="flex items-center gap-3">
                         <div class="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
                             <i class="fas fa-folder-open text-white text-lg"></i>
@@ -195,7 +244,8 @@
                 <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Nama Berkas -->
-                        <div class="md:col-span-2 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-green-200">
+                        <div
+                            class="md:col-span-2 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-green-200">
                             <div class="flex items-start gap-3">
                                 <div class="bg-green-500 p-2 rounded-lg">
                                     <i class="fas fa-folder text-white text-sm"></i>
@@ -208,27 +258,31 @@
                         </div>
 
                         <!-- Tanggal -->
-                        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
+                        <div
+                            class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
                             <div class="flex items-start gap-3">
                                 <div class="bg-green-500 p-2 rounded-lg">
                                     <i class="fas fa-calendar text-white text-sm"></i>
                                 </div>
                                 <div class="flex-1">
                                     <p class="text-xs text-green-600 font-medium mb-1">Tanggal</p>
-                                    <p class="font-semibold text-gray-800">{{ $selectedBerkas->tanggal?->format('d F Y') ?? '-' }}</p>
+                                    <p class="font-semibold text-gray-800">
+                                        {{ $selectedBerkas->tanggal?->format('d F Y') ?? '-' }}</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Periode -->
-                        <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
+                        <div
+                            class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
                             <div class="flex items-start gap-3">
                                 <div class="bg-orange-500 p-2 rounded-lg">
                                     <i class="fas fa-calendar-check text-white text-sm"></i>
                                 </div>
                                 <div class="flex-1">
                                     <p class="text-xs text-orange-600 font-medium mb-1">Periode</p>
-                                    <p class="font-semibold text-gray-800">{{ $selectedBerkas->periode->nama ?? '-' }}</p>
+                                    <p class="font-semibold text-gray-800">{{ $selectedBerkas->periode->nama ?? '-' }}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -243,14 +297,16 @@
                                 </div>
                                 <div class="flex-1">
                                     <p class="text-xs text-gray-600 font-medium mb-2">Catatan</p>
-                                    <p class="text-gray-800 leading-relaxed whitespace-pre-wrap">{{ $selectedBerkas->catatan }}</p>
+                                    <p class="text-gray-800 leading-relaxed whitespace-pre-wrap">
+                                        {{ $selectedBerkas->catatan }}</p>
                                 </div>
                             </div>
                         </div>
                     @endif
 
                     <!-- Dibuat Oleh -->
-                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
+                    <div
+                        class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
                         <div class="flex items-start gap-3">
                             <div class="bg-purple-500 p-2 rounded-lg">
                                 <i class="fas fa-user text-white text-sm"></i>
@@ -264,7 +320,8 @@
 
                     <!-- File -->
                     @if ($selectedBerkas->file_path)
-                        <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-4 border border-indigo-200">
+                        <div
+                            class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-4 border border-indigo-200">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3 flex-1">
                                     <div class="bg-indigo-500 p-2 rounded-lg">
@@ -293,8 +350,10 @@
                                 <i class="fas fa-clock text-gray-400 text-sm"></i>
                                 <div>
                                     <p class="text-xs text-gray-500">Dibuat</p>
-                                    <p class="text-sm font-medium text-gray-800">{{ $selectedBerkas->created_at->format('d F Y, H:i') }}</p>
-                                    <p class="text-xs text-gray-500">{{ $selectedBerkas->created_at->diffForHumans() }}</p>
+                                    <p class="text-sm font-medium text-gray-800">
+                                        {{ $selectedBerkas->created_at->format('d F Y, H:i') }}</p>
+                                    <p class="text-xs text-gray-500">
+                                        {{ $selectedBerkas->created_at->diffForHumans() }}</p>
                                 </div>
                             </div>
                             <div class="border-t border-gray-200"></div>
@@ -302,8 +361,10 @@
                                 <i class="fas fa-history text-gray-400 text-sm"></i>
                                 <div>
                                     <p class="text-xs text-gray-500">Terakhir Diupdate</p>
-                                    <p class="text-sm font-medium text-gray-800">{{ $selectedBerkas->updated_at->format('d F Y, H:i') }}</p>
-                                    <p class="text-xs text-gray-500">{{ $selectedBerkas->updated_at->diffForHumans() }}</p>
+                                    <p class="text-sm font-medium text-gray-800">
+                                        {{ $selectedBerkas->updated_at->format('d F Y, H:i') }}</p>
+                                    <p class="text-xs text-gray-500">
+                                        {{ $selectedBerkas->updated_at->diffForHumans() }}</p>
                                 </div>
                             </div>
                         </div>
@@ -311,7 +372,8 @@
                 </div>
 
                 <!-- Modal Footer -->
-                <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex justify-end flex-shrink-0 shadow-lg">
+                <div
+                    class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex justify-end flex-shrink-0 shadow-lg">
                     <button wire:click="closeDetail"
                         class="w-full sm:w-auto px-6 py-2.5 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition cursor-pointer">
                         <i class="fas fa-times mr-2"></i>Tutup

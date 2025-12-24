@@ -261,10 +261,11 @@ class ArsipSurat extends Component
         $filename = 'Arsip_Surat_Cabang_' . now()->format('Y-m-d_His') . '.xlsx';
 
         return Excel::download(
-            new ArsipSuratExport($this->search, $this->filterJenis),
+            new ArsipSuratExport(Auth::id(), Auth::user()->periode_aktif_id),
             $filename
         );
     }
+
 
     public function render()
     {

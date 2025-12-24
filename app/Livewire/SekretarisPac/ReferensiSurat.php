@@ -65,9 +65,9 @@ class ReferensiSurat extends Component
 
         // Filter search di collection (karena terenkripsi)
         if ($this->searchName) {
-            $search = strtolower($this->searchName); // agar case-insensitive
+            $search = strtolower($this->searchName);
 
-            $pengajuans = $pengajuans->filter(function($item) use ($search) {
+            $pengajuans = $pengajuans->filter(function ($item) use ($search) {
                 return str_contains(strtolower($item->user->name ?? ''), $search)
                     || str_contains(strtolower($item->no_surat ?? ''), $search)
                     || str_contains(strtolower($item->penerima ?? ''), $search)
@@ -76,9 +76,9 @@ class ReferensiSurat extends Component
             });
         }
 
-        // Filter status (sudah aman)
+        // Filter status
         if ($this->filterStatus) {
-            $pengajuans = $pengajuans->filter(fn($item) => $item->status === $this->filterStatus);
+            $pengajuans = $pengajuans->filter(fn ($item) => $item->status === $this->filterStatus);
         }
 
         // Pagination manual

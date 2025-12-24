@@ -1,10 +1,11 @@
-<!-- filepath: /Users/muhammadzainurroziqin/Documents/coding/ipnu/laci-v2/resources/views/livewire/sekretaris-cabang/data-anggota/index.blade.php -->
+<!-- resources/views/livewire/sekretaris-cabang/data-anggota/index.blade.php -->
 <div>
     <!-- Header -->
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Data Anggota</h1>
         <p class="text-sm text-gray-600 mt-1">Kelola data anggota organisasi</p>
     </div>
+
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 mb-6">
         <div class="bg-white rounded-lg shadow p-4 sm:p-6">
             <div class="flex items-center justify-between">
@@ -58,17 +59,14 @@
             </div>
         </div>
     </div>
+
     <div class="bg-white rounded-lg shadow p-4 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-
-            <!-- Select User -->
             <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Filter Export User
-                </label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Filter Export User</label>
                 <select wire:model="exportUserId"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg
-                       focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
                     <option value="">Semua User</option>
                     @foreach ($this->exportUsers as $user)
                         <option value="{{ $user->id }}">{{ $user->name }}</option>
@@ -76,55 +74,44 @@
                 </select>
             </div>
 
-            <!-- Button Export -->
             <div>
                 <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
 
                 <form wire:submit.prevent="export" class="w-full">
                     <button type="submit" wire:loading.attr="disabled"
                         class="w-full bg-green-600 text-white px-4 py-2 rounded-lg
-                           hover:bg-green-700 transition text-sm
-                           flex items-center justify-center gap-2
-                           disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
-
-                        <!-- Normal -->
+                               hover:bg-green-700 transition text-sm
+                               flex items-center justify-center gap-2
+                               disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
                         <span wire:loading.remove wire:target="export">
                             <i class="fas fa-file-excel"></i>
                             Export Excel
                         </span>
-
-                        <!-- Loading -->
                         <span wire:loading wire:target="export">
                             <i class="fas fa-spinner fa-spin"></i>
                             Mengunduh...
                         </span>
-
                     </button>
                 </form>
             </div>
-
         </div>
     </div>
-
 
     <!-- Filter & Search -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-            <!-- Cari Anggota -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari Anggota</label>
                 <input type="text" wire:model.live.debounce.500ms="search" placeholder="Nama lengkap..."
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg
-                focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
             </div>
 
-            <!-- Periode -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Periode</label>
                 <select wire:model.live="filterPeriode"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg
-                focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
                     <option value="">Semua Periode</option>
                     @foreach ($this->periodeList as $periode)
                         <option value="{{ $periode->id }}">{{ $periode->nama }}</option>
@@ -132,15 +119,13 @@
                 </select>
             </div>
 
-            <!-- Dibuat Oleh -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Dibuat Oleh
-                    <span class="text-xs text-gray-500">(Aktif & Verified)</span>
+                    Dibuat Oleh <span class="text-xs text-gray-500">(Aktif & Verified)</span>
                 </label>
                 <select wire:model.live="filterUser"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg
-                focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
                     <option value="">Semua User</option>
                     @foreach ($this->userList as $user)
                         <option value="{{ $user->id }}">
@@ -150,25 +135,23 @@
                 </select>
             </div>
 
-            <!-- Tombol Tambah -->
             <div>
                 <label class="hidden md:block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
                 <button wire:click="create"
                     class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg
-                hover:bg-blue-700 transition text-sm cursor-pointer">
+                           hover:bg-blue-700 transition text-sm cursor-pointer">
                     <i class="fas fa-plus mr-2"></i>Tambah Anggota
                 </button>
             </div>
-
         </div>
     </div>
-
 
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="p-4 border-b border-gray-100">
             <h3 class="text-base sm:text-lg font-semibold text-gray-800">Daftar Anggota</h3>
         </div>
+
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-gray-50 border-b border-gray-100">
@@ -183,11 +166,13 @@
                         <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
                     </tr>
                 </thead>
+
                 <tbody class="divide-y divide-gray-100">
                     @forelse($anggotas as $index => $anggota)
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
-                                {{ $anggotas->firstItem() + $index }}</td>
+                                {{ $anggotas->firstItem() + $index }}
+                            </td>
 
                             <td class="py-3 px-4 whitespace-nowrap">
                                 <div class="flex items-center gap-3">
@@ -211,7 +196,8 @@
                                 @endif
                             </td>
 
-                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">{{ $anggota->periode->nama }}
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
+                                {{ $anggota->periode->nama }}
                             </td>
 
                             <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
@@ -224,7 +210,8 @@
                                 @endif
                             </td>
 
-                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">{{ $anggota->no_hp ?? '-' }}
+                            <td class="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
+                                {{ $anggota->no_hp ?? '-' }}
                             </td>
 
                             <td class="py-3 px-4 whitespace-nowrap">
@@ -279,23 +266,21 @@
                         </tr>
                     @endforelse
                 </tbody>
-
             </table>
         </div>
 
-        <!-- Custom Pagination (Tanpa URL Parameter) -->
+        <!-- Pagination (WINDOWED) -->
         @if ($anggotas->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <!-- Info -->
                     <div class="text-sm text-gray-700">
                         Menampilkan <span class="font-medium">{{ $anggotas->firstItem() }}</span>
                         sampai <span class="font-medium">{{ $anggotas->lastItem() }}</span>
                         dari <span class="font-medium">{{ $anggotas->total() }}</span> hasil
                     </div>
-                    <!-- Pagination Buttons -->
+
                     <div class="flex items-center gap-2">
-                        {{-- Previous Button --}}
+                        {{-- Prev --}}
                         @if ($anggotas->onFirstPage())
                             <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                                 <i class="fas fa-chevron-left"></i>
@@ -308,21 +293,62 @@
                             </button>
                         @endif
 
-                        {{-- Page Numbers --}}
-                        @foreach ($anggotas->getUrlRange(1, $anggotas->lastPage()) as $page => $url)
-                            @if ($page == $anggotas->currentPage())
+                        {{-- Windowed numbers: 1 ... 3 4 5 ... last --}}
+                        @php
+                            $current = $anggotas->currentPage();
+                            $last = $anggotas->lastPage();
+
+                            $start = max(1, $current - 2);
+                            $end = min($last, $current + 2);
+
+                            if ($end - $start < 4) {
+                                if ($start == 1) {
+                                    $end = min($last, $start + 4);
+                                } elseif ($end == $last) {
+                                    $start = max(1, $end - 4);
+                                }
+                            }
+                        @endphp
+
+                        {{-- first page + dots --}}
+                        @if ($start > 1)
+                            <button wire:click="$set('page', 1)" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                1
+                            </button>
+
+                            @if ($start > 2)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+                        @endif
+
+                        {{-- page window --}}
+                        @for ($p = $start; $p <= $end; $p++)
+                            @if ($p == $current)
                                 <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">
-                                    {{ $page }}
+                                    {{ $p }}
                                 </span>
                             @else
-                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
+                                <button wire:click="$set('page', {{ $p }})" wire:loading.attr="disabled"
                                     class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-                                    {{ $page }}
+                                    {{ $p }}
                                 </button>
                             @endif
-                        @endforeach
+                        @endfor
 
-                        {{-- Next Button --}}
+                        {{-- dots + last page --}}
+                        @if ($end < $last)
+                            @if ($end < $last - 1)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+
+                            <button wire:click="$set('page', {{ $last }})" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                {{ $last }}
+                            </button>
+                        @endif
+
+                        {{-- Next --}}
                         @if ($anggotas->hasMorePages())
                             <button wire:click="$set('page', {{ $anggotas->currentPage() + 1 }})"
                                 wire:loading.attr="disabled"

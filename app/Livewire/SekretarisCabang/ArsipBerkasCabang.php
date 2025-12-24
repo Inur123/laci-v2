@@ -221,7 +221,8 @@ class ArsipBerkasCabang extends Component
     {
         $user = Auth::user();
 
-        $query = ArsipBerkasCabangModel::with(['user', 'periode']);
+        $query = ArsipBerkasCabangModel::with(['user', 'periode'])
+            ->where('user_id', $user->id); // ✅ WAJIB
 
         if ($user->periode_aktif_id) {
             $query->where('periode_id', $user->periode_aktif_id);
@@ -233,7 +234,7 @@ class ArsipBerkasCabang extends Component
             $allBerkas = $allBerkas->filter(function ($berkas) {
                 $searchLower = strtolower($this->search);
                 return str_contains(strtolower($berkas->nama), $searchLower) ||
-                       str_contains(strtolower($berkas->catatan ?? ''), $searchLower);
+                    str_contains(strtolower($berkas->catatan ?? ''), $searchLower);
             });
         }
 
@@ -250,6 +251,7 @@ class ArsipBerkasCabang extends Component
             ['path' => request()->url()]
         );
     }
+
 
     private function getStats()
     {

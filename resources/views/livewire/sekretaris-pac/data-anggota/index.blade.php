@@ -190,7 +190,7 @@
             </table>
         </div>
 
-        <!-- 🔥 Custom Pagination (Tanpa URL Parameter) -->
+        <!-- 🔥 Custom Pagination (Window + Ellipsis) -->
         @if ($anggotas->hasPages())
             <div class="px-4 py-3 border-t border-gray-100">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -203,7 +203,7 @@
 
                     <!-- Pagination Buttons -->
                     <div class="flex items-center gap-2">
-                        {{-- Previous Button --}}
+                        {{-- Prev --}}
                         @if ($anggotas->onFirstPage())
                             <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                                 <i class="fas fa-chevron-left"></i>
@@ -216,21 +216,61 @@
                             </button>
                         @endif
 
-                        {{-- Page Numbers --}}
-                        @foreach ($anggotas->getUrlRange(1, $anggotas->lastPage()) as $page => $url)
-                            @if ($page == $anggotas->currentPage())
+                        @php
+                            $current = $anggotas->currentPage();
+                            $last = $anggotas->lastPage();
+
+                            // window 5 tombol (current ±2)
+                            $start = max(1, $current - 2);
+                            $end = min($last, $current + 2);
+
+                            // biar selalu 5 angka kalau memungkinkan
+                            if ($end - $start < 4) {
+                                if ($start == 1) {
+                                    $end = min($last, $start + 4);
+                                } elseif ($end == $last) {
+                                    $start = max(1, $end - 4);
+                                }
+                            }
+                        @endphp
+
+                        {{-- First + dots --}}
+                        @if ($start > 1)
+                            <button wire:click="$set('page', 1)" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                1
+                            </button>
+                            @if ($start > 2)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+                        @endif
+
+                        {{-- Window pages --}}
+                        @for ($p = $start; $p <= $end; $p++)
+                            @if ($p == $current)
                                 <span class="px-4 py-2 text-sm text-white bg-green-600 rounded-lg font-medium">
-                                    {{ $page }}
+                                    {{ $p }}
                                 </span>
                             @else
-                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
+                                <button wire:click="$set('page', {{ $p }})" wire:loading.attr="disabled"
                                     class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-                                    {{ $page }}
+                                    {{ $p }}
                                 </button>
                             @endif
-                        @endforeach
+                        @endfor
 
-                        {{-- Next Button --}}
+                        {{-- Dots + last --}}
+                        @if ($end < $last)
+                            @if ($end < $last - 1)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+                            <button wire:click="$set('page', {{ $last }})" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                {{ $last }}
+                            </button>
+                        @endif
+
+                        {{-- Next --}}
                         @if ($anggotas->hasMorePages())
                             <button wire:click="$set('page', {{ $anggotas->currentPage() + 1 }})"
                                 wire:loading.attr="disabled"
@@ -246,6 +286,7 @@
                 </div>
             </div>
         @endif
+
     </div>
 
 </div>

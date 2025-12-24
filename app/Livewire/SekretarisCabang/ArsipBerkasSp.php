@@ -3,9 +3,7 @@
 namespace App\Livewire\SekretarisCabang;
 
 use App\Models\ArsipBerkasSp as ModelArsipBerkasSp;
-use App\Models\Periode;
 use Livewire\Component;
-use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
@@ -20,7 +18,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 #[Title('Arsip Berkas SP')]
 class ArsipBerkasSp extends Component
 {
-    use WithPagination, WithFileUploads;
+    use WithFileUploads; // ✅ HAPUS WithPagination
 
     public $action = 'index';
     public $arsipId;
@@ -58,10 +56,21 @@ class ArsipBerkasSp extends Component
         'file.max' => 'Ukuran file maksimal 10MB',
     ];
 
+    // ✅ reset page custom (karena pakai $page manual)
+    public function resetCustomPage()
+    {
+        $this->page = 1;
+    }
+
     #[On('periodeChanged')]
     public function refreshData()
     {
-        $this->resetPage();
+        $this->resetCustomPage(); // ✅ bener-bener reset
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetCustomPage();
     }
 
     public function mount()
@@ -110,6 +119,7 @@ class ArsipBerkasSp extends Component
         ]);
 
         $this->action = 'index';
+        $this->resetCustomPage();
         $this->reset(['nama', 'tanggal_mulai', 'tanggal_berakhir', 'catatan', 'file']);
     }
 
@@ -155,6 +165,7 @@ class ArsipBerkasSp extends Component
         ]);
 
         $this->action = 'index';
+        $this->resetCustomPage();
         $this->reset(['nama', 'tanggal_mulai', 'tanggal_berakhir', 'catatan', 'file', 'arsipId', 'oldFile']);
     }
 
@@ -193,12 +204,12 @@ class ArsipBerkasSp extends Component
                 'type' => 'success',
                 'message' => "Berkas {$nama} berhasil dihapus!"
             ]);
-        }
-    }
 
-    public function updatingSearch()
-    {
-        $this->page = 1;
+            // kalau hapus bikin halaman kosong, mundurin page
+            if ($this->page > 1) {
+                $this->page = max(1, $this->page - 1);
+            }
+        }
     }
 
     public function export()
@@ -235,26 +246,30 @@ class ArsipBerkasSp extends Component
             $query->where('periode_id', $user->periode_aktif_id);
         }
 
-        $allBerkas = $query->latest()->get();
-
+        // ✅ lebih ringan: filtering search di query, bukan get()->filter()
         if ($this->search) {
-            $allBerkas = $allBerkas->filter(function ($berkas) {
-                $searchLower = strtolower($this->search);
-                return str_contains(strtolower($berkas->nama), $searchLower) ||
-                       str_contains(strtolower($berkas->catatan ?? ''), $searchLower);
+            $s = '%' . strtolower($this->search) . '%';
+            $query->where(function ($q) use ($s) {
+                $q->whereRaw('LOWER(nama) LIKE ?', [$s])
+                  ->orWhereRaw('LOWER(catatan) LIKE ?', [$s]);
             });
         }
 
+
         $perPage = 10;
-        $currentPage = $this->page;
-        $total = $allBerkas->count();
-        $items = $allBerkas->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        $total = $query->count();
+
+        $items = $query->latest()
+            ->skip(($this->page - 1) * $perPage)
+            ->take($perPage)
+            ->get();
 
         return new LengthAwarePaginator(
             $items,
             $total,
             $perPage,
-            $currentPage,
+            $this->page,
             ['path' => request()->url()]
         );
     }

@@ -145,6 +145,7 @@
                     </div>
 
                     <div class="flex items-center gap-2">
+                        {{-- Prev --}}
                         @if ($berkasList->onFirstPage())
                             <span class="px-3 py-2 text-sm text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                                 <i class="fas fa-chevron-left"></i>
@@ -157,17 +158,60 @@
                             </button>
                         @endif
 
-                        @foreach ($berkasList->getUrlRange(1, $berkasList->lastPage()) as $page => $url)
-                            @if ($page == $berkasList->currentPage())
-                                <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">{{ $page }}</span>
+                        {{-- Windowed page numbers: 1 ... 3 4 5 6 7 ... last --}}
+                        @php
+                            $current = $berkasList->currentPage();
+                            $last = $berkasList->lastPage();
+
+                            $start = max(1, $current - 2);
+                            $end = min($last, $current + 2);
+
+                            if (($end - $start) < 4) {
+                                if ($start == 1) {
+                                    $end = min($last, $start + 4);
+                                } elseif ($end == $last) {
+                                    $start = max(1, $end - 4);
+                                }
+                            }
+                        @endphp
+
+                        {{-- first page + dots --}}
+                        @if ($start > 1)
+                            <button wire:click="$set('page', 1)" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                1
+                            </button>
+
+                            @if ($start > 2)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+                        @endif
+
+                        {{-- page window --}}
+                        @for ($p = $start; $p <= $end; $p++)
+                            @if ($p == $current)
+                                <span class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg font-medium">{{ $p }}</span>
                             @else
-                                <button wire:click="$set('page', {{ $page }})" wire:loading.attr="disabled"
+                                <button wire:click="$set('page', {{ $p }})" wire:loading.attr="disabled"
                                     class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-                                    {{ $page }}
+                                    {{ $p }}
                                 </button>
                             @endif
-                        @endforeach
+                        @endfor
 
+                        {{-- dots + last page --}}
+                        @if ($end < $last)
+                            @if ($end < $last - 1)
+                                <span class="px-3 py-2 text-sm text-gray-400">...</span>
+                            @endif
+
+                            <button wire:click="$set('page', {{ $last }})" wire:loading.attr="disabled"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                                {{ $last }}
+                            </button>
+                        @endif
+
+                        {{-- Next --}}
                         @if ($berkasList->hasMorePages())
                             <button wire:click="$set('page', {{ $berkasList->currentPage() + 1 }})"
                                 wire:loading.attr="disabled"

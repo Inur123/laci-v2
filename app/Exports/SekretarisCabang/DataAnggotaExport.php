@@ -27,23 +27,21 @@ class DataAnggotaExport implements FromCollection, WithHeadings, WithMapping, Wi
     {
         $query = Anggota::with(['periode', 'user'])->latest();
 
+        // Jika pilih user tertentu
         if ($this->userId) {
             $query->where('user_id', $this->userId);
-
-            // Filter berdasarkan periode jika ada
-            if ($this->periodeId) {
-                $query->where('periode_id', $this->periodeId);
-            }
-        } else {
-            // Jika tidak ada filter user, filter berdasarkan periode aktif cabang
-            $user = \Illuminate\Support\Facades\Auth::user();
-            if ($user && $user->periode_aktif_id) {
-                $query->where('periode_id', $user->periode_aktif_id);
-            }
         }
 
+        // Jika pilih periode (optional)
+        if ($this->periodeId) {
+            $query->where('periode_id', $this->periodeId);
+        }
+
+        // Jika userId null => semua user
+        // Jika periodeId null => semua periode
         return $query->get();
     }
+
 
     // ✅ HEADER EXCEL (SESUAI MODEL)
     public function headings(): array

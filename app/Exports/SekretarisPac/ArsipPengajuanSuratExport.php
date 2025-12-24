@@ -30,14 +30,14 @@ class ArsipPengajuanSuratExport implements FromCollection, WithHeadings, WithMap
         $user = Auth::user();
         $query = PengajuanSuratPac::where('user_id', $user->id);
 
-        // Filter berdasarkan periode aktif
+        // Filter berdasarkan periode aktif (PAC)
         if ($user->periode_aktif_id) {
-            $query->where('periode_id', $user->periode_aktif_id);
+            $query->where('periode_id_pac', $user->periode_aktif_id);
         }
 
-        $query = $query->latest()->get();
+        $data = $query->latest()->get();
 
-        return $query->filter(function($surat) {
+        return $data->filter(function ($surat) {
             $matchSearch = true;
             $matchStatus = true;
 
@@ -57,6 +57,7 @@ class ArsipPengajuanSuratExport implements FromCollection, WithHeadings, WithMap
             return $matchSearch && $matchStatus;
         })->values();
     }
+
 
     public function headings(): array
     {

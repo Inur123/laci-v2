@@ -309,6 +309,7 @@ class ArsipSurat extends Component
             return $matchSearch && $matchJenis;
         });
 
+
         $perPage = 10;
         $currentPage = $this->page;
         $total = $filtered->count();

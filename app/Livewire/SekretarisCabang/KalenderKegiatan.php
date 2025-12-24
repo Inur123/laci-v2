@@ -271,7 +271,7 @@ class KalenderKegiatan extends Component
     {
         $user = Auth::user();
 
-        return match($this->action) {
+        return match ($this->action) {
             'create' => view('livewire.sekretaris-cabang.kalender-kegiatan.create'),
             'edit' => view('livewire.sekretaris-cabang.kalender-kegiatan.edit', [
                 'kegiatan' => Kegiatan::findOrFail($this->kegiatanId)
@@ -281,24 +281,24 @@ class KalenderKegiatan extends Component
             ]),
             default => view('livewire.sekretaris-cabang.kalender-kegiatan.index', [
                 'kegiatans' => Kegiatan::query()
-                    ->when($user->periode_aktif_id, function($query) use ($user) {
+                    ->when($user->periode_aktif_id, function ($query) use ($user) {
                         $query->where('periode_id', $user->periode_aktif_id);
                     })
-                    ->when($this->search, function($query) {
+                    ->when($this->search, function ($query) {
                         $query->where('judul', 'like', '%' . $this->search . '%')
-                              ->orWhere('lokasi', 'like', '%' . $this->search . '%')
-                              ->orWhere('deskripsi', 'like', '%' . $this->search . '%');
+                            ->orWhere('lokasi', 'like', '%' . $this->search . '%')
+                            ->orWhere('deskripsi', 'like', '%' . $this->search . '%');
                     })
-                    ->when($this->filterStatus === 'upcoming', function($query) {
+                    ->when($this->filterStatus === 'upcoming', function ($query) {
                         $query->upcoming();
                     })
-                    ->when($this->filterStatus === 'past', function($query) {
+                    ->when($this->filterStatus === 'past', function ($query) {
                         $query->past();
                     })
                     ->latest('tanggal_mulai')
                     ->paginate(10),
                 'calendarEvents' => Kegiatan::query()
-                    ->when($user->periode_aktif_id, function($query) use ($user) {
+                    ->when($user->periode_aktif_id, function ($query) use ($user) {
                         $query->where('periode_id', $user->periode_aktif_id);
                     })
                     ->inMonth($this->currentYear, $this->currentMonth)
