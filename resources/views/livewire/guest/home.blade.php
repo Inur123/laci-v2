@@ -1,330 +1,425 @@
 <div>
-    <!-- Hero Section -->
-    <section class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20" itemscope itemtype="https://schema.org/WebPage">
-        <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <article class="text-center lg:text-left" data-aos="fade-right" data-aos-duration="800">
-                <div class="inline-block mb-4 sm:mb-6">
-                    <span class="bg-green-100 text-green-700 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold">
-                        <i class="fas fa-sparkles mr-1" aria-hidden="true"></i> Sistem Informasi Digital
-                    </span>
+    {{-- ===================== HERO ===================== --}}
+    <section id="home" class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
+        <div class="grid items-center gap-10 lg:grid-cols-2">
+            <div>
+                <div
+                    class="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
+                    <span class="h-2 w-2 rounded-full bg-brand-500"></span>
+                    Sistem Informasi Digital
                 </div>
-                <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight" itemprop="headline">
-                    Selamat Datang di
-                    <span class="gradient-text block mt-2">
-                        Laci Digital
-                    </span>
-                </h2>
-                <p class="text-sm sm:text-base md:text-lg text-gray-600 mb-6 sm:mb-8 max-w-2xl mx-auto lg:mx-0" itemprop="description">
-                    Platform manajemen organisasi terintegrasi untuk <strong>PC IPNU IPPNU Kabupaten Magetan</strong>.
-                    Kelola data anggota per periode, arsip surat & berkas, pengajuan surat, dan administrasi organisasi dengan mudah, aman, dan terenkripsi penuh.
+
+                <h1 class="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
+                    Selamat Datang di <span class="text-brand-700">Laci Digital</span>
+                </h1>
+
+                <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+                    Platform manajemen organisasi terintegrasi untuk <b>PC IPNU IPPNU Kabupaten Magetan</b>.
+                    Kelola data anggota per periode, arsip surat & berkas, pengajuan surat, serta administrasi
+                    organisasi
+                    dengan mudah, aman, dan terenkripsi.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
-                    @guest
-                        <a href="{{ route('register') }}" wire:navigate class="inline-flex items-center justify-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-green-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-green-700 transition-all hover:scale-105 shadow-lg hover:shadow-xl" aria-label="Mulai Sekarang - Daftar Gratis" data-aos="zoom-in" data-aos-delay="200">
-                            <i class="fas fa-rocket" aria-hidden="true"></i>
-                            Mulai Sekarang
-                        </a>
-                        <a href="#features" class="inline-flex items-center justify-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-white text-gray-700 text-sm sm:text-base font-semibold rounded-lg hover:bg-gray-50 transition-all border-2 border-gray-200 hover:border-green-600" aria-label="Pelajari Lebih Lanjut tentang Fitur" data-aos="zoom-in" data-aos-delay="300">
-                            <i class="fas fa-info-circle" aria-hidden="true"></i>
-                            Pelajari Lebih Lanjut
-                        </a>
-                    @else
-                        <a href="{{ route('dashboard') }}" wire:navigate class="inline-flex items-center justify-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-green-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-green-700 transition-all hover:scale-105 shadow-lg hover:shadow-xl" aria-label="Ke Dashboard" data-aos="zoom-in" data-aos-delay="200">
-                            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
-                            Ke Dashboard
-                        </a>
-                    @endguest
-                </div>
-                <div class="grid grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12" role="region" aria-label="Statistik Platform">
-                    <div class="text-center lg:text-left" data-aos="fade-up" data-aos-delay="400">
-                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 mb-1">Aman</div>
-                        <div class="text-xs sm:text-sm text-gray-600">Data Terenkripsi</div>
-                    </div>
-                    <div class="text-center lg:text-left" data-aos="fade-up" data-aos-delay="500">
-                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 mb-1">Mudah</div>
-                        <div class="text-xs sm:text-sm text-gray-600">Kelola Organisasi</div>
-                    </div>
-                    <div class="text-center lg:text-left" data-aos="fade-up" data-aos-delay="600">
-                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 mb-1">24/7</div>
-                        <div class="text-xs sm:text-sm text-gray-600">Akses Online</div>
-                    </div>
-                </div>
-            </article>
-            <aside class="flex justify-center lg:justify-end">
-                <div class="relative">
-                    <img src="{{ asset('images/logo-laci-3.webp') }}" alt="Ilustrasi Platform Laci Digital untuk Manajemen IPNU IPPNU Magetan" class="relative hidden lg:block w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[500px] lg:h-[500px]" width="500" height="500" loading="lazy" data-aos="fade-left" data-aos-duration="800">
-                </div>
-            </aside>
-        </div>
-    </section>
 
-    <!-- Features Section -->
-    <section id="features" class="bg-white py-12 sm:py-16 lg:py-20" itemscope itemtype="https://schema.org/ItemList">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <header class="text-center mb-10 sm:mb-12 lg:mb-16" data-aos="fade-up">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
-                    Fitur Unggulan
-                </h2>
-                <p class="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
-                    Sistem terintegrasi untuk manajemen organisasi yang efisien dan modern
-                </p>
-            </header>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                <article class="bg-gradient-to-br from-green-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-green-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="100">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-green-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                        <i class="fas fa-calendar-alt text-white text-xl sm:text-2xl" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Periode Kepengurusan</h3>
-                    <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        Manajemen data per periode kepengurusan dengan sistem switch periode aktif, filter otomatis, dan peringatan perubahan periode
-                    </p>
-                </article>
+                <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <a href="{{ route('login') }}" wire:navigate
+                        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-soft hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-300">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M8 5v14l11-7L8 5Z" fill="currentColor" />
+                        </svg>
+                        Mulai Sekarang
+                    </a>
 
-                <article class="bg-gradient-to-br from-teal-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-teal-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="150">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-teal-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                        <i class="fas fa-users text-white text-xl sm:text-2xl" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Data Anggota</h3>
-                    <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        Kelola data anggota PC dan PAC lengkap dengan foto, NIA, informasi pribadi, dan filter berdasarkan periode kepengurusan
-                    </p>
-                </article>
-
-                <article class="bg-gradient-to-br from-orange-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-orange-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="200">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-orange-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                        <i class="fas fa-folder-open text-white text-xl sm:text-2xl" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Arsip Berkas Digital</h3>
-                    <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        Arsip Berkas PAC dan Cabang dengan enkripsi penuh, search, pagination, dan export Excel dengan format tanggal Indonesia
-                    </p>
-                </article>
-
-                <article class="bg-gradient-to-br from-blue-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-blue-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="250">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-blue-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                        <i class="fas fa-envelope-open-text text-white text-xl sm:text-2xl" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Arsip Surat Digital</h3>
-                    <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        Sistem arsip surat masuk/keluar untuk PC dan PAC dengan enkripsi file, filter jenis surat, search, dan pencarian nomor surat
-                    </p>
-                </article>
-
-                <article class="bg-gradient-to-br from-purple-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-purple-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="300">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-purple-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                        <i class="fas fa-paper-plane text-white text-xl sm:text-2xl" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Pengajuan Surat</h3>
-                    <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        PAC dapat mengajukan surat ke PC dengan status pending, diterima, atau ditolak disertai notifikasi email otomatis
-                    </p>
-                </article>
-
-                <article class="bg-gradient-to-br from-yellow-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-yellow-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="350">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-yellow-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                        <i class="fas fa-user-check text-white text-xl sm:text-2xl" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Manajemen User PAC</h3>
-                    <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        Kelola user PAC dengan approve/unapprove akses, edit data user, verifikasi email, dan monitoring status aktivasi akun
-                    </p>
-                </article>
-
-                <article class="bg-gradient-to-br from-pink-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-pink-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="400">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-pink-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                        <i class="fas fa-calendar-check text-white text-xl sm:text-2xl" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Kalender Kegiatan</h3>
-                    <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        Penjadwalan dan monitoring kegiatan tingkat cabang dengan detail waktu, tempat, dan deskripsi lengkap
-                    </p>
-                </article>
-
-                <article class="bg-gradient-to-br from-red-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-red-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="450">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-red-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                        <i class="fas fa-chart-pie text-white text-xl sm:text-2xl" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Dashboard & Export</h3>
-                    <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        Dashboard interaktif dengan statistik real-time, referensi surat PAC, dan export Excel dengan format tanggal Indonesia
-                    </p>
-                </article>
-
-                <article class="bg-gradient-to-br from-indigo-50 to-white p-6 sm:p-8 rounded-2xl hover:shadow-xl transition-shadow border border-indigo-100" itemprop="itemListElement" itemscope itemtype="https://schema.org/Service" data-aos="fade-up" data-aos-delay="500">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-indigo-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                        <i class="fas fa-shield-alt text-white text-xl sm:text-2xl" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3" itemprop="name">Keamanan Data</h3>
-                    <p class="text-sm sm:text-base text-gray-600" itemprop="description">
-                        Enkripsi penuh untuk data sensitif dan file, verifikasi email, role-based access control, dan sistem autentikasi berlapis
-                    </p>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- Resources Section -->
-    <section id="resources" class="bg-gradient-to-br from-green-50 to-white py-12 sm:py-16 lg:py-20">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <header class="text-center mb-10 sm:mb-12 lg:mb-16" data-aos="fade-up">
-                <div class="inline-block mb-4">
-                    <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold">
-                        <i class="fas fa-download mr-2"></i>Dokumen & Resources
-                    </span>
-                </div>
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
-                    Pusat Sumber Daya
-                </h2>
-                <p class="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
-                    Download template surat, format administrasi, peraturan, dan logo resmi IPNU IPPNU Magetan
-                </p>
-            </header>
-
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="group bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-green-500 hover:shadow-xl transition-all duration-300" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="flex items-start gap-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-file-word text-white text-2xl"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
-                                Format Surat Baru
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-4">
-                                Template surat resmi terbaru sesuai standar PC IPNU IPPNU Magetan
-                            </p>
-                            <a href="https://drive.google.com/drive/folders/1r-4OOy_5UcDDn6glvgz7NPrr6n5uxbSP" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700">
-                                <i class="fas fa-download"></i>
-                                Download Template
-                                <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="group bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-green-500 hover:shadow-xl transition-all duration-300" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="flex items-start gap-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-clipboard-list text-white text-2xl"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
-                                Administrasi Makesta
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-4">
-                                Format administrasi lengkap untuk Masa Kesetiaan Anggota (MAKESTA)
-                            </p>
-                            <a href="https://drive.google.com/drive/folders/1e4__zQjlCTHsT_oIyrxlEeBDLUKm6KP7?usp=sharing" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700">
-                                <i class="fas fa-download"></i>
-                                Download Format
-                                <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="group bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-green-500 hover:shadow-xl transition-all duration-300" data-aos="zoom-in" data-aos-delay="300">
-                    <div class="flex items-start gap-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-box-open text-white text-2xl"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
-                                Perlengkapan Lakmud
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-4">
-                                Daftar dan template perlengkapan untuk Latihan Kader Muda (LAKMUD)
-                            </p>
-                            <a href="https://drive.google.com/drive/u/0/folders/1FtsEWTe32t-p1aZI0MV6M5djwfClh468" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700">
-                                <i class="fas fa-download"></i>
-                                Download Checklist
-                                <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="group bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-green-500 hover:shadow-xl transition-all duration-300" data-aos="zoom-in" data-aos-delay="400">
-                    <div class="flex items-start gap-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-gavel text-white text-2xl"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
-                                Peraturan IPNU IPPNU
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-4">
-                                Peraturan organisasi, AD/ART, dan pedoman pelaksanaan terbaru
-                            </p>
-                            <a href="https://drive.google.com/drive/folders/1uJuqz-Y8CD5RT0cwVNn1V2Db6rI_3FHj" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700">
-                                <i class="fas fa-download"></i>
-                                Download Peraturan
-                                <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="group bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-green-500 hover:shadow-xl transition-all duration-300" data-aos="zoom-in" data-aos-delay="500">
-                    <div class="flex items-start gap-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-file-signature text-white text-2xl"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
-                                Format Pengajuan SP
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-4">
-                                Template pengajuan Surat Pengantar dari PAC ke PC Magetan
-                            </p>
-                            <a href="https://drive.google.com/drive/folders/1l9Nb5O7hTyKVmuSgG8k13QmiHfBcLGRo" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700">
-                                <i class="fas fa-download"></i>
-                                Download Template
-                                <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="group bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-green-500 hover:shadow-xl transition-all duration-300" data-aos="zoom-in" data-aos-delay="600">
-                    <div class="flex items-start gap-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-image text-white text-2xl"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
-                                Logo Resmi
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-4">
-                                Logo IPNU, IPPNU, dan PC Magetan dalam berbagai format (PNG, SVG, AI)
-                            </p>
-                            <a href="https://drive.google.com/drive/folders/1cOwGh9FtPg62mDD61b7P097y-FWK-CTz" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700">
-                                <i class="fas fa-download"></i>
-                                Download Logo
-                                <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-12 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 sm:p-8 text-white" data-aos="fade-up">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="text-center sm:text-left">
-                        <h3 class="text-xl sm:text-2xl font-bold mb-2">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            Butuh Bantuan?
-                        </h3>
-                        <p class="text-sm sm:text-base text-green-50">
-                            Hubungi tim kami jika ada pertanyaan seputar dokumen dan resources
-                        </p>
-                    </div>
-                    <a href="mailto:info@lacidigital.com" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-green-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors shadow-lg">
-                        <i class="fas fa-envelope"></i>
-                        Hubungi Kami
+                    <a href="{{ route('register') }}" wire:navigate
+                        class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                        Pelajari Lebih Lanjut
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
                     </a>
                 </div>
+
+                <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+                    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                        <p class="text-sm font-semibold text-slate-900">Aman</p>
+                        <p class="mt-1 text-xs text-slate-500">Data terenkripsi</p>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                        <p class="text-sm font-semibold text-slate-900">Mudah</p>
+                        <p class="mt-1 text-xs text-slate-500">Kelola organisasi</p>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                        <p class="text-sm font-semibold text-slate-900">24/7</p>
+                        <p class="mt-1 text-xs text-slate-500">Akses online</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative">
+                <div
+                    class="absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-brand-100 via-white to-white blur-2xl">
+                </div>
+
+                <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="grid h-12 w-12 place-items-center rounded-2xl bg-brand-600/10 text-brand-700">
+                                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M12 2l8 4v6c0 5-3.5 9.7-8 10-4.5-.3-8-5-8-10V6l8-4Z" stroke="currentColor"
+                                        stroke-width="2" stroke-linejoin="round" />
+                                    <path d="M9 12l2 2 4-5" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold">PC IPNU IPPNU</p>
+                                <p class="text-xs text-slate-500">Dashboard ringkas & modern</p>
+                            </div>
+                        </div>
+                        <span
+                            class="inline-flex items-center rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 border border-brand-200">
+                            Enkripsi Aktif
+                        </span>
+                    </div>
+
+                    <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                        <div class="rounded-2xl border border-slate-200 p-4">
+                            <p class="text-xs font-semibold text-slate-500">Anggota Terdaftar</p>
+                            <p class="mt-2 text-2xl font-bold">1.248</p>
+                            <p class="mt-1 text-xs text-slate-500">+12 minggu ini</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 p-4">
+                            <p class="text-xs font-semibold text-slate-500">Surat Diproses</p>
+                            <p class="mt-2 text-2xl font-bold">342</p>
+                            <p class="mt-1 text-xs text-slate-500">Real-time</p>
+                        </div>
+
+                        <div class="rounded-2xl border border-slate-200 p-4 sm:col-span-2">
+                            <p class="text-xs font-semibold text-slate-500">Status Layanan</p>
+                            <div class="mt-3 flex flex-wrap items-center gap-2">
+                                <span
+                                    class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 border border-slate-200">
+                                    <span class="h-2 w-2 rounded-full bg-brand-500"></span>
+                                    Arsip Digital
+                                </span>
+                                <span
+                                    class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 border border-slate-200">
+                                    <span class="h-2 w-2 rounded-full bg-brand-500"></span>
+                                    Pengajuan Surat
+                                </span>
+                                <span
+                                    class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 border border-slate-200">
+                                    <span class="h-2 w-2 rounded-full bg-brand-500"></span>
+                                    Dashboard & Export
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 rounded-2xl bg-slate-50 p-4 border border-slate-200">
+                        <p class="text-sm font-semibold">Tip cepat</p>
+                        <p class="mt-1 text-sm text-slate-600">
+                            Gunakan <b>filter periode</b> untuk memastikan data selalu sesuai masa kepengurusan.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
+
+    {{-- ===================== FITUR ===================== --}}
+     <section id="fitur" class="border-t border-slate-200/70 bg-slate-50/40">
+      <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Fitur Unggulan</h2>
+          <p class="mt-3 text-slate-600">
+            Sistem terintegrasi untuk manajemen organisasi yang efisien, rapi, dan modern.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <!-- helper card template: icon bg + title + desc -->
+          <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+            <div class="flex items-start justify-between gap-3">
+              <div class="grid h-12 w-12 place-items-center rounded-2xl bg-brand-600/10 text-brand-700">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M8 7h8M8 11h8M8 15h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-500">Periode</span>
+            </div>
+            <h3 class="mt-4 text-base font-semibold">Periode Kepengurusan</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Switch cepat, filter otomatis, dan pengingat perubahan periode.
+            </p>
+          </article>
+
+          <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+            <div class="flex items-start justify-between gap-3">
+              <div class="grid h-12 w-12 place-items-center rounded-2xl bg-indigo-500/10 text-indigo-700">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M16 11c1.66 0 3-1.57 3-3.5S17.66 4 16 4s-3 1.57-3 3.5S14.34 11 16 11Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M8 11c1.66 0 3-1.57 3-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M8 13c-2.76 0-5 1.79-5 4v1h10v-1c0-2.21-2.24-4-5-4Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M16 13c-1.1 0-2.12.29-3 .78 1.21.9 2 2.1 2 3.47V19h6v-1c0-2.21-2.24-4-5-4Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-500">Anggota</span>
+            </div>
+            <h3 class="mt-4 text-base font-semibold">Data Anggota</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Kelola data anggota lengkap: foto, NIA, info pribadi, filter per periode.
+            </p>
+          </article>
+
+          <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+            <div class="flex items-start justify-between gap-3">
+              <div class="grid h-12 w-12 place-items-center rounded-2xl bg-orange-500/10 text-orange-700">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M4 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-500">Berkas</span>
+            </div>
+            <h3 class="mt-4 text-base font-semibold">Arsip Berkas Digital</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Enkripsi, search, pagination, dan export Excel (format Indonesia).
+            </p>
+          </article>
+
+          <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+            <div class="flex items-start justify-between gap-3">
+              <div class="grid h-12 w-12 place-items-center rounded-2xl bg-sky-500/10 text-sky-700">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M8 8h8M8 12h6M8 16h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-500">Surat</span>
+            </div>
+            <h3 class="mt-4 text-base font-semibold">Arsip Surat Digital</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Surat masuk/keluar: filter jenis, search, dan pencarian nomor surat.
+            </p>
+          </article>
+
+          <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+            <div class="flex items-start justify-between gap-3">
+              <div class="grid h-12 w-12 place-items-center rounded-2xl bg-violet-500/10 text-violet-700">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M3 11l18-8-8 18-2-7-8-3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-500">Approval</span>
+            </div>
+            <h3 class="mt-4 text-base font-semibold">Pengajuan Surat</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Status pending/diterima/ditolak dan notifikasi otomatis.
+            </p>
+          </article>
+
+          <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+            <div class="flex items-start justify-between gap-3">
+              <div class="grid h-12 w-12 place-items-center rounded-2xl bg-amber-500/10 text-amber-700">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-500">User</span>
+            </div>
+            <h3 class="mt-4 text-base font-semibold">Manajemen User PAC</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Approve akses, verifikasi email, dan monitoring aktivasi akun.
+            </p>
+          </article>
+
+          <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+            <div class="flex items-start justify-between gap-3">
+              <div class="grid h-12 w-12 place-items-center rounded-2xl bg-rose-500/10 text-rose-700">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M8 7V3m8 4V3M4 11h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-500">Jadwal</span>
+            </div>
+            <h3 class="mt-4 text-base font-semibold">Kalender Kegiatan</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Jadwal cabang lengkap: waktu, tempat, dan deskripsi.
+            </p>
+          </article>
+
+          <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+            <div class="flex items-start justify-between gap-3">
+              <div class="grid h-12 w-12 place-items-center rounded-2xl bg-red-500/10 text-red-700">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M4 19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M8 13h8M8 17h5M8 9h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-500">Laporan</span>
+            </div>
+            <h3 class="mt-4 text-base font-semibold">Dashboard & Export</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Statistik real-time & export Excel format tanggal Indonesia.
+            </p>
+          </article>
+
+          <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+            <div class="flex items-start justify-between gap-3">
+              <div class="grid h-12 w-12 place-items-center rounded-2xl bg-brand-600/10 text-brand-700">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 2l8 4v6c0 5-3.5 9.7-8 10-4.5-.3-8-5-8-10V6l8-4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M12 11v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-slate-500">Security</span>
+            </div>
+            <h3 class="mt-4 text-base font-semibold">Keamanan Data</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Role-based access, verifikasi email, dan autentikasi berlapis.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    {{-- ===================== RESOURCES ===================== --}}
+    <section id="resources">
+        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+            <div class="mx-auto max-w-2xl text-center">
+                <div
+                    class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+                    <svg class="h-4 w-4 text-brand-700" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 6v12M6 12h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    Dokumen & Resources
+                </div>
+                <h2 class="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Pusat Sumber Daya</h2>
+                <p class="mt-3 text-slate-600">
+                    Download template surat, format administrasi, peraturan, dan logo resmi IPNU IPPNU Magetan.
+                </p>
+            </div>
+
+            <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <a href="https://drive.google.com/drive/folders/1r-4OOy_5UcDDn6glvgz7NPrr6n5uxbSP" target="_blank" rel="noopener noreferrer"
+                    class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+                    <p class="font-semibold">Format Surat Baru</p>
+                    <p class="mt-1 text-sm text-slate-600">Template surat terbaru sesuai standar PC IPNU IPPNU Magetan.
+                    </p>
+                    <span
+                        class="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-brand-700 group-hover:text-brand-800">
+                        Download Template
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M12 3v10m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </span>
+                </a>
+
+                <a href="https://drive.google.com/drive/folders/1e4__zQjlCTHsT_oIyrxlEeBDLUKm6KP7?usp=sharing" target="_blank" rel="noopener noreferrer"
+                    class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+                    <p class="font-semibold">Administrasi Makesta</p>
+                    <p class="mt-1 text-sm text-slate-600">Format administrasi lengkap untuk Masa Kesetiaan
+                        Anggota.Format administrasi lengkap untuk Masa Kesetiaan Anggota (MAKESTA).
+                    </p>
+                    <span
+                        class="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-brand-700 group-hover:text-brand-800">
+                        Download Format
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M12 3v10m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </span>
+                </a>
+
+                <a href="https://drive.google.com/drive/folders/1cOwGh9FtPg62mDD61b7P097y-FWK-CTz" target="_blank" rel="noopener noreferrer"
+                    class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+                    <p class="font-semibold">Logo Resmi</p>
+                    <p class="mt-1 text-sm text-slate-600">Logo IPNU, IPPNU, dan PC Magetan berbagai format.</p>
+                    <span
+                        class="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-brand-700 group-hover:text-brand-800">
+                        Download Logo
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M12 3v10m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </span>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1uJuqz-Y8CD5RT0cwVNn1V2Db6rI_3FHj" target="_blank" rel="noopener noreferrer"
+                    class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+                    <p class="font-semibold">Peraturan IPNU IPPNU</p>
+                    <p class="mt-1 text-sm text-slate-600">Peraturan organisasi, AD/ART, dan pedoman pelaksanaan
+                        terbaru.
+                    </p>
+                    <span
+                        class="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-brand-700 group-hover:text-brand-800">
+                        Download Template
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M12 3v10m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </span>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1l9Nb5O7hTyKVmuSgG8k13QmiHfBcLGRo" target="_blank" rel="noopener noreferrer"
+                    class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+                    <p class="font-semibold">Format Pengajuan SP</p>
+                    <p class="mt-1 text-sm text-slate-600">Template pengajuan Surat Pengantar dari PAC ke PC Magetan.
+                    </p>
+                    <span
+                        class="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-brand-700 group-hover:text-brand-800">
+                        Download Template
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M12 3v10m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </span>
+                </a>
+                <a href="https://drive.google.com/drive/u/0/folders/1FtsEWTe32t-p1aZI0MV6M5djwfClh468" target="_blank" rel="noopener noreferrer"
+                    class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-soft transition">
+                    <p class="font-semibold">Perlengkapan Lakmud</p>
+                    <p class="mt-1 text-sm text-slate-600">Daftar dan template perlengkapan untuk Latihan Kader Muda
+                        (LAKMUD).
+                    </p>
+                    <span
+                        class="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-brand-700 group-hover:text-brand-800">
+                        Download Template
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M12 3v10m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </span>
+                </a>
+            </div>
+
+            <div class="mt-10 rounded-3xl border border-brand-200 bg-brand-50 p-6 sm:p-8">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold">Butuh Bantuan?</h3>
+                        <p class="mt-1 text-sm text-slate-600">
+                            Hubungi tim kami jika ada pertanyaan seputar dokumen dan resources.
+                        </p>
+                    </div>
+                    <a href="mailto:pelajarnumagetan@gmail.com?subject=Butuh%20Bantuan&body=Halo%20tim,%0ASaya%20ingin%20bertanya%20tentang..."
+                        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-soft hover:bg-brand-700">
+                        Hubungi Kami
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M3 11l18-8-8 18-2-7-8-3Z" stroke="currentColor" stroke-width="2"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
 </div>

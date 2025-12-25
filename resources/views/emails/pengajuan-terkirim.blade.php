@@ -18,8 +18,6 @@
                     <!-- Header Hijau -->
                     <tr>
                         <td style="background:#10b981;padding:40px 30px;text-align:center;">
-                            <img src="https://laci.my.id/images/logo-laci-3.webp" alt="Laci Digital"
-                                style="width:100px;height:100px;border-radius:50%;border:4px solid #ffffff;margin-bottom:16px;object-fit:contain;background:#ffffff;padding:6px;">
                             <h1 style="margin:0;color:#ffffff;font-size:26px;font-weight:700;letter-spacing:-0.5px;">
                                 Pengajuan Berhasil Terkirim
                             </h1>

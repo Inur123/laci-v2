@@ -23,9 +23,6 @@
                     style="max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.08);">
                     <tr>
                         <td style="background:{{ $brand }};padding:36px 30px;text-align:center;">
-                            <img src="https://laci.my.id/images/logo-laci-3.webp" alt="Laci Digital"
-                                style="width:100px;height:100px;border-radius:50%;border:4px solid #ffffff;margin-bottom:16px;object-fit:contain;background:#ffffff;padding:6px;">
-
                             <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:700;">
                                 Status Pengajuan Surat
                             </h1>
