@@ -88,5 +88,13 @@
             <i class="fas fa-users text-lg" :class="sidebarOpen && 'w-6'"></i>
             <span x-show="sidebarOpen" x-transition.opacity class="text-base font-medium">Data Anggota</span>
         </button>
+        <!-- Pengumuman -->
+        <button type="button" @click="Livewire.navigate('{{ route('pac.pengumuman') }}')"
+            class="w-full text-left flex items-center rounded-lg transition cursor-pointer {{ request()->routeIs('pac.pengumuman') ? 'bg-green-600 text-white hover:bg-green-700' : 'text-gray-700 hover:bg-gray-100' }}"
+            :class="sidebarOpen ? 'px-4 py-3 space-x-3' : 'justify-center p-3'">
+            <i class="fas fa-bullhorn text-lg" :class="sidebarOpen && 'w-6'"></i>
+            <span x-show="sidebarOpen" x-transition.opacity class="text-base font-medium">Pengumuman</span>
+        </button>
+
     </nav>
 </div>

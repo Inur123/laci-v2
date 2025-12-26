@@ -91,6 +91,13 @@
                 <i class="fas fa-users text-lg w-6"></i>
                 <span class="text-base font-medium">Data Anggota</span>
             </button>
+            <!-- Pengumuman -->
+            <button type="button" @click="Livewire.navigate('{{ route('pac.pengumuman') }}'); sidebarOpen = false"
+                class="w-full text-left flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('pac.pengumuman') ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                <i class="fas fa-bullhorn text-lg w-6"></i>
+                <span class="text-base font-medium">Pengumuman</span>
+            </button>
+
         </nav>
     </div>
 </div>

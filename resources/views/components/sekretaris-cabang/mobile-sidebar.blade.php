@@ -105,6 +105,12 @@
                 <i class="fas fa-calendar-alt text-lg w-6"></i>
                 <span class="text-base font-medium">Kalender Kegiatan</span>
             </button>
+            <button type="button"
+    @click="Livewire.navigate('{{ route('cabang.pengumuman') }}'); sidebarOpen = false"
+    class="w-full text-left flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('cabang.pengumuman') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+    <i class="fas fa-bullhorn text-lg w-6"></i>
+    <span class="text-base font-medium">Pengumuman</span>
+</button>
         </nav>
     </div>
 </div>

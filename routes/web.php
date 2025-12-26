@@ -23,6 +23,7 @@ use App\Http\Controllers\SekretarisCabang\DetailArsipSurat;
 use App\Http\Controllers\SekretarisCabang\PengajuanPacFileController;
 use App\Http\Controllers\SekretarisCabang\ArsipBerkasSpFileController;
 use App\Http\Controllers\SekretarisCabang\ArsipBerkasCabangFileController;
+use App\Livewire\SekretarisCabang\Pengumuman as CabangPengumuman;
 
 use App\Livewire\SekretarisPac\Dashboard as PacDashboard;
 use App\Livewire\SekretarisPac\ArsipSurat as PacArsipSurat;
@@ -34,6 +35,8 @@ use App\Livewire\SekretarisPac\ReferensiSurat as PacReferensiSurat;
 use App\Http\Controllers\SekretarisPac\DetailArsipSuratPac;
 use App\Http\Controllers\SekretarisPac\DetailPengajuanPacFileController;
 use App\Http\Controllers\SekretarisPac\ArsipBerkasPacFileController as PacArsipBerkasPacFileController;
+use App\Livewire\SekretarisPac\Pengumuman as PacPengumuman;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -118,6 +121,9 @@ Route::middleware(['auth', 'role:sekretaris_cabang'])
             Route::get('/data-anggota', Anggota::class)->name('data-anggota');
             Route::get('/periode', Periode::class)->name('periode');
             Route::get('/kalender-kegiatan', KalenderKegiatan::class)->name('kalender-kegiatan');
+
+
+            Route::get('/pengumuman', CabangPengumuman::class)->name('pengumuman');
         });
 });
 
@@ -148,5 +154,8 @@ Route::middleware(['auth', 'role:sekretaris_pac'])
             Route::get('/referensi-surat', PacReferensiSurat::class)->name('referensi-surat');
             Route::get('/data-anggota', PacAnggota::class)->name('data-anggota');
             Route::get('/periode', PacPeriode::class)->name('periode');
+
+            Route::get('/pengumuman', PacPengumuman::class)->name('pengumuman');
+
         });
 });
