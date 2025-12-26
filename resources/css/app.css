@@ -57,6 +57,8 @@
     --color-gray-50: #f9fafb;
 }
 
+:root { color-scheme: only light; }
+
 /* ===== EXACT COLOR MATCHING - GREEN ===== */
 .bg-green-500 {
     background-color: #22c55e !important;

@@ -90,13 +90,13 @@
                     <div class="mt-5 sm:mt-6 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                         <div class="rounded-2xl border border-slate-200 p-4">
                             <p class="text-xs font-semibold text-slate-500">Anggota Terdaftar</p>
-                            <p class="mt-2 text-2xl sm:text-3xl font-bold">1.248</p>
-                            <p class="mt-1 text-xs text-slate-500">+12 minggu ini</p>
+                            <p class="mt-2 text-2xl sm:text-3xl font-bold">{{ number_format($anggotaTerdaftar, 0, ',', '.') }}</p>
+                            <p class="mt-1 text-xs text-slate-500">Periode ini</p>
                         </div>
 
                         <div class="rounded-2xl border border-slate-200 p-4">
                             <p class="text-xs font-semibold text-slate-500">Surat Diproses</p>
-                            <p class="mt-2 text-2xl sm:text-3xl font-bold">342</p>
+                            <p class="mt-2 text-2xl sm:text-3xl font-bold">{{ number_format($suratDiterima, 0, ',', '.') }}</p>
                             <p class="mt-1 text-xs text-slate-500">Real-time</p>
                         </div>
 
