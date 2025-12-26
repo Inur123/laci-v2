@@ -2,10 +2,10 @@
 <div :class="sidebarOpen ? 'w-64' : 'w-20'"
     class="fixed inset-y-0 left-0 z-50 bg-white shadow-lg transition-all duration-300 hidden lg:block">
     <!-- Logo -->
-    <div class="flex items-center justify-center p-4 h-[77px] border-b border-gray-200">
+    <div class="flex  p-4 h-[77px] border-b border-gray-200">
         <div class="flex items-center space-x-2" :class="!sidebarOpen && 'justify-center w-full'">
             <!-- 🔥 Ganti dengan Image Logo -->
-            <img src="{{ asset('images/logo-laci-3.webp') }}" alt="Logo LACI" class="w-20 h-20 object-contain">
+            <img src="{{ asset('images/logo-laci-new.webp') }}" alt="Logo LACI" class="w-12 h-12 object-contain">
             <span x-show="sidebarOpen" x-transition.opacity class="text-xl font-bold text-gray-800">
                 LACI Cabang
             </span>
@@ -18,8 +18,7 @@
     <!-- Menu -->
     <nav class="p-3 space-y-2 overflow-y-auto h-[calc(100vh-77px)]">
         <!-- Dashboard -->
-        <button type="button"
-            wire:click="$dispatch('navigate', { url: '{{ route('cabang.dashboard') }}' })"
+        <button type="button" wire:click="$dispatch('navigate', { url: '{{ route('cabang.dashboard') }}' })"
             @click="Livewire.navigate('{{ route('cabang.dashboard') }}')"
             class="w-full text-left flex items-center rounded-lg transition cursor-pointer {{ request()->routeIs('cabang.dashboard') ? 'bg-blue-600 text-white hover:bg-blue-700' : 'text-gray-700 hover:bg-gray-100' }}"
             :class="sidebarOpen ? 'px-4 py-3 space-x-3' : 'justify-center p-3'">
@@ -28,8 +27,11 @@
             <!-- Loading Spinner -->
             <div wire:loading wire:target="$dispatch('navigate')" class="ml-auto">
                 <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                        stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
                 </svg>
             </div>
         </button>
@@ -41,7 +43,8 @@
                 :class="sidebarOpen ? 'px-4 py-3 space-x-3' : 'justify-center p-3'">
                 <i class="fas fa-folder text-lg" :class="sidebarOpen && 'w-6'"></i>
                 <span x-show="sidebarOpen" x-transition.opacity class="text-base font-medium flex-1">Arsip</span>
-                <i x-show="sidebarOpen" :class="arsipOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-sm transition-transform"></i>
+                <i x-show="sidebarOpen" :class="arsipOpen ? 'fa-chevron-down' : 'fa-chevron-right'"
+                    class="fas text-sm transition-transform"></i>
             </button>
 
             <!-- Sub Menu -->

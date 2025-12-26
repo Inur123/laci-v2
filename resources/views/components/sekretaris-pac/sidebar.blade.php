@@ -2,14 +2,18 @@
 <div :class="sidebarOpen ? 'w-64' : 'w-20'"
     class="fixed inset-y-0 left-0 z-50 bg-white shadow-lg transition-all duration-300 hidden lg:block">
     <!-- Logo -->
-    <div class="flex items-center justify-center p-4 h-[77px] border-b border-gray-200">
+    <div class="flex p-4 h-[77px] border-b border-gray-200">
         <div class="flex items-center space-x-2" :class="!sidebarOpen && 'justify-center w-full'">
-            <i class="fas fa-users text-2xl text-green-600"></i>
+
+            <!-- ✅ Ganti Icon dengan Logo -->
+            <img src="{{ asset('images/logo-laci-new.webp') }}" alt="Logo LACI" class="w-12 h-12 object-contain">
+
             <span x-show="sidebarOpen" x-transition.opacity class="text-xl font-bold text-gray-800">
                 LACI PAC
             </span>
         </div>
     </div>
+
 
     <!-- Loading Bar saat navigasi -->
     <div wire:loading class="h-1 bg-green-600 animate-pulse"></div>
@@ -17,8 +21,7 @@
     <!-- Menu -->
     <nav class="p-3 space-y-2 overflow-y-auto h-[calc(100vh-77px)]">
         <!-- Dashboard -->
-        <button type="button"
-            @click="Livewire.navigate('{{ route('pac.dashboard') }}')"
+        <button type="button" @click="Livewire.navigate('{{ route('pac.dashboard') }}')"
             class="w-full text-left flex items-center rounded-lg transition cursor-pointer {{ request()->routeIs('pac.dashboard') ? 'bg-green-600 text-white hover:bg-green-700' : 'text-gray-700 hover:bg-gray-100' }}"
             :class="sidebarOpen ? 'px-4 py-3 space-x-3' : 'justify-center p-3'">
             <i class="fas fa-home text-lg" :class="sidebarOpen && 'w-6'"></i>
@@ -32,7 +35,8 @@
                 :class="sidebarOpen ? 'px-4 py-3 space-x-3' : 'justify-center p-3'">
                 <i class="fas fa-folder text-lg" :class="sidebarOpen && 'w-6'"></i>
                 <span x-show="sidebarOpen" x-transition.opacity class="text-base font-medium flex-1">Arsip</span>
-                <i x-show="sidebarOpen" :class="arsipOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-sm transition-transform"></i>
+                <i x-show="sidebarOpen" :class="arsipOpen ? 'fa-chevron-down' : 'fa-chevron-right'"
+                    class="fas text-sm transition-transform"></i>
             </button>
 
             <!-- Sub Menu -->

@@ -1,11 +1,9 @@
-<!doctype html>
-<html lang="id" class="scroll-smooth">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Laci Digital - Sistem Informasi Manajemen PC IPNU IPPNU Magetan</title>
+
     <meta name="description"
         content="Platform manajemen organisasi terintegrasi untuk PC IPNU IPPNU Kabupaten Magetan. Kelola data anggota, surat menyurat, dan administrasi dengan aman dan terenkripsi. Sistem approval otomatis dengan notifikasi email.">
     <meta name="keywords"
@@ -44,47 +42,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 
-    <!-- Preload logo untuk loading screen -->
     <link rel="preload" href="{{ asset('images/logo-laci-3-1.png') }}" as="image">
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-
-    @vite('resources/js/app.js')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['ui-sans-serif', 'system-ui', 'Inter', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial',
-                            'Apple Color Emoji', 'Segoe UI Emoji'
-                        ]
-                    },
-                    colors: {
-                        brand: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            200: '#bbf7d0',
-                            300: '#86efac',
-                            400: '#4ade80',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
-                            900: '#14532d'
-                        }
-                    },
-                    boxShadow: {
-                        soft: '0 10px 30px rgba(2, 44, 20, 0.10)',
-                    }
-                }
-            }
-        }
-    </script>
-
-    <!-- Alpine.js -->
-
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         [x-cloak] {
@@ -100,7 +61,7 @@
     </style>
 </head>
 
-<body class="bg-white text-slate-900 antialiased">
+<body class="bg-white text-slate-900 antialiased font-[Inter]">
     <div class="noise pointer-events-none fixed inset-0 -z-10"></div>
 
     <x-home.navbar />

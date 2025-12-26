@@ -81,10 +81,6 @@
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <p class="font-medium">{{ $periode->nama }}</p>
-                                        <p class="text-sm {{ $periodeAktif == $periode->id ? 'text-green-600' : 'text-gray-500' }}">
-                                            {{ \Carbon\Carbon::parse($periode->tanggal_mulai)->format('d M Y') }} -
-                                            {{ \Carbon\Carbon::parse($periode->tanggal_selesai)->format('d M Y') }}
-                                        </p>
                                     </div>
                                     @if($periodeAktif == $periode->id)
                                         <div class="flex items-center gap-2">

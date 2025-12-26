@@ -9,10 +9,10 @@
         x-transition:leave="transition ease-in duration-300 transform" x-transition:leave-start="translate-x-0"
         x-transition:leave-end="-translate-x-full" class="fixed inset-y-0 left-0 w-72 bg-white shadow-lg">
         <!-- Logo -->
-       <div class="flex items-center justify-between p-4 h-[77px] border-b border-gray-200">
+        <div class="flex items-center justify-between p-4 h-[77px] border-b border-gray-200">
             <div class="flex items-center space-x-3">
                 <!-- 🔥 Ganti dengan Image Logo -->
-                <img src="{{ asset('images/logo-laci-3.webp') }}" alt="Logo LACI" class="w-20 h-20 object-contain">
+                <img src="{{ asset('images/logo-laci-new.webp') }}" alt="Logo LACI" class="w-12 h-12 object-contain">
                 <span class="text-xl font-bold text-gray-800">LACI Cabang</span>
             </div>
             <button @click="sidebarOpen = false" class="text-gray-600 hover:text-gray-800 p-2">
@@ -35,27 +35,31 @@
                     class="w-full text-left flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('cabang.arsip-surat*') || request()->routeIs('cabang.arsip-berkas*') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-folder text-lg w-6"></i>
                     <span class="text-base font-medium flex-1">Arsip</span>
-                    <i :class="arsipOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-sm transition-transform"></i>
+                    <i :class="arsipOpen ? 'fa-chevron-down' : 'fa-chevron-right'"
+                        class="fas text-sm transition-transform"></i>
                 </button>
 
                 <!-- Sub Menu -->
                 <div x-show="arsipOpen" x-transition.opacity class="ml-4 mt-1 space-y-1">
                     <!-- Arsip Surat -->
-                    <button type="button" @click="Livewire.navigate('{{ route('cabang.arsip-surat') }}'); sidebarOpen = false"
+                    <button type="button"
+                        @click="Livewire.navigate('{{ route('cabang.arsip-surat') }}'); sidebarOpen = false"
                         class="w-full text-left flex items-center px-4 py-2 rounded-lg transition {{ request()->routeIs('cabang.arsip-surat') ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
                         <i class="fas fa-file-alt text-sm w-6"></i>
                         <span class="text-sm">Arsip Surat</span>
                     </button>
 
                     <!-- Arsip Berkas SP -->
-                    <button type="button" @click="Livewire.navigate('{{ route('cabang.arsip-berkas-sp') }}'); sidebarOpen = false"
+                    <button type="button"
+                        @click="Livewire.navigate('{{ route('cabang.arsip-berkas-sp') }}'); sidebarOpen = false"
                         class="w-full text-left flex items-center px-4 py-2 rounded-lg transition {{ request()->routeIs('cabang.arsip-berkas-sp') ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
                         <i class="fas fa-file-archive text-sm w-6"></i>
                         <span class="text-sm">Berkas SP</span>
                     </button>
 
                     <!-- Arsip Berkas Cabang -->
-                    <button type="button" @click="Livewire.navigate('{{ route('cabang.arsip-berkas-cabang') }}'); sidebarOpen = false"
+                    <button type="button"
+                        @click="Livewire.navigate('{{ route('cabang.arsip-berkas-cabang') }}'); sidebarOpen = false"
                         class="w-full text-left flex items-center px-4 py-2 rounded-lg transition {{ request()->routeIs('cabang.arsip-berkas-cabang') ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
                         <i class="fas fa-folder-open text-sm w-6"></i>
                         <span class="text-sm">Berkas Cabang</span>
@@ -87,7 +91,8 @@
             </button>
 
             <!-- Data Anggota -->
-            <button type="button" @click="Livewire.navigate('{{ route('cabang.data-anggota') }}'); sidebarOpen = false"
+            <button type="button"
+                @click="Livewire.navigate('{{ route('cabang.data-anggota') }}'); sidebarOpen = false"
                 class="w-full text-left flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('cabang.data-anggota') ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                 <i class="fas fa-users text-lg w-6"></i>
                 <span class="text-base font-medium">Data Anggota</span>
