@@ -18,7 +18,6 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="color-scheme" content="only light">
 
-
     <!-- ✅ PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#22c55e">
@@ -171,6 +170,28 @@
         }
     </script>
 
-</body>
+    <!-- ✅ Chatwoot Live Chat (tambahkan sebelum </body>) -->
+    <script>
+      window.chatwootSettings = {
+        locale: "id",
+        position: "right",
+        type: "standard"
+      };
 
+      (function(d,t) {
+        var BASE_URL="https://app.chatwoot.com";
+        var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.src=BASE_URL+"/packs/js/sdk.js";
+        g.async = true;
+        s.parentNode.insertBefore(g,s);
+        g.onload=function(){
+          window.chatwootSDK.run({
+            websiteToken: '6w6b9zuUzKyUto29zKxjRhSr',
+            baseUrl: BASE_URL
+          })
+        }
+      })(document,"script");
+    </script>
+
+</body>
 </html>

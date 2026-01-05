@@ -2,16 +2,17 @@
 
 namespace App\Mail;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Attachment;
 use App\Models\PengajuanSuratPac;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue; // <-- tambah
+use Illuminate\Mail\Attachment;
+use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 
-class PengajuanSuratBaruMail extends Mailable
+class PengajuanSuratBaruMail extends Mailable implements ShouldQueue // <-- tambah
 {
     use Queueable, SerializesModels;
 
@@ -22,6 +23,9 @@ class PengajuanSuratBaruMail extends Mailable
     {
         $this->pengajuan = $pengajuan;
         $this->user = $pengajuan->user;
+
+        // opsional: taruh di queue khusus 'emails'
+        $this->onQueue('emails');
     }
 
     public function envelope(): Envelope
@@ -34,7 +38,7 @@ class PengajuanSuratBaruMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.pengajuan-surat-baru', // Ganti ke HTML view
+            view: 'emails.pengajuan-surat-baru',
             with: [
                 'pengajuan' => $this->pengajuan,
                 'user'      => $this->user,
