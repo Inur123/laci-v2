@@ -2,17 +2,16 @@
 
 namespace App\Mail;
 
-use App\Models\PengajuanSuratPac;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue; // <-- tambah
-use Illuminate\Mail\Attachment;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Attachment;
+use App\Models\PengajuanSuratPac;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Support\Facades\Storage;
 
-class PengajuanStatusMail extends Mailable implements ShouldQueue // <-- tambah
+class PengajuanStatusMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -21,15 +20,11 @@ class PengajuanStatusMail extends Mailable implements ShouldQueue // <-- tambah
     public function __construct(PengajuanSuratPac $pengajuan)
     {
         $this->pengajuan = $pengajuan->load('user');
-
-        // opsional: taruh di queue khusus 'emails' (samakan)
-        $this->onQueue('emails');
     }
 
     public function envelope(): Envelope
     {
         $label = $this->pengajuan->status === 'diterima' ? 'Diterima' : 'Ditolak';
-
         return new Envelope(
             subject: "Status Pengajuan Anda: {$label} - " . $this->pengajuan->no_surat,
         );

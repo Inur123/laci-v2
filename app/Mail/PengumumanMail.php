@@ -2,15 +2,10 @@
 
 namespace App\Mail;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
 
-class PengumumanMail extends Mailable implements ShouldQueue
+class PengumumanMail extends Mailable
 {
-    use Queueable, SerializesModels;
-
     public string $judul;
     public string $isi;
     public string $pengirim;
@@ -20,13 +15,11 @@ class PengumumanMail extends Mailable implements ShouldQueue
         $this->judul = $judul;
         $this->isi = $isi;
         $this->pengirim = $pengirim;
-
-        // opsional: taruh di queue khusus 'emails'
-        $this->onQueue('emails');
     }
 
     public function build()
     {
+        // otomatis pakai MAIL_FROM_NAME & MAIL_FROM_ADDRESS dari .env
         return $this->subject($this->judul)
             ->view('emails.pengumuman');
     }

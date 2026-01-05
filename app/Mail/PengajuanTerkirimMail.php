@@ -2,17 +2,16 @@
 
 namespace App\Mail;
 
-use App\Models\PengajuanSuratPac;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue; // <-- tambah
-use Illuminate\Mail\Attachment;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Attachment;
+use App\Models\PengajuanSuratPac;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Support\Facades\Storage;
 
-class PengajuanTerkirimMail extends Mailable implements ShouldQueue // <-- tambah
+class PengajuanTerkirimMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -21,9 +20,6 @@ class PengajuanTerkirimMail extends Mailable implements ShouldQueue // <-- tamba
     public function __construct(PengajuanSuratPac $pengajuan)
     {
         $this->pengajuan = $pengajuan->load('user');
-
-        // opsional: kalau mau masuk queue khusus 'emails'
-        $this->onQueue('emails');
     }
 
     public function envelope(): Envelope
