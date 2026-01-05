@@ -171,7 +171,7 @@
     </script>
 
     <!-- ✅ Chatwoot Live Chat (tambahkan sebelum </body>) -->
-    <script>
+    {{-- <script>
       window.chatwootSettings = {
         locale: "id",
         position: "right",
@@ -191,7 +191,7 @@
           })
         }
       })(document,"script");
-    </script>
+    </script> --}}
 
 </body>
 </html>
