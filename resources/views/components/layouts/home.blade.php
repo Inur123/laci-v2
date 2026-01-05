@@ -77,7 +77,7 @@
     <div class="noise pointer-events-none fixed inset-0 -z-10"></div>
 
     <!-- ✅ PWA Install Modal (selalu muncul tiap web dibuka) -->
-    <div x-data="pwaInstallModal()" x-show="show" x-cloak x-init="init()"
+    {{-- <div x-data="pwaInstallModal()" x-show="show" x-cloak x-init="init()"
         class="fixed inset-0 z-[999] flex items-start justify-center px-4 pt-6 sm:pt-10">
 
         <!-- overlay -->
@@ -115,7 +115,7 @@
                 </button>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <x-home.navbar />
 
