@@ -150,8 +150,8 @@ class PengajuanSurat extends Component
         $pengajuan = PengajuanSuratPac::create($data)->load('user');
 
         // Kirim email
-        Mail::to('zainurroziqin38@gmail.com')->send(new PengajuanSuratBaruMail($pengajuan));
-        Mail::to($pengajuan->user->email)->send(new PengajuanTerkirimMail($pengajuan));
+        Mail::to('zainurroziqin38@gmail.com')->queue(new PengajuanSuratBaruMail($pengajuan));
+        Mail::to($pengajuan->user->email)->queue(new PengajuanTerkirimMail($pengajuan));
 
         // Dispatch event untuk realtime update di Cabang
         $this->dispatch('pengajuanPacUpdated');

@@ -102,10 +102,10 @@ class Pengumuman extends Component
         $this->validate();
 
         PengumumanModel::create([
-            'user_id' => $user->id,
-            'periode_id' => $user->periode_aktif_id,
-            'judul' => $this->judul,
-            'isi' => $this->isi,
+            'user_id'     => $user->id,
+            'periode_id'  => $user->periode_aktif_id,
+            'judul'       => $this->judul,
+            'isi'         => $this->isi,
         ]);
 
         $this->dispatch('flash', [
@@ -155,7 +155,7 @@ class Pengumuman extends Component
 
         $p->update([
             'judul' => $this->judul,
-            'isi' => $this->isi,
+            'isi'   => $this->isi,
         ]);
 
         $this->dispatch('flash', [
@@ -167,15 +167,9 @@ class Pengumuman extends Component
         $this->reset(['judul', 'isi', 'pengumumanId']);
     }
 
-    /**
-     * ✅ DESTROY: draft & terkirim boleh dihapus (hapus DB saja)
-     * - hapus recipients dulu (aman untuk FK non-cascade)
-     * - lalu hapus pengumuman
-     */
     public function destroy($id)
     {
         $user = Auth::user();
-
         $p = PengumumanModel::where('user_id', $user->id)->find($id);
         if (!$p) return;
 
@@ -186,7 +180,6 @@ class Pengumuman extends Component
             $p->delete();
         });
 
-        // kalau modal detail lagi buka untuk item ini, tutup
         if ($this->showDetailModal && $this->selectedPengumuman && $this->selectedPengumuman->id === $id) {
             $this->closeDetail();
         }
@@ -197,9 +190,6 @@ class Pengumuman extends Component
         ]);
     }
 
-    /**
-     * ✅ Alias biar JS lama @this.call('delete', id) tetap jalan
-     */
     public function delete($id)
     {
         return $this->destroy($id);
@@ -225,6 +215,14 @@ class Pengumuman extends Component
         $this->selectedPengumuman = null;
     }
 
+    /**
+     * ✅ Event untuk menutup Swal progress (animasi)
+     */
+    private function closeProgress(): void
+    {
+        $this->dispatch('close-progress');
+    }
+
     private function swalSendSuccess(string $title, string $message): void
     {
         $this->dispatch('pengumuman-terkirim', title: $title, message: $message);
@@ -235,6 +233,36 @@ class Pengumuman extends Component
         $this->dispatch('pengumuman-gagal', title: $title, message: $message, icon: $icon);
     }
 
+    /**
+     * ✅ Helper: tutup progress + flash + swal fail → return
+     */
+    private function failReturn(string $flashType, string $flashMessage, string $swalTitle, string $swalIcon = 'error')
+    {
+        $this->dispatch('flash', [
+            'type'    => $flashType,
+            'message' => $flashMessage
+        ]);
+
+        $this->closeProgress();
+        $this->swalSendFail($swalTitle, $flashMessage, $swalIcon);
+        return;
+    }
+
+    /**
+     * ✅ Helper: tutup progress + flash + swal success
+     */
+    private function successReturn(string $flashMessage, string $swalTitle = 'Berhasil')
+    {
+        $this->dispatch('flash', [
+            'type'    => 'success',
+            'message' => $flashMessage
+        ]);
+
+        $this->closeProgress();
+        $this->swalSendSuccess($swalTitle, $flashMessage);
+        return;
+    }
+
     public function kirimEmail($id)
     {
         @set_time_limit(0);
@@ -243,11 +271,12 @@ class Pengumuman extends Component
         $p = PengumumanModel::where('user_id', $pengirim->id)->findOrFail($id);
 
         if ($p->sent_at) {
-            $msg = 'Pengumuman ini sudah terkirim.';
-
-            $this->dispatch('flash', ['type' => 'warning', 'message' => $msg]);
-            $this->swalSendFail('Sudah terkirim', $msg, 'warning');
-            return;
+            return $this->failReturn(
+                'warning',
+                'Pengumuman ini sudah terkirim.',
+                'Sudah terkirim',
+                'warning'
+            );
         }
 
         $periodeId = $p->periode_id;
@@ -259,28 +288,25 @@ class Pengumuman extends Component
             ->whereNotNull('email')
             ->whereNotNull('periode_aktif_id');
 
-        // (Opsional - kalau memang harus 1 periode yang sama, aktifkan ini)
-        // ->where('periode_aktif_id', $periodeId);
-
         $totalTarget = (clone $q)->count();
 
         Log::info('PENGUMUMAN_SEND_START', [
             'pengumuman_id' => $p->id,
-            'pengirim_id' => $pengirim->id,
-            'periode_id' => $periodeId,
-            'total_target' => $totalTarget,
-            'time' => now()->toDateTimeString(),
+            'pengirim_id'   => $pengirim->id,
+            'periode_id'    => $periodeId,
+            'total_target'  => $totalTarget,
+            'time'          => now()->toDateTimeString(),
         ]);
 
         if ($totalTarget === 0) {
-            $msg = 'Tidak ada penerima (PAC) yang aktif & email sudah verified pada periode ini.';
-
-            $this->dispatch('flash', ['type' => 'warning', 'message' => $msg]);
-            $this->swalSendFail('Tidak ada penerima', $msg, 'warning');
-            return;
+            return $this->failReturn(
+                'warning',
+                'Tidak ada penerima (PAC) yang aktif & email sudah verified pada periode ini.',
+                'Tidak ada penerima',
+                'warning'
+            );
         }
 
-        // ✅ bersihkan log lama (biar 1 pengumuman = 1 history pengiriman)
         PengumumanRecipient::where('pengumuman_id', $p->id)->delete();
 
         $sent = 0;
@@ -291,47 +317,50 @@ class Pengumuman extends Component
             $q->select('id', 'email')
                 ->orderBy('id')
                 ->chunk(100, function ($users) use (&$sent, &$failed, $p, $namaPengirim) {
+
                     $rows = [];
                     $ts = now();
 
                     foreach ($users as $u) {
                         try {
-                            Mail::to($u->email)->send(
+                            Mail::to($u->email)->queue(
                                 new PengumumanMail($p->judul, $p->isi, $namaPengirim)
                             );
+
                             $sent++;
 
                             $rows[] = [
-                                'id' => (string) \Illuminate\Support\Str::uuid(),
-                                'pengumuman_id' => $p->id,
-                                'user_id' => $u->id,
-                                'email' => $u->email,
-                                'status' => 'sent',
-                                'error_message' => null,
-                                'sent_at' => $ts,
-                                'created_at' => $ts,
-                                'updated_at' => $ts,
+                                'id'            => (string) \Illuminate\Support\Str::uuid(),
+                                'pengumuman_id'  => $p->id,
+                                'user_id'        => $u->id,
+                                'email'          => $u->email,
+                                'status'         => 'sent',
+                                'error_message'  => null,
+                                'sent_at'        => $ts,
+                                'created_at'     => $ts,
+                                'updated_at'     => $ts,
                             ];
+
                         } catch (\Exception $e) {
                             $failed++;
 
                             Log::warning('PENGUMUMAN_SEND_FAILED', [
-                                'pengumuman_id' => $p->id,
-                                'target_user_id' => $u->id,
-                                'target_email' => $u->email,
-                                'error' => $e->getMessage(),
+                                'pengumuman_id'   => $p->id,
+                                'target_user_id'  => $u->id,
+                                'target_email'    => $u->email,
+                                'error'           => $e->getMessage(),
                             ]);
 
                             $rows[] = [
-                                'id' => (string) \Illuminate\Support\Str::uuid(),
-                                'pengumuman_id' => $p->id,
-                                'user_id' => $u->id,
-                                'email' => $u->email,
-                                'status' => 'failed',
-                                'error_message' => $e->getMessage(),
-                                'sent_at' => null,
-                                'created_at' => $ts,
-                                'updated_at' => $ts,
+                                'id'            => (string) \Illuminate\Support\Str::uuid(),
+                                'pengumuman_id'  => $p->id,
+                                'user_id'        => $u->id,
+                                'email'          => $u->email,
+                                'status'         => 'failed',
+                                'error_message'  => $e->getMessage(),
+                                'sent_at'        => null,
+                                'created_at'     => $ts,
+                                'updated_at'     => $ts,
                             ];
                         }
                     }
@@ -340,45 +369,48 @@ class Pengumuman extends Component
                         PengumumanRecipient::insert($rows);
                     }
                 });
+
         } catch (\Throwable $e) {
             report($e);
 
-            $msg = 'Terjadi kesalahan saat proses pengiriman. Cek log Laravel.';
-            $this->dispatch('flash', ['type' => 'error', 'message' => $msg]);
-            $this->swalSendFail('Gagal mengirim', $msg, 'error');
-            return;
+            return $this->failReturn(
+                'error',
+                'Terjadi kesalahan saat proses pengiriman. Cek log Laravel.',
+                'Gagal mengirim',
+                'error'
+            );
         }
 
         Log::info('PENGUMUMAN_SEND_FINISH', [
             'pengumuman_id' => $p->id,
-            'total_target' => $totalTarget,
-            'sent' => $sent,
-            'failed' => $failed,
-            'time' => now()->toDateTimeString(),
+            'total_target'  => $totalTarget,
+            'sent'          => $sent,
+            'failed'        => $failed,
+            'time'          => now()->toDateTimeString(),
         ]);
 
         if ($sent === 0) {
             $p->update([
                 'sent_to_count' => 0,
-                'sent_at' => null,
+                'sent_at'       => null,
             ]);
 
-            $msg = "Gagal mengirim pengumuman. Berhasil: {$sent}, Gagal: {$failed}. Cek log Laravel.";
-            $this->dispatch('flash', ['type' => 'error', 'message' => $msg]);
-            $this->swalSendFail('Gagal mengirim', $msg, 'error');
-            return;
+            return $this->failReturn(
+                'error',
+                "Gagal mengirim pengumuman. Berhasil: {$sent}, Gagal: {$failed}. Cek log Laravel.",
+                'Gagal mengirim',
+                'error'
+            );
         }
 
         $p->update([
             'sent_to_count' => $sent,
-            'sent_at' => now(),
+            'sent_at'       => now(),
         ]);
 
         $msg = "Pengumuman terkirim. Target: {$totalTarget}, Berhasil: {$sent}, Gagal: {$failed}.";
-        $this->dispatch('flash', ['type' => 'success', 'message' => $msg]);
-        $this->swalSendSuccess('Terkirim', $msg);
+        $this->successReturn($msg, 'Terkirim');
 
-        // ✅ kalau modal detail sedang buka, refresh data recipients juga
         if ($this->showDetailModal && $this->selectedPengumuman && $this->selectedPengumuman->id === $id) {
             $this->selectedPengumuman = PengumumanModel::with(['recipients' => function ($q) {
                 $q->latest()->limit(300);
@@ -399,8 +431,8 @@ class Pengumuman extends Component
         $all = $query->get();
 
         return [
-            'total' => $all->count(),
-            'draft' => $all->whereNull('sent_at')->count(),
+            'total'    => $all->count(),
+            'draft'    => $all->whereNull('sent_at')->count(),
             'terkirim' => $all->whereNotNull('sent_at')->count(),
         ];
     }

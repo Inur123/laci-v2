@@ -32,7 +32,7 @@
     <meta property="og:title" content="Laci Digital - Sistem Informasi Manajemen PC IPNU IPPNU Magetan">
     <meta property="og:description"
         content="Platform manajemen organisasi terintegrasi untuk PC IPNU IPPNU Kabupaten Magetan. Kelola data anggota, surat menyurat, dan administrasi dengan aman dan terenkripsi.">
-    <meta property="og:image" content="{{ asset('images/logo-laci-3-1.png') }}">
+    <meta property="og:image" content="{{ asset('images/logo-laci-new.webp') }}">
     <meta property="og:locale" content="id_ID">
     <meta property="og:site_name" content="Laci Digital">
 
@@ -42,19 +42,19 @@
     <meta name="twitter:title" content="Laci Digital - Sistem Informasi Manajemen PC IPNU IPPNU Magetan">
     <meta name="twitter:description"
         content="Platform manajemen organisasi terintegrasi untuk PC IPNU IPPNU Kabupaten Magetan dengan enkripsi data lengkap.">
-    <meta name="twitter:image" content="{{ asset('images/logo-laci-3-1.png') }}">
+    <meta name="twitter:image" content="{{ asset('images/logo-laci-new.webp') }}">
 
     <!-- Icon -->
     <link rel="canonical" href="{{ url('/') }}">
     <link rel="icon" type="image/webp" href="{{ asset('images/logo-laci-3.webp') }}?v={{ time() }}" />
     <link rel="shortcut icon" type="image/webp" href="{{ asset('images/logo-laci-3.webp') }}?v={{ time() }}" />
-    <link rel="apple-touch-icon" href="{{ asset('images/logo-laci-3-1.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo-laci-new.webp') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="preload" href="{{ asset('images/logo-laci-3-1.png') }}" as="image">
+    <link rel="preload" href="{{ asset('images/logo-laci-new.webp') }}" as="image">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])

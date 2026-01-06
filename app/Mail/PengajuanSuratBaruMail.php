@@ -10,8 +10,9 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class PengajuanSuratBaruMail extends Mailable
+class PengajuanSuratBaruMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -41,7 +42,6 @@ class PengajuanSuratBaruMail extends Mailable
             ],
         );
     }
-
     public function attachments(): array
     {
         if (!$this->pengajuan->file) {
@@ -54,7 +54,12 @@ class PengajuanSuratBaruMail extends Mailable
             return [];
         }
 
-        $decryptedContent = decrypt(file_get_contents($filePath));
+        try {
+            $decryptedContent = decrypt(file_get_contents($filePath));
+        } catch (\Throwable $e) {
+            return [];
+        }
+
         $fileName = $this->pengajuan->no_surat . '.pdf';
 
         return [

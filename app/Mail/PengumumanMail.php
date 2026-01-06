@@ -2,10 +2,15 @@
 
 namespace App\Mail;
 
+use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class PengumumanMail extends Mailable
+class PengumumanMail extends Mailable implements ShouldQueue
 {
+    use Queueable, SerializesModels;
+
     public string $judul;
     public string $isi;
     public string $pengirim;
@@ -19,7 +24,6 @@ class PengumumanMail extends Mailable
 
     public function build()
     {
-        // otomatis pakai MAIL_FROM_NAME & MAIL_FROM_ADDRESS dari .env
         return $this->subject($this->judul)
             ->view('emails.pengumuman');
     }

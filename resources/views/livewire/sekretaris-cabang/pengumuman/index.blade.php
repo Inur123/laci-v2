@@ -581,6 +581,11 @@
         if (window.__pengumumanSwalListenerInstalled) return;
         window.__pengumumanSwalListenerInstalled = true;
 
+        // ✅ Tutup swal progress kapan pun disuruh livewire
+        Livewire.on('close-progress', () => {
+            Swal.close();
+        });
+
         Livewire.on('pengumuman-terkirim', (payload = {}) => {
             Swal.close();
             Swal.fire({
@@ -590,7 +595,6 @@
             });
         });
 
-        // ✅ FIX: icon mengikuti payload.icon
         Livewire.on('pengumuman-gagal', (payload = {}) => {
             Swal.close();
             Swal.fire({

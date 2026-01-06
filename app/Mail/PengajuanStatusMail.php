@@ -10,8 +10,9 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class PengajuanStatusMail extends Mailable
+class PengajuanStatusMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 

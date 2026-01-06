@@ -129,7 +129,7 @@ class PengajuanPac extends Component
             // Kirim email (jangan gagalkan proses jika error)
             try {
                 if ($surat->user && $surat->user->email) {
-                    Mail::to($surat->user->email)->send(new PengajuanStatusMail($surat));
+                    Mail::to($surat->user->email)->queue(new PengajuanStatusMail($surat));
                 }
             } catch (\Exception $mailEx) {
                 // optional: log

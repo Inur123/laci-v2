@@ -60,13 +60,9 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
+    return redirect()->route('edit-profile');
+})->middleware(['auth'])->name('verification.verify');
 
-    return match ($request->user()->role) {
-        'sekretaris_cabang' => redirect()->route('cabang.dashboard'),
-        'sekretaris_pac' => redirect()->route('pac.dashboard'),
-        default => redirect('/dashboard'),
-    };
-})->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
