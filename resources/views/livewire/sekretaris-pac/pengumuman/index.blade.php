@@ -37,8 +37,7 @@
         <div class="grid grid-cols-1 gap-3">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari Pengumuman</label>
-                <input type="text" wire:model.live.debounce.500ms="search"
-                    placeholder="Judul atau isi..."
+                <input type="text" wire:model.live.debounce.500ms="search" placeholder="Judul atau isi..."
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
             </div>
         </div>
@@ -57,11 +56,18 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-16">No</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Judul</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden md:table-cell">Pengirim</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Terkirim</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Aksi</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-16">
+                            No</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            Judul</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden md:table-cell">
+                            Pengirim</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            Terkirim</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            Aksi</th>
                     </tr>
                 </thead>
 
@@ -75,9 +81,6 @@
                             <td class="px-4 py-3 text-sm">
                                 <div class="font-semibold text-gray-800 whitespace-nowrap">
                                     {{ \Illuminate\Support\Str::limit($p->judul, 40) }}
-                                </div>
-                                <div class="text-xs text-gray-500 max-w-xl truncate" title="{{ $p->isi }}">
-                                    {{ \Illuminate\Support\Str::limit($p->isi, 80) }}
                                 </div>
                             </td>
 
@@ -105,7 +108,7 @@
                             <td colspan="5" class="px-4 py-12 text-center text-gray-500">
                                 <i class="fas fa-inbox text-4xl mb-3 block"></i>
                                 <p class="text-base">Belum ada pengumuman</p>
-                                @if($search)
+                                @if ($search)
                                     <p class="text-sm mt-2">Coba ubah kata kunci pencarian Anda</p>
                                 @endif
                             </td>
@@ -145,7 +148,7 @@
                             $start = max(1, $current - 2);
                             $end = min($last, $current + 2);
 
-                            if (($end - $start) < 4) {
+                            if ($end - $start < 4) {
                                 if ($start == 1) {
                                     $end = min($last, $start + 4);
                                 } elseif ($end == $last) {
@@ -213,10 +216,13 @@
     @if ($showDetailModal && $selectedPengumuman)
         <div class="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
             wire:click="closeDetail">
+
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl h-[95vh] sm:h-auto sm:max-h-[90vh] flex flex-col overflow-hidden"
                 wire:click.stop>
 
-                <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-shrink-0 shadow-lg">
+                {{-- Header --}}
+                <div
+                    class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-shrink-0 shadow-lg">
                     <div class="flex items-center gap-3">
                         <div class="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
                             <i class="fas fa-bullhorn text-white text-lg"></i>
@@ -226,15 +232,20 @@
                             <p class="text-blue-100 text-xs sm:text-sm">{{ $selectedPengumuman->judul }}</p>
                         </div>
                     </div>
+
                     <button wire:click="closeDetail"
                         class="text-white/80 hover:text-white transition p-2 hover:bg-white/10 rounded-lg cursor-pointer">
                         <i class="fas fa-times text-lg sm:text-xl"></i>
                     </button>
                 </div>
 
+                {{-- Body --}}
                 <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+
+                    {{-- Status --}}
                     <div class="flex flex-wrap gap-2">
-                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800 shadow-lg">
+                        <span
+                            class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800 shadow-lg">
                             <i class="fas fa-check mr-2"></i>Terkirim
                         </span>
                     </div>
@@ -242,39 +253,83 @@
                     {{-- Pengirim --}}
                     <div class="bg-white rounded-lg border border-gray-200 p-4">
                         <p class="text-xs text-gray-600 font-medium mb-2">Pengirim (Sekretaris Cabang)</p>
-                        <p class="text-sm font-semibold text-gray-800">{{ $selectedPengumuman->user?->name ?? '-' }}</p>
+                        <p class="text-sm font-semibold text-gray-800">{{ $selectedPengumuman->user?->name ?? '-' }}
+                        </p>
                         <p class="text-xs text-gray-500">{{ $selectedPengumuman->user?->email ?? '-' }}</p>
                     </div>
 
+                    {{-- Isi Pengumuman (Support HTML / Plain) --}}
                     <div class="bg-gray-50 rounded-lg p-5 border border-gray-200">
                         <p class="text-xs text-gray-600 font-medium mb-2">Isi Pengumuman</p>
-                        <p class="text-gray-800 leading-relaxed whitespace-pre-wrap">{{ $selectedPengumuman->isi }}</p>
+
+                        @php
+                            $isi = $selectedPengumuman->isi ?? '';
+
+                            // deteksi HTML
+                            $isHtml = $isi !== strip_tags($isi);
+
+                            // hapus conditional comment outlook (mso)
+                            $cleanHtml = preg_replace('/<!--\[if.*?\[endif\]-->/is', '', $isi);
+
+                            // kalau ada body, ambil hanya isi <body>
+                            if (preg_match('/<body[^>]*>(.*?)<\/body>/is', $cleanHtml, $m)) {
+                                $cleanHtml = $m[1];
+                            }
+                        @endphp
+
+                        @if ($isHtml)
+                            <div class="prose max-w-none text-gray-800">
+                                {!! $cleanHtml !!}
+                            </div>
+                        @else
+                            <p class="text-gray-800 leading-relaxed whitespace-pre-wrap">
+                                {!! nl2br(e($isi)) !!}
+                            </p>
+                        @endif
                     </div>
 
+                    {{-- Waktu --}}
                     <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200">
                         <div class="space-y-3">
+
+                            {{-- Dibuat --}}
                             <div class="flex items-center gap-3">
                                 <i class="fas fa-clock text-gray-400 text-sm"></i>
                                 <div>
                                     <p class="text-xs text-gray-500">Dibuat</p>
-                                    <p class="text-sm font-medium text-gray-800">{{ $selectedPengumuman->created_at->format('d F Y, H:i') }}</p>
+                                    <p class="text-sm font-medium text-gray-800">
+                                        {{ $selectedPengumuman->created_at->format('d F Y, H:i') }}
+                                    </p>
+                                    <p class="text-xs text-gray-500">
+                                        {{ $selectedPengumuman->created_at->diffForHumans() }}
+                                    </p>
                                 </div>
                             </div>
 
                             <div class="border-t border-gray-200"></div>
 
+                            {{-- Terkirim --}}
                             <div class="flex items-center gap-3">
                                 <i class="fas fa-paper-plane text-gray-400 text-sm"></i>
                                 <div>
                                     <p class="text-xs text-gray-500">Terkirim</p>
-                                    <p class="text-sm font-medium text-gray-800">{{ $selectedPengumuman->sent_at->format('d F Y, H:i') }}</p>
+                                    <p class="text-sm font-medium text-gray-800">
+                                        {{ $selectedPengumuman->sent_at->format('d F Y, H:i') }}
+                                    </p>
+                                    <p class="text-xs text-gray-500">
+                                        {{ $selectedPengumuman->sent_at->diffForHumans() }}
+                                    </p>
                                 </div>
                             </div>
+
                         </div>
                     </div>
+
                 </div>
 
-                <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex justify-end flex-shrink-0 shadow-lg">
+                {{-- Footer --}}
+                <div
+                    class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex justify-end flex-shrink-0 shadow-lg">
                     <button wire:click="closeDetail"
                         class="w-full sm:w-auto px-6 py-2.5 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition cursor-pointer">
                         <i class="fas fa-times mr-2"></i>Tutup
@@ -284,4 +339,5 @@
             </div>
         </div>
     @endif
+
 </div>
