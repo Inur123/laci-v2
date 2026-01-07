@@ -43,7 +43,7 @@ class DataAnggotaExport implements FromCollection, WithHeadings, WithMapping, Wi
     }
 
 
-    // ✅ HEADER EXCEL (SESUAI MODEL)
+    //  HEADER EXCEL (SESUAI MODEL)
     public function headings(): array
     {
         return [
@@ -65,7 +65,7 @@ class DataAnggotaExport implements FromCollection, WithHeadings, WithMapping, Wi
         ];
     }
 
-    // ✅ DATA MAPPING (SESUAI FIELD & DEKRIPSI OTOMATIS)
+    //  DATA MAPPING (SESUAI FIELD & DEKRIPSI OTOMATIS)
     public function map($anggota): array
     {
         return [
@@ -89,7 +89,7 @@ class DataAnggotaExport implements FromCollection, WithHeadings, WithMapping, Wi
         ];
     }
 
-    // ✅ STYLING HEADER EXCEL
+    //  STYLING HEADER EXCEL
     public function styles(Worksheet $sheet)
     {
         $highestColumn = $sheet->getHighestColumn();

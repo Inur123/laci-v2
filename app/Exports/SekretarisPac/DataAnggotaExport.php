@@ -42,7 +42,7 @@ class DataAnggotaExport implements FromCollection, WithHeadings, WithMapping, Wi
 
         $allData = $query->get();
 
-        // ✅ FILTER SEARCH MANUAL (AMAN UNTUK DATA TEREKRIPSI)
+        //  FILTER SEARCH MANUAL (AMAN UNTUK DATA TEREKRIPSI)
         return $allData->filter(function ($anggota) {
             if (!$this->search) return true;
 
@@ -59,7 +59,7 @@ class DataAnggotaExport implements FromCollection, WithHeadings, WithMapping, Wi
         })->values();
     }
 
-    // ✅ HEADER FULL SESUAI MODEL
+    //  HEADER FULL SESUAI MODEL
     public function headings(): array
     {
         return [
@@ -81,7 +81,7 @@ class DataAnggotaExport implements FromCollection, WithHeadings, WithMapping, Wi
         ];
     }
 
-    // ✅ MAPPING FULL SESUAI FIELD ANGGOTA
+    //  MAPPING FULL SESUAI FIELD ANGGOTA
     public function map($anggota): array
     {
         return [
@@ -105,7 +105,7 @@ class DataAnggotaExport implements FromCollection, WithHeadings, WithMapping, Wi
         ];
     }
 
-    // ✅ STYLING EXCEL OTOMATIS SESUAI JUMLAH KOLOM
+    //  STYLING EXCEL OTOMATIS SESUAI JUMLAH KOLOM
     public function styles(Worksheet $sheet)
     {
         $highestColumn = $sheet->getHighestColumn();

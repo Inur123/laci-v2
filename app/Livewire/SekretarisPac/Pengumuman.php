@@ -42,7 +42,7 @@ class Pengumuman extends Component
     }
 
     /**
-     * ✅ Query utama: hanya pengumuman yang memang dikirim ke PAC ini
+     *  Query utama: hanya pengumuman yang memang dikirim ke PAC ini
      * via tabel pengumuman_recipients (user_id PAC).
      */
     private function baseQuery()
@@ -104,7 +104,7 @@ class Pengumuman extends Component
     {
         $user = Auth::user();
 
-        // ✅ Pastikan detail hanya boleh buka pengumuman yang memang dikirim ke user ini
+        //  Pastikan detail hanya boleh buka pengumuman yang memang dikirim ke user ini
         $this->selectedPengumuman = PengumumanModel::query()
             ->whereNotNull('sent_at')
             ->whereHas('recipients', function ($q) use ($user) {

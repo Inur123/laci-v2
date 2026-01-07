@@ -222,7 +222,7 @@ class ArsipBerkasCabang extends Component
         $user = Auth::user();
 
         $query = ArsipBerkasCabangModel::with(['user', 'periode'])
-            ->where('user_id', $user->id); // ✅ WAJIB
+            ->where('user_id', $user->id); //  WAJIB
 
         if ($user->periode_aktif_id) {
             $query->where('periode_id', $user->periode_aktif_id);

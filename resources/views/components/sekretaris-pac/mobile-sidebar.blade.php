@@ -12,7 +12,7 @@
         <div class="flex items-center justify-between p-4 h-[77px] border-b border-gray-200">
             <div class="flex items-center space-x-3">
 
-                <!-- ✅ Ganti Icon dengan Logo -->
+                <!--  Ganti Icon dengan Logo -->
                 <img src="{{ asset('images/logo-laci-new.webp') }}" alt="Logo LACI" class="w-12 h-12 object-contain">
 
                 <span class="text-xl font-bold text-gray-800">LACI PAC</span>

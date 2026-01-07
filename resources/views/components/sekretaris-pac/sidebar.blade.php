@@ -5,7 +5,7 @@
     <div class="flex p-4 h-[77px] border-b border-gray-200">
         <div class="flex items-center space-x-2" :class="!sidebarOpen && 'justify-center w-full'">
 
-            <!-- ✅ Ganti Icon dengan Logo -->
+            <!--  Ganti Icon dengan Logo -->
             <img src="{{ asset('images/logo-laci-new.webp') }}" alt="Logo LACI" class="w-12 h-12 object-contain">
 
             <span x-show="sidebarOpen" x-transition.opacity class="text-xl font-bold text-gray-800">

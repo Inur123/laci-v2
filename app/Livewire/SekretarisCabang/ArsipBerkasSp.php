@@ -18,7 +18,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 #[Title('Arsip Berkas SP')]
 class ArsipBerkasSp extends Component
 {
-    use WithFileUploads; // ✅ HAPUS WithPagination
+    use WithFileUploads; //  HAPUS WithPagination
 
     public $action = 'index';
     public $arsipId;
@@ -56,7 +56,7 @@ class ArsipBerkasSp extends Component
         'file.max' => 'Ukuran file maksimal 10MB',
     ];
 
-    // ✅ reset page custom (karena pakai $page manual)
+    //  reset page custom (karena pakai $page manual)
     public function resetCustomPage()
     {
         $this->page = 1;
@@ -65,7 +65,7 @@ class ArsipBerkasSp extends Component
     #[On('periodeChanged')]
     public function refreshData()
     {
-        $this->resetCustomPage(); // ✅ bener-bener reset
+        $this->resetCustomPage(); //  bener-bener reset
     }
 
     public function updatingSearch()
@@ -246,7 +246,7 @@ class ArsipBerkasSp extends Component
             $query->where('periode_id', $user->periode_aktif_id);
         }
 
-        // ✅ lebih ringan: filtering search di query, bukan get()->filter()
+        //  lebih ringan: filtering search di query, bukan get()->filter()
         if ($this->search) {
             $s = '%' . strtolower($this->search) . '%';
             $query->where(function ($q) use ($s) {

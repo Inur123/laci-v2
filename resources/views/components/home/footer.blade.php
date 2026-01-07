@@ -50,7 +50,7 @@
                 </ul>
             </div>
 
-            <!-- ✅ Media Partner -->
+            <!--  Media Partner -->
             <div class="text-left">
                 <p class="text-sm font-semibold">Media Partner</p>
 

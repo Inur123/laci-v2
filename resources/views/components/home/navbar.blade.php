@@ -153,7 +153,7 @@
             x-transition:leave-start="translate-y-0 opacity-100"
             x-transition:leave-end="-translate-y-3 opacity-0">
 
-            <!-- ✅ ini yang penting -->
+            <!--  ini yang penting -->
             <div class="rounded-2xl border border-slate-200 bg-white shadow-[0_10px_30px_rgba(2,44,20,0.10)]"
                 @click.outside="closeMenu()">
 

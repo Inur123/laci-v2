@@ -41,7 +41,7 @@ class Surat extends Model
     ];
 
     /**
-     * ✅ Accessor untuk tanggal (auto decrypt)
+     *  Accessor untuk tanggal (auto decrypt)
      */
     public function getTanggalAttribute($value)
     {
@@ -54,7 +54,7 @@ class Surat extends Model
     }
 
     /**
-     * ✅ Mutator untuk tanggal (auto encrypt)
+     *  Mutator untuk tanggal (auto encrypt)
      */
     public function setTanggalAttribute($value)
     {

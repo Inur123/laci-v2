@@ -22,18 +22,22 @@
                         <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
-
                 <div class="w-full">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         Isi Pengumuman <span class="text-red-500">*</span>
                     </label>
-                    <textarea wire:model="isi" rows="8"
-                        class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
-                        placeholder="Tulis pengumuman..."></textarea>
+
+                    <div wire:ignore>
+                        <textarea id="isiEditor" class="w-full"></textarea>
+                    </div>
+
                     @error('isi')
                         <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+
+
+
             </div>
 
             <!-- Buttons -->

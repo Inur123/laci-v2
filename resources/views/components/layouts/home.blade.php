@@ -18,7 +18,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="color-scheme" content="only light">
 
-    <!-- ✅ PWA -->
+    <!--  PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#22c55e">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -76,7 +76,7 @@
 <body class="bg-white text-slate-900 antialiased font-[Inter]">
     <div class="noise pointer-events-none fixed inset-0 -z-10"></div>
 
-    <!-- ✅ PWA Install Modal (selalu muncul tiap web dibuka) -->
+    <!--  PWA Install Modal (selalu muncul tiap web dibuka) -->
     {{-- <div x-data="pwaInstallModal()" x-show="show" x-cloak x-init="init()"
         class="fixed inset-0 z-[999] flex items-start justify-center px-4 pt-6 sm:pt-10">
 
@@ -125,7 +125,7 @@
 
     <x-home.footer />
 
-    <!-- ✅ Register Service Worker -->
+    <!--  Register Service Worker -->
     <script>
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {
@@ -145,7 +145,7 @@
                         e.preventDefault();
                         this.deferredPrompt = e;
 
-                        // ✅ SELALU tampil setiap reload / buka halaman
+                        //  SELALU tampil setiap reload / buka halaman
                         this.show = true;
                     });
                 },
@@ -154,7 +154,9 @@
                     if (!this.deferredPrompt) return;
 
                     this.deferredPrompt.prompt();
-                    const { outcome } = await this.deferredPrompt.userChoice;
+                    const {
+                        outcome
+                    } = await this.deferredPrompt.userChoice;
 
                     this.deferredPrompt = null;
                     this.show = false;
@@ -170,7 +172,7 @@
         }
     </script>
 
-    <!-- ✅ Chatwoot Live Chat (tambahkan sebelum </body>) -->
+    <!--  Chatwoot Live Chat (tambahkan sebelum </body>) -->
     {{-- <script>
       window.chatwootSettings = {
         locale: "id",
@@ -194,4 +196,5 @@
     </script> --}}
 
 </body>
+
 </html>

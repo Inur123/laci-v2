@@ -15,7 +15,7 @@ class CustomVerifyEmail extends VerifyEmail implements ShouldQueue
     use Queueable;
 
     /**
-     * ✅ INI YANG PENTING!
+     *  INI YANG PENTING!
      * override supaya URL verifikasi pakai localhost:8000
      */
     protected function verificationUrl($notifiable)
@@ -34,7 +34,7 @@ class CustomVerifyEmail extends VerifyEmail implements ShouldQueue
             ]
         );
 
-        // ✅ paksa host jadi $appUrl
+        //  paksa host jadi $appUrl
         return preg_replace('#^https?://[^/]+#', $appUrl, $signedUrl);
     }
 

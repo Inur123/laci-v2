@@ -389,13 +389,37 @@
                         @endif
                     </div>
 
+                    {{--  FIX BAGIAN ISI PENGUMUMAN --}}
                     <div class="bg-gray-50 rounded-lg p-5 border border-gray-200">
                         <p class="text-xs text-gray-600 font-medium mb-2">Isi Pengumuman</p>
-                        <p class="text-gray-800 leading-relaxed whitespace-pre-wrap">{{ $selectedPengumuman->isi }}
-                        </p>
+
+                        @php
+                            $isi = $selectedPengumuman->isi ?? '';
+
+                            // deteksi HTML
+                            $isHtml = $isi !== strip_tags($isi);
+
+                            // hapus conditional comment outlook (mso)
+                            $cleanHtml = preg_replace('/<!--\[if.*?\[endif\]-->/is', '', $isi);
+
+                            // kalau ada body, ambil hanya isi <body>
+                            if (preg_match('/<body[^>]*>(.*?)<\/body>/is', $cleanHtml, $m)) {
+                                $cleanHtml = $m[1];
+                            }
+                        @endphp
+
+                        @if ($isHtml)
+                            <div class="prose max-w-none text-gray-800">
+                                {!! $cleanHtml !!}
+                            </div>
+                        @else
+                            <p class="text-gray-800 leading-relaxed whitespace-pre-wrap">
+                                {!! nl2br(e($isi)) !!}
+                            </p>
+                        @endif
                     </div>
 
-                    {{-- ✅ Tambahan: List email penerima --}}
+                    {{--  Tambahan: List email penerima --}}
                     @if ($selectedPengumuman->sent_at)
                         @php
                             $recipients = $selectedPengumuman->recipients ?? collect();
@@ -428,7 +452,8 @@
                                             @foreach ($recipients as $r)
                                                 <tr>
                                                     <td class="px-3 py-2 text-gray-700 whitespace-nowrap">
-                                                        {{ $r->email }}</td>
+                                                        {{ $r->email }}
+                                                    </td>
                                                     <td class="px-3 py-2">
                                                         @if ($r->status === 'sent')
                                                             <span
@@ -465,9 +490,11 @@
                                 <div>
                                     <p class="text-xs text-gray-500">Dibuat</p>
                                     <p class="text-sm font-medium text-gray-800">
-                                        {{ $selectedPengumuman->created_at->format('d F Y, H:i') }}</p>
+                                        {{ $selectedPengumuman->created_at->format('d F Y, H:i') }}
+                                    </p>
                                     <p class="text-xs text-gray-500">
-                                        {{ $selectedPengumuman->created_at->diffForHumans() }}</p>
+                                        {{ $selectedPengumuman->created_at->diffForHumans() }}
+                                    </p>
                                 </div>
                             </div>
 
@@ -478,9 +505,11 @@
                                 <div>
                                     <p class="text-xs text-gray-500">Terakhir Diupdate</p>
                                     <p class="text-sm font-medium text-gray-800">
-                                        {{ $selectedPengumuman->updated_at->format('d F Y, H:i') }}</p>
+                                        {{ $selectedPengumuman->updated_at->format('d F Y, H:i') }}
+                                    </p>
                                     <p class="text-xs text-gray-500">
-                                        {{ $selectedPengumuman->updated_at->diffForHumans() }}</p>
+                                        {{ $selectedPengumuman->updated_at->diffForHumans() }}
+                                    </p>
                                 </div>
                             </div>
 
@@ -491,7 +520,8 @@
                                     <div>
                                         <p class="text-xs text-gray-500">Terkirim</p>
                                         <p class="text-sm font-medium text-gray-800">
-                                            {{ $selectedPengumuman->sent_at->format('d F Y, H:i') }}</p>
+                                            {{ $selectedPengumuman->sent_at->format('d F Y, H:i') }}
+                                        </p>
                                     </div>
                                 </div>
                             @endif
@@ -510,6 +540,7 @@
             </div>
         </div>
     @endif
+
 </div>
 
 <script>
@@ -581,7 +612,7 @@
         if (window.__pengumumanSwalListenerInstalled) return;
         window.__pengumumanSwalListenerInstalled = true;
 
-        // ✅ Tutup swal progress kapan pun disuruh livewire
+        //  Tutup swal progress kapan pun disuruh livewire
         Livewire.on('close-progress', () => {
             Swal.close();
         });
@@ -603,5 +634,72 @@
                 text: payload.message ?? 'Pengiriman gagal. Silakan coba lagi.'
             });
         });
+    });
+</script>
+<script src="https://cdn.tiny.cloud/1/{{ env('TINYMCE_API_KEY') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin">
+</script>
+
+<script>
+    document.addEventListener('livewire:init', () => {
+
+        function initTinyMCE() {
+            if (typeof tinymce === "undefined") return;
+
+            const el = document.querySelector('#isiEditor');
+            if (!el) return;
+
+            if (tinymce.get('isiEditor')) return;
+
+            const componentEl = el.closest('[wire\\:id]');
+            if (!componentEl) return;
+
+            const componentId = componentEl.getAttribute('wire:id');
+            const component = Livewire.find(componentId);
+            if (!component) return;
+
+            tinymce.init({
+                selector: '#isiEditor',
+                height: 400,
+                menubar: true,
+                plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount help emoticons',
+                toolbar: 'undo redo | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | forecolor backcolor removeformat | fullscreen preview | image media link codesample',
+
+                setup: function(editor) {
+
+                    editor.on('init', function() {
+                        const isi = component.get('isi') || '';
+                        editor.setContent(isi);
+                    });
+
+                    editor.on('change keyup paste', function() {
+                        component.set('isi', editor.getContent());
+                    });
+                }
+            });
+        }
+
+        initTinyMCE();
+
+        Livewire.hook('morph.updated', () => {
+            initTinyMCE();
+        });
+
+        Livewire.on('set-editor-content', (content) => {
+            if (tinymce.get('isiEditor')) {
+                tinymce.get('isiEditor').setContent(content || '');
+            } else {
+                initTinyMCE();
+                setTimeout(() => {
+                    tinymce.get('isiEditor')?.setContent(content || '');
+                }, 200);
+            }
+        });
+
+        Livewire.on('destroy-editor', () => {
+            if (tinymce.get('isiEditor')) {
+                tinymce.get('isiEditor').remove();
+            }
+        });
+
     });
 </script>

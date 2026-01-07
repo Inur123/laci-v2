@@ -54,7 +54,7 @@
                             <div style="text-align:center;margin:30px 0;">
                                 <a href="{{ $url }}"
                                     style="background:#2563eb;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:12px;font-weight:700;display:inline-block;">
-                                    ✅ Verifikasi Email Sekarang
+                                     Verifikasi Email Sekarang
                                 </a>
                             </div>
 

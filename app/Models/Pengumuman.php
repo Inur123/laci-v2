@@ -34,7 +34,7 @@ class Pengumuman extends Model
         return $this->belongsTo(Periode::class);
     }
 
-    // ✅ Tambahan: relasi log penerima
+    //  Tambahan: relasi log penerima
     public function recipients()
     {
         return $this->hasMany(PengumumanRecipient::class, 'pengumuman_id');

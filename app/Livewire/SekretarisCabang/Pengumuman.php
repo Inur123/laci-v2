@@ -45,7 +45,7 @@ class Pengumuman extends Component
 
     protected $rules = [
         'judul' => 'required|string|max:150',
-        'isi'   => 'required|string|max:5000',
+        'isi'   => 'required|string',
     ];
 
     protected $messages = [
@@ -79,13 +79,20 @@ class Pengumuman extends Component
     {
         $this->reset(['judul', 'isi', 'pengumumanId']);
         $this->action = 'create';
+
+        $this->dispatch('set-editor-content', '');
     }
+
 
     public function back()
     {
+        $this->dispatch('destroy-editor');
+
         $this->action = 'index';
         $this->reset(['judul', 'isi', 'pengumumanId']);
     }
+
+
 
     public function save()
     {
@@ -119,24 +126,17 @@ class Pengumuman extends Component
 
     public function edit($id)
     {
-        $user = Auth::user();
+        $data = PengumumanModel::findOrFail($id);
 
-        $p = PengumumanModel::where('user_id', $user->id)->findOrFail($id);
-
-        if ($p->sent_at) {
-            $this->dispatch('flash', [
-                'type' => 'warning',
-                'message' => 'Pengumuman sudah terkirim, tidak bisa diedit.'
-            ]);
-            return;
-        }
-
-        $this->pengumumanId = $p->id;
-        $this->judul = $p->judul;
-        $this->isi = $p->isi;
+        $this->pengumumanId = $id;
+        $this->judul = $data->judul;
+        $this->isi = $data->isi;
 
         $this->action = 'edit';
+
+        $this->dispatch('set-editor-content', $this->isi);
     }
+
 
     public function update()
     {
@@ -216,7 +216,7 @@ class Pengumuman extends Component
     }
 
     /**
-     * ✅ Event untuk menutup Swal progress (animasi)
+     *  Event untuk menutup Swal progress (animasi)
      */
     private function closeProgress(): void
     {
@@ -234,7 +234,7 @@ class Pengumuman extends Component
     }
 
     /**
-     * ✅ Helper: tutup progress + flash + swal fail → return
+     *  Helper: tutup progress + flash + swal fail → return
      */
     private function failReturn(string $flashType, string $flashMessage, string $swalTitle, string $swalIcon = 'error')
     {
@@ -249,7 +249,7 @@ class Pengumuman extends Component
     }
 
     /**
-     * ✅ Helper: tutup progress + flash + swal success
+     *  Helper: tutup progress + flash + swal success
      */
     private function successReturn(string $flashMessage, string $swalTitle = 'Berhasil')
     {
@@ -340,7 +340,6 @@ class Pengumuman extends Component
                                 'created_at'     => $ts,
                                 'updated_at'     => $ts,
                             ];
-
                         } catch (\Exception $e) {
                             $failed++;
 
@@ -369,7 +368,6 @@ class Pengumuman extends Component
                         PengumumanRecipient::insert($rows);
                     }
                 });
-
         } catch (\Throwable $e) {
             report($e);
 

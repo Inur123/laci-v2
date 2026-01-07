@@ -264,7 +264,7 @@
 
     <!-- Charts & Activity Section -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Recent Activity - ✅ FULL HEIGHT -->
+        <!-- Recent Activity -  FULL HEIGHT -->
         <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col" wire:poll.10s
             style="height: calc(100vh - 450px); min-height: 600px;">
 
@@ -292,7 +292,7 @@
                 </div>
             </div>
 
-            <!-- ✅ Scrollable Content Area -->
+            <!--  Scrollable Content Area -->
             <div class="flex-1 overflow-y-auto custom-scrollbar" id="activity-container">
                 <div class="p-6 space-y-3">
                     @forelse($this->aktivitasTerbaru as $activity)
@@ -327,7 +327,7 @@
                     </div>
                     @endforelse
 
-                    <!-- ✅ Load More Button -->
+                    <!--  Load More Button -->
                     @if($this->aktivitasTerbaru->count() >= $activityLimit)
                     <div class="mt-6 pb-6 text-center">
                         <button wire:click="loadMoreActivities"
@@ -344,7 +344,7 @@
             </div>
         </div>
 
-        <!-- Right Sidebar - ✅ FULL HEIGHT SAMA DENGAN AKTIVITAS -->
+        <!-- Right Sidebar -  FULL HEIGHT SAMA DENGAN AKTIVITAS -->
         <div class="flex flex-col space-y-6" style="height: calc(100vh - 450px); min-height: 600px; overflow-y: auto;"
             class="custom-scrollbar">
             <!-- Kegiatan Mendatang -->
