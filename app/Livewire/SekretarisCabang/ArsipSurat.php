@@ -70,7 +70,6 @@ class ArsipSurat extends Component
     #[On('periodeChanged')]
     public function refreshData()
     {
-        // Refresh data saat periode berubah
         $this->resetPage();
     }
 
@@ -80,7 +79,6 @@ class ArsipSurat extends Component
             abort(403, 'Akses ditolak');
         }
 
-        // Set filter jenis dari query parameter jika ada
         if (request()->has('jenis') && in_array(request()->get('jenis'), ['masuk', 'keluar'])) {
             $this->filterJenis = request()->get('jenis');
         }
@@ -94,7 +92,6 @@ class ArsipSurat extends Component
 
     public function save()
     {
-        // Validasi: User harus memiliki periode aktif
         if (!Auth::user()->periode_aktif_id) {
             $this->dispatch('flash', [
                 'type' => 'error',
@@ -188,14 +185,12 @@ class ArsipSurat extends Component
         $this->reset(['no_surat', 'jenis_surat', 'tanggal', 'pengirim_penerima', 'deskripsi', 'file', 'arsipId', 'oldFile', 'perihal']);
     }
 
-    // Tampilkan detail dalam modal
     public function showDetail($id)
     {
         $this->selectedSurat = Surat::where('user_id', Auth::id())->findOrFail($id);
         $this->showDetailModal = true;
     }
 
-    // Tutup modal detail
     public function closeDetail()
     {
         $this->showDetailModal = false;
@@ -242,7 +237,6 @@ class ArsipSurat extends Component
         $user = Auth::user();
         $query = Surat::where('user_id', $user->id);
 
-        // Filter berdasarkan periode aktif
         if ($user->periode_aktif_id) {
             $query->where('periode_id', $user->periode_aktif_id);
         }
@@ -266,7 +260,6 @@ class ArsipSurat extends Component
         );
     }
 
-
     public function render()
     {
         return match ($this->action) {
@@ -288,7 +281,6 @@ class ArsipSurat extends Component
         $query = Surat::with('user')
             ->where('user_id', $user->id);
 
-        // Filter berdasarkan periode aktif
         if ($user->periode_aktif_id) {
             $query->where('periode_id', $user->periode_aktif_id);
         }
@@ -300,10 +292,20 @@ class ArsipSurat extends Component
             $matchJenis = true;
 
             if ($this->search) {
-                $searchLower = strtolower($this->search);
-                $matchSearch = str_contains(strtolower($surat->no_surat), $searchLower) ||
-                    str_contains(strtolower($surat->pengirim_penerima ?? ''), $searchLower) ||
-                    str_contains(strtolower($surat->deskripsi ?? ''), $searchLower);
+                $s = strtolower(trim($this->search));
+
+                // tanggal versi string biar bisa dicari
+                $tglYmd = $surat->tanggal ? $surat->tanggal->format('Y-m-d') : '';
+                $tglDmy = $surat->tanggal ? $surat->tanggal->format('d M Y') : ''; // contoh: 12 Jan 2026
+
+                $matchSearch =
+                    str_contains(strtolower($surat->no_surat ?? ''), $s) ||
+                    str_contains(strtolower($tglYmd), $s) ||
+                    str_contains(strtolower($tglDmy), $s) ||
+                    str_contains(strtolower($surat->jenis_surat ?? ''), $s) ||
+                    str_contains(strtolower($surat->perihal ?? ''), $s) ||
+                    str_contains(strtolower($surat->pengirim_penerima ?? ''), $s) ||
+                    str_contains(strtolower($surat->deskripsi ?? ''), $s);
             }
 
             if ($this->filterJenis) {

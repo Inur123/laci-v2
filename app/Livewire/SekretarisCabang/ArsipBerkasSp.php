@@ -18,7 +18,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 #[Title('Arsip Berkas SP')]
 class ArsipBerkasSp extends Component
 {
-    use WithFileUploads; //  HAPUS WithPagination
+    use WithFileUploads;
 
     public $action = 'index';
     public $arsipId;
@@ -56,7 +56,6 @@ class ArsipBerkasSp extends Component
         'file.max' => 'Ukuran file maksimal 10MB',
     ];
 
-    //  reset page custom (karena pakai $page manual)
     public function resetCustomPage()
     {
         $this->page = 1;
@@ -65,7 +64,7 @@ class ArsipBerkasSp extends Component
     #[On('periodeChanged')]
     public function refreshData()
     {
-        $this->resetCustomPage(); //  bener-bener reset
+        $this->resetCustomPage();
     }
 
     public function updatingSearch()
@@ -205,7 +204,6 @@ class ArsipBerkasSp extends Component
                 'message' => "Berkas {$nama} berhasil dihapus!"
             ]);
 
-            // kalau hapus bikin halaman kosong, mundurin page
             if ($this->page > 1) {
                 $this->page = max(1, $this->page - 1);
             }
@@ -246,30 +244,53 @@ class ArsipBerkasSp extends Component
             $query->where('periode_id', $user->periode_aktif_id);
         }
 
-        //  lebih ringan: filtering search di query, bukan get()->filter()
-        if ($this->search) {
-            $s = '%' . strtolower($this->search) . '%';
-            $query->where(function ($q) use ($s) {
-                $q->whereRaw('LOWER(nama) LIKE ?', [$s])
-                  ->orWhereRaw('LOWER(catatan) LIKE ?', [$s]);
-            });
-        }
+        // ambil dulu semua (biar bisa search field terenkripsi seperti Arsip Surat)
+        $all = $query->latest()->get();
 
+        $filtered = $all->filter(function ($berkas) {
+            if (!$this->search) return true;
+
+            $s = strtolower(trim($this->search));
+
+            $nama = strtolower($berkas->nama ?? '');
+            $catatan = strtolower($berkas->catatan ?? '');
+
+            // tanggal ke string (biar bisa di-search)
+            $mulaiYmd = $berkas->tanggal_mulai ? $berkas->tanggal_mulai->format('Y-m-d') : '';
+            $mulaiDmy = $berkas->tanggal_mulai ? strtolower($berkas->tanggal_mulai->format('d M Y')) : '';
+
+            $akhirYmd = $berkas->tanggal_berakhir ? $berkas->tanggal_berakhir->format('Y-m-d') : '';
+            $akhirDmy = $berkas->tanggal_berakhir ? strtolower($berkas->tanggal_berakhir->format('d M Y')) : '';
+
+            // periode string persis seperti yang kamu tampilkan di view
+            $periodeStr = '';
+            if ($berkas->tanggal_mulai && $berkas->tanggal_berakhir) {
+                $tahunMulai = $berkas->tanggal_mulai->format('Y');
+                $tahunAkhir = $berkas->tanggal_berakhir->format('Y');
+                $durasi = (int)$tahunAkhir - (int)$tahunMulai;
+                $periodeStr = strtolower("{$tahunMulai}-{$tahunAkhir} ({$durasi} tahun)");
+            }
+
+            return
+                str_contains($nama, $s) ||
+                str_contains($catatan, $s) ||
+                str_contains(strtolower($mulaiYmd), $s) ||
+                str_contains($mulaiDmy, $s) ||
+                str_contains(strtolower($akhirYmd), $s) ||
+                str_contains($akhirDmy, $s) ||
+                ($periodeStr && str_contains($periodeStr, $s));
+        });
 
         $perPage = 10;
-
-        $total = $query->count();
-
-        $items = $query->latest()
-            ->skip(($this->page - 1) * $perPage)
-            ->take($perPage)
-            ->get();
+        $currentPage = $this->page;
+        $total = $filtered->count();
+        $items = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();
 
         return new LengthAwarePaginator(
             $items,
             $total,
             $perPage,
-            $this->page,
+            $currentPage,
             ['path' => request()->url()]
         );
     }

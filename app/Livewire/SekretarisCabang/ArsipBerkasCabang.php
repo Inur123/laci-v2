@@ -222,22 +222,40 @@ class ArsipBerkasCabang extends Component
         $user = Auth::user();
 
         $query = ArsipBerkasCabangModel::with(['user', 'periode'])
-            ->where('user_id', $user->id); //  WAJIB
+            ->where('user_id', $user->id);
 
         if ($user->periode_aktif_id) {
             $query->where('periode_id', $user->periode_aktif_id);
         }
 
+        // ambil dulu semua data (biar field terenkripsi sudah kebuka ketika jadi model)
         $allBerkas = $query->latest()->get();
 
+        // SEARCH seperti Arsip Surat: match ke field2 yang tampil di view/modal
         if ($this->search) {
-            $allBerkas = $allBerkas->filter(function ($berkas) {
-                $searchLower = strtolower($this->search);
-                return str_contains(strtolower($berkas->nama), $searchLower) ||
-                    str_contains(strtolower($berkas->catatan ?? ''), $searchLower);
+            $s = strtolower(trim($this->search));
+
+            $allBerkas = $allBerkas->filter(function ($berkas) use ($s) {
+                $nama = strtolower($berkas->nama ?? '');
+                $catatan = strtolower($berkas->catatan ?? '');
+
+                // tanggal string biar bisa dicari
+                $tglYmd = $berkas->tanggal ? $berkas->tanggal->format('Y-m-d') : '';
+                $tglDmy = $berkas->tanggal ? strtolower($berkas->tanggal->format('d M Y')) : '';
+
+                // periode nama (yang tampil di modal)
+                $periodeNama = strtolower($berkas->periode->nama ?? '');
+
+                return
+                    str_contains($nama, $s) ||
+                    str_contains($catatan, $s) ||
+                    str_contains(strtolower($tglYmd), $s) ||
+                    str_contains($tglDmy, $s) ||
+                    str_contains($periodeNama, $s);
             });
         }
 
+        // pagination manual (tetap seperti punyamu)
         $perPage = 10;
         $currentPage = $this->page;
         $total = $allBerkas->count();
@@ -251,6 +269,7 @@ class ArsipBerkasCabang extends Component
             ['path' => request()->url()]
         );
     }
+
 
 
     private function getStats()
